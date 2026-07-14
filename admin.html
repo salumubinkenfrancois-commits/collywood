@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>COLLYWOOD — Administration</title>
+<link rel="icon" href="logo.png"/>
+<style>
+:root{--nuit:#0B1420;--carte:#121E2C;--carte2:#17273A;--fleuve:#1B98C4;--soleil:#F5B921;--braise:#E8503A;--ok:#3EC46D;--ivoire:#F6F3EC;--cendre:#9AA7B4;--safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{overflow-x:hidden}
+body{background:var(--nuit);color:var(--ivoire);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.45}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;user-select:none;-webkit-user-select:none}
+input,select,textarea{font:inherit;color:var(--ivoire);background:var(--carte2);border:1px solid rgba(246,243,236,.14);border-radius:11px;padding:.72rem .8rem;width:100%;font-size:16px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--soleil)}
+textarea{min-height:84px;resize:vertical}
+label{display:block;font-size:.78rem;color:var(--cendre);margin:0 0 .35rem;font-weight:600;letter-spacing:.02em}
+.fg{margin-bottom:.95rem}
+h1{font-size:1.05rem;font-weight:800;letter-spacing:.04em}
+h2{font-size:.82rem;font-weight:800;letter-spacing:.1em;color:#d8c48a;margin:1.3rem 0 .65rem;text-transform:uppercase}
+small{color:var(--cendre)}
+#login{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.6rem;background:radial-gradient(120% 80% at 50% 0%,#122238 0%,var(--nuit) 60%)}
+#login img{width:74px;margin-bottom:.9rem;animation:hb 1.9s ease-in-out infinite}
+@keyframes hb{0%,100%{transform:scale(1)}12%{transform:scale(1.07)}24%{transform:scale(1)}36%{transform:scale(1.05)}60%{transform:scale(1)}}
+#login .w{font-weight:900;letter-spacing:.14em;font-size:1.25rem;background:linear-gradient(180deg,#F9DE94,#EFB62F 55%,#C4880F);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:.2rem}
+#login .adm{font-size:.7rem;letter-spacing:.3em;color:var(--fleuve);font-weight:800;margin-bottom:1.6rem}
+#login .card{width:min(380px,100%)}
+#login .err{color:#f08072;font-size:.8rem;margin-top:.7rem;text-align:center;min-height:1.1em}
+.btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;background:linear-gradient(135deg,#F5D372,#F5B921);color:#1a1509;font-weight:800;padding:.95rem;border-radius:13px;font-size:.98rem}
+.btn:active{transform:scale(.985)}
+.btn.ghost{background:var(--carte2);color:var(--ivoire);border:1px solid rgba(246,243,236,.15);font-weight:600}
+.btn.red{background:none;border:1px solid rgba(232,80,58,.5);color:#f08072;font-weight:600}
+.btn[disabled]{opacity:.55}
+#app{display:none;padding:calc(var(--safe-t) + 56px) 0 calc(84px + var(--safe-b))}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:.6rem;padding:calc(var(--safe-t) + 8px) 1rem 8px;background:rgba(11,20,32,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(246,243,236,.07)}
+.topbar img{width:26px}
+.topbar h1{flex:1}
+.topbar h1 span{color:var(--soleil)}
+.tico{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--carte);border:1px solid rgba(246,243,236,.1)}
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:20;display:flex;background:rgba(11,20,32,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid rgba(246,243,236,.08);padding:6px 4px calc(6px + var(--safe-b))}
+.tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.62rem;color:var(--cendre);padding:5px 0;border-radius:10px}
+.tabbar button svg{width:21px;height:21px}
+.tabbar button.on{color:var(--soleil)}
+.pane{display:none;padding:0 1rem}
+.pane.on{display:block;animation:fu .25s ease}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{background:var(--carte);border:1px solid rgba(246,243,236,.1);border-radius:16px;padding:1rem}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.stat{background:var(--carte);border:1px solid rgba(246,243,236,.1);border-radius:15px;padding:.85rem .9rem}
+.stat b{display:block;font-size:1.35rem;font-weight:800;color:var(--soleil)}
+.stat span{font-size:.7rem;color:var(--cendre)}
+.stat.blue b{color:var(--fleuve)}
+.stat.green b{color:var(--ok)}
+.row{display:flex;align-items:center;gap:.7rem;background:var(--carte);border:1px solid rgba(246,243,236,.1);border-radius:14px;padding:.7rem .8rem;margin-bottom:.6rem}
+.row .pimg{width:44px;height:60px;border-radius:9px;background-size:cover;background-position:center;background-color:var(--carte2);flex:none}
+.row .tx{flex:1;min-width:0}
+.row .tx b{display:block;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .tx span{font-size:.72rem;color:var(--cendre)}
+.badge{font-size:.58rem;font-weight:800;letter-spacing:.05em;padding:.2rem .45rem;border-radius:8px;background:rgba(27,152,196,.18);color:#7fd0ec;flex:none}
+.badge.gold{background:rgba(245,185,33,.16);color:var(--soleil)}
+.badge.red{background:rgba(232,80,58,.16);color:#f08072}
+.badge.green{background:rgba(62,196,109,.15);color:#6fe09a}
+.act{min-width:36px;height:36px;padding:0 .4rem;border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--carte2);border:1px solid rgba(246,243,236,.12);flex:none;font-size:.78rem;font-weight:700}
+.act svg{width:17px;height:17px}
+.act.red{border-color:rgba(232,80,58,.4);color:#f08072}
+.seg{display:flex;background:var(--carte2);border-radius:12px;padding:4px;gap:4px;margin-bottom:1rem;overflow-x:auto}
+.seg button{flex:1;padding:.6rem .45rem;border-radius:9px;font-size:.78rem;color:var(--cendre);font-weight:600;white-space:nowrap}
+.seg button.on{background:linear-gradient(135deg,#F5D372,#F5B921);color:#1a1509;font-weight:800}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{padding:.5rem .85rem;border-radius:18px;background:var(--carte2);border:1px solid rgba(246,243,236,.15);font-size:.8rem;color:var(--cendre)}
+.chip.on{background:rgba(245,185,33,.14);border-color:var(--soleil);color:var(--soleil);font-weight:700}
+.tglrow{display:flex;align-items:center;justify-content:space-between;background:var(--carte2);border:1px solid rgba(246,243,236,.12);border-radius:12px;padding:.75rem .85rem;margin-bottom:.7rem;font-size:.88rem}
+.tgl{width:44px;height:26px;border-radius:13px;background:#2a3a4e;position:relative;transition:background .2s;flex:none;cursor:pointer}
+.tgl::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}
+.tgl.on{background:var(--soleil)}
+.tgl.on::after{left:21px}
+.drop{display:flex;flex-direction:column;align-items:center;gap:.3rem;text-align:center;border:1.6px dashed rgba(245,185,33,.5);border-radius:13px;padding:.95rem .8rem;color:var(--cendre);font-size:.78rem;cursor:pointer}
+.drop.ok{border-style:solid;background:rgba(245,185,33,.07)}
+.drop img{max-height:110px;border-radius:8px}
+.searchbar{display:flex;align-items:center;gap:.55rem;background:var(--carte);border:1px solid rgba(246,243,236,.13);border-radius:13px;padding:.7rem .9rem;margin-bottom:.8rem}
+.searchbar input{background:none;border:none;padding:0;border-radius:0}
+.exp{overflow:hidden;border-left:2px solid rgba(245,185,33,.35);margin:0 0 .8rem .9rem;padding-left:.7rem}
+.hint{background:rgba(232,80,58,.1);border:1px solid rgba(232,80,58,.4);border-radius:13px;padding:.8rem .9rem;font-size:.8rem;line-height:1.55;margin-bottom:1rem;display:none}
+.hint b{color:#f08072}
+#gsheet{position:fixed;inset:0;z-index:50;background:rgba(4,8,14,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:flex-end;justify-content:center}
+#gsheet .sh{background:var(--carte);border:1px solid rgba(246,243,236,.12);border-radius:20px 20px 0 0;padding:1.1rem 1rem calc(1.1rem + var(--safe-b));width:100%;max-width:520px;animation:fu .22s ease}
+#toast{position:fixed;left:50%;bottom:calc(96px + var(--safe-b));transform:translateX(-50%) translateY(20px);background:#1d2c40;border:1px solid rgba(246,243,236,.18);padding:.7rem 1.1rem;border-radius:13px;font-size:.85rem;opacity:0;transition:.25s;z-index:60;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{text-align:center;color:var(--cendre);font-size:.85rem;padding:1.6rem .5rem;line-height:1.6}
+.spin{width:26px;height:26px;border:3px solid rgba(245,185,33,.25);border-top-color:var(--soleil);border-radius:50%;animation:sp .8s linear infinite;margin:1.4rem auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+@media(min-width:760px){.pane{max-width:720px;margin:0 auto}.stats{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <img src="logo.png" alt="C+"/>
+  <div class="w">C O L L Y W O O D</div>
+  <div class="adm">ADMINISTRATION</div>
+  <div class="card">
+    <div class="fg"><label>Adresse e-mail</label><input id="lg-mail" type="email" autocomplete="username"/></div>
+    <div class="fg"><label>Mot de passe</label><input id="lg-pw" type="password" autocomplete="current-password"/></div>
+    <button class="btn" id="lg-go">Se connecter</button>
+    <div class="err" id="lg-err"></div>
+  </div>
+</div>
+
+<main id="app">
+  <header class="topbar">
+    <img src="logo.png" alt=""/><h1>COLLYWOOD <span>Admin</span></h1>
+    <button class="tico" id="tb-refresh" aria-label="Actualiser"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg></button>
+    <button class="tico" id="tb-out" aria-label="Déconnexion"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M15 8l4 4-4 4M19 12H9"/></svg></button>
+  </header>
+
+  <!-- ═══ TABLEAU DE BORD ═══ -->
+  <section class="pane on" id="p-dash">
+    <div class="hint" id="sql-hint"><b>Droits incomplets.</b> Certaines statistiques sont bloquées par la sécurité de la base. Exécute le fichier <b>admin-policies.sql</b> dans Supabase → SQL Editor (une seule fois), puis actualise.</div>
+    <h2>Vue d'ensemble</h2>
+    <div class="stats">
+      <div class="stat"><b id="st-series">—</b><span>Séries</span></div>
+      <div class="stat"><b id="st-eps">—</b><span>Épisodes</span></div>
+      <div class="stat blue"><b id="st-films">—</b><span>Films &amp; clips</span></div>
+      <div class="stat blue"><b id="st-users">—</b><span>Utilisateurs</span></div>
+      <div class="stat green"><b id="st-subs">—</b><span>Abonnés actifs</span></div>
+      <div class="stat green"><b id="st-rev">—</b><span>Revenus encaissés</span></div>
+      <div class="stat"><b id="st-views">—</b><span>Lectures totales</span></div>
+      <div class="stat"><b id="st-drafts">—</b><span>Brouillons</span></div>
+    </div>
+    <h2>Derniers paiements</h2><div id="dash-pays"><div class="spin"></div></div>
+    <h2>Derniers inscrits</h2><div id="dash-users"></div>
+    <h2>Raccourcis</h2>
+    <div class="grid2">
+      <a class="btn ghost" href="https://collywood-plus.com" target="_blank" rel="noopener" style="text-decoration:none">Ouvrir le site</a>
+      <a class="btn ghost" href="https://supabase.com/dashboard" target="_blank" rel="noopener" style="text-decoration:none">Supabase</a>
+    </div>
+    <div style="height:.5rem"></div>
+  </section>
+
+  <!-- ═══ CATALOGUE ═══ -->
+  <section class="pane" id="p-cat">
+    <div class="searchbar"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="cat-q" placeholder="Rechercher un titre, une série…"/></div>
+    <div class="seg" id="cat-seg">
+      <button data-f="all" class="on">Tout</button><button data-f="serie">Séries</button><button data-f="film">Films</button><button data-f="clip">Clips</button><button data-f="draft">Brouillons</button>
+    </div>
+    <div id="cat-list"><div class="spin"></div></div>
+  </section>
+
+  <!-- ═══ PUBLIER ═══ -->
+  <section class="pane" id="p-add">
+    <h2 id="add-title">Publier un contenu</h2>
+    <div class="seg" id="f-kindseg">
+      <button data-k="serie" class="on">Épisode de série</button><button data-k="film">Film</button><button data-k="clip">Clip</button>
+    </div>
+    <div id="f-seriebox">
+      <div class="fg"><label>Série (identifiant — ex : le-serment-de-goma)</label><input id="f-series" list="series-dl" placeholder="Choisir ou créer une série" autocapitalize="none"/><datalist id="series-dl"></datalist></div>
+      <div class="fg"><label>Numéro d'épisode</label><input id="f-episode" type="number" inputmode="numeric" min="1"/></div>
+    </div>
+    <div class="fg"><label>Titre</label><input id="f-title" placeholder="Ex : Le Serment de Goma — Épisode 3"/></div>
+    <div class="fg"><label>Catégories</label><div class="chips" id="f-genres"></div><input id="f-gplus" placeholder="Autre catégorie (Entrée pour ajouter)" style="margin-top:.55rem"/></div>
+    <div class="fg"><label>Synopsis</label><textarea id="f-syn" placeholder="Résumé accrocheur de l'épisode ou du film…"></textarea></div>
+    <div class="grid2">
+      <div class="fg"><label>Langue</label><select id="f-lang"><option>Lingala</option><option>Français</option><option>Swahili</option><option>Tshiluba</option><option>Kikongo</option></select></div>
+      <div class="fg"><label>Région</label><select id="f-region"><option>Kinshasa</option><option>Goma</option><option>Lubumbashi</option><option>Bukavu</option><option>Kisangani</option><option>Matadi</option><option>RDC</option></select></div>
+    </div>
+    <div class="grid2">
+      <div class="fg"><label>Aperçu gratuit</label><select id="f-preview"><option value="0">Aucun</option><option value="30">30 secondes</option><option value="60">1 minute</option><option value="120" selected>2 minutes</option></select></div>
+      <div class="fg"><label>Durée (minutes)</label><input id="f-dur" type="number" inputmode="numeric" min="1" placeholder="Optionnel"/></div>
+    </div>
+    <div class="tglrow">Qualité HD<i class="tgl on" id="f-hd"></i></div>
+    <div class="tglrow">Publier immédiatement<i class="tgl on" id="f-pub"></i></div>
+    <div class="fg"><label>Affiche (l'affiche de l'épisode 1 devient celle de la série)</label>
+      <label class="drop" id="f-pdrop"><span id="f-ptxt">Touchez pour choisir une image</span><img id="f-pprev" hidden alt=""/><input id="f-poster" type="file" accept="image/*" hidden/></label>
+    </div>
+    <div class="fg"><label>Vidéo — fichier MP4 (max 50 Mo)</label>
+      <label class="drop" id="f-vdrop"><span id="f-vtxt">Touchez pour choisir la vidéo</span><input id="f-video" type="file" accept="video/mp4,video/*" hidden/></label>
+    </div>
+    <div class="fg"><label>… ou lien Cloudflare Stream (.m3u8)</label><input id="f-vurl" placeholder="https://…cloudflarestream.com/…/manifest/video.m3u8" autocapitalize="none"/></div>
+    <button class="btn" id="f-save">Publier</button>
+    <button class="btn red" id="f-cancel" style="margin-top:.7rem;display:none">Annuler la modification</button>
+    <div style="height:.5rem"></div>
+  </section>
+
+  <!-- ═══ VENTES ═══ -->
+  <section class="pane" id="p-sales">
+    <h2>Revenus</h2>
+    <div class="stats">
+      <div class="stat green"><b id="sa-total">—</b><span>Total encaissé</span></div>
+      <div class="stat green"><b id="sa-month">—</b><span>Ce mois-ci</span></div>
+      <div class="stat"><b id="sa-count">—</b><span>Paiements réussis</span></div>
+      <div class="stat"><b id="sa-active">—</b><span>Abonnés actifs</span></div>
+    </div>
+    <h2>Paiements récents</h2><div id="sa-pays"><div class="spin"></div></div>
+    <h2>Abonnements actifs</h2><div id="sa-subs"></div>
+    <div style="height:.5rem"></div>
+  </section>
+
+  <!-- ═══ MEMBRES ═══ -->
+  <section class="pane" id="p-users">
+    <div class="searchbar"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="u-q" placeholder="Rechercher un membre…"/></div>
+    <h2 id="u-count">Membres</h2>
+    <div id="u-list"><div class="spin"></div></div>
+  </section>
+
+  <nav class="tabbar">
+    <button data-p="p-dash" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7.5" height="7.5" rx="1.6"/><rect x="13" y="3.5" width="7.5" height="7.5" rx="1.6"/><rect x="3.5" y="13" width="7.5" height="7.5" rx="1.6"/><rect x="13" y="13" width="7.5" height="7.5" rx="1.6"/></svg>Bord</button>
+    <button data-p="p-cat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M3.5 9h17M8 4.5V9"/></svg>Catalogue</button>
+    <button data-p="p-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="8.6"/><path d="M12 8.4v7.2M8.4 12h7.2"/></svg>Publier</button>
+    <button data-p="p-sales"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V17c0-6 3.5-10.5 8-12.5 4.5 2 8 6.5 8 12.5v2.5"/><path d="M4 19.5h16M12 12v7.5M8.5 15.5v4M15.5 15.5v4"/></svg>Ventes</button>
+    <button data-p="p-users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="9" cy="8.4" r="3.2"/><path d="M3.2 19c1-2.9 3.2-4.4 5.8-4.4s4.8 1.5 5.8 4.4"/><circle cx="17" cy="9.4" r="2.5"/><path d="M15.6 14.8c2.4.1 4.3 1.5 5.2 4.2"/></svg>Membres</button>
+  </nav>
+</main>
+
+<div id="gsheet" style="display:none"><div class="sh">
+  <h2 style="margin:.2rem 0 .9rem" id="gs-name">Accès offert</h2>
+  <button class="btn" id="gs-vip">Accès gratuit illimité (VIP)</button>
+  <button class="btn ghost" id="gs-30" style="margin-top:.7rem">Offrir 30 jours</button>
+  <button class="btn red" id="gs-remove" style="margin-top:.7rem">Retirer l'accès offert</button>
+  <button class="btn ghost" id="gs-cancel" style="margin-top:.7rem">Annuler</button>
+</div></div>
+
+<div id="toast"></div>
+
+<script>
+var SUPA_URL='https://qckjbvivsyqbsujjbbcf.supabase.co';
+var SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFja2pidml2c3lxYnN1ampiYmNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NzUyMTAsImV4cCI6MjA5OTM1MTIxMH0.ZQNUWGBPvxp3IY26e23v9d0hhhaOKxqSUhOZ5ZeTCh0';
+var FILM_COLS='id,kind,preview_seconds,series_id,episode,title,genres,synopsis,poster_url,duration_min,price_usd,language,region_tag,hd,offline_ok,published,created_at';
+var GENRES=['Drame','Romance','Comédie','Action','Société','Famille','Thriller','Foi','Musique','Histoire','Biopic','Jeunesse'];
+
+function $(s){return document.querySelector(s)}
+function $$(s){return Array.prototype.slice.call(document.querySelectorAll(s))}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+var __tt=null;
+function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(__tt);__tt=setTimeout(function(){t.classList.remove('on')},2600)}
+function fmtDate(d){try{return new Date(d).toLocaleDateString('fr-FR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}catch(_){return ''}}
+function fmt$(n){return (Math.round(n*100)/100).toLocaleString('fr-FR')+' $'}
+
+/* ── Session ── */
+var SESSION=null;
+try{SESSION=JSON.parse(localStorage.getItem('cwadm2')||'null')}catch(_){}
+function saveS(s){SESSION=s;try{localStorage.setItem('cwadm2',JSON.stringify(s))}catch(_){}}
+function clearS(){SESSION=null;try{localStorage.removeItem('cwadm2')}catch(_){}}
+function refreshSession(){
+  if(!SESSION||!SESSION.refresh_token)return Promise.resolve(false);
+  return fetch(SUPA_URL+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{'apikey':SUPA_ANON,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:SESSION.refresh_token})})
+  .then(function(r){return r.json()})
+  .then(function(j){if(j&&j.access_token){saveS(j);return true}return false})
+  .catch(function(){return false});
+}
+setInterval(function(){if(SESSION)refreshSession()},40*60*1000);
+function hdrs(json){var h={'apikey':SUPA_ANON,'Authorization':'Bearer '+(SESSION?SESSION.access_token:SUPA_ANON)};if(json)h['Content-Type']='application/json';return h}
+function api(path,opt){
+  opt=opt||{};opt.headers=Object.assign(hdrs(!!opt.body),opt.headers||{});
+  return fetch(SUPA_URL+path,opt).then(function(r){
+    if(r.status===401){clearS();location.reload();throw new Error('Session expirée')}
+    if(r.status===403){$('#sql-hint').style.display='block'}
+    if(!r.ok)return r.text().then(function(t){throw new Error((t||'').slice(0,140)||('HTTP '+r.status))});
+    return r.status===204?null:r.json().catch(function(){return null});
+  });
+}
+function count(path){
+  return fetch(SUPA_URL+path+(path.indexOf('?')>0?'&':'?')+'limit=1',{headers:Object.assign(hdrs(),{'Prefer':'count=exact'})})
+  .then(function(r){
+    if(r.status===403){$('#sql-hint').style.display='block';return null}
+    var cr=r.headers.get('content-range')||'';var n=cr.split('/')[1];
+    return n&&n!=='*'?+n:null;
+  }).catch(function(){return null});
+}
+
+/* ── Connexion ── */
+function showApp(){$('#login').style.display='none';$('#app').style.display='block';loadFilms().then(function(){renderCat();loadDash()})}
+$('#lg-go').addEventListener('click',doLogin);
+$('#lg-pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
+function doLogin(){
+  var m=$('#lg-mail').value.trim(),p=$('#lg-pw').value;
+  if(!m||!p){$('#lg-err').textContent='Entrez vos identifiants';return}
+  var btn=$('#lg-go');btn.disabled=true;$('#lg-err').textContent='';
+  fetch(SUPA_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:{'apikey':SUPA_ANON,'Content-Type':'application/json'},body:JSON.stringify({email:m,password:p})})
+  .then(function(r){return r.json()})
+  .then(function(j){
+    if(!j.access_token)throw new Error(j.error_description||j.msg||'Identifiants incorrects');
+    saveS(j);
+    return api('/rest/v1/profiles?id=eq.'+j.user.id+'&select=is_admin');
+  })
+  .then(function(rows){
+    if(!rows||!rows[0]||!rows[0].is_admin){clearS();throw new Error('Accès réservé aux administrateurs')}
+    showApp();
+  })
+  .catch(function(e){$('#lg-err').textContent=e.message})
+  .then(function(){btn.disabled=false});
+}
+$('#tb-out').addEventListener('click',function(){clearS();location.reload()});
+$('#tb-refresh').addEventListener('click',function(){
+  toast('Actualisation…');
+  loadFilms().then(renderCat);loadDash();
+  if($('#p-sales').classList.contains('on'))loadSales();
+  if($('#p-users').classList.contains('on'))loadUsers();
+});
+
+/* ── Onglets ── */
+$$('.tabbar button').forEach(function(b){
+  b.addEventListener('click',function(){
+    $$('.tabbar button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+    $$('.pane').forEach(function(x){x.classList.remove('on')});
+    var p=b.getAttribute('data-p');$('#'+p).classList.add('on');
+    window.scrollTo(0,0);
+    if(p==='p-sales')loadSales();
+    if(p==='p-users')loadUsers();
+    if(p==='p-add'&&!EDIT_ID)prepAdd();
+  });
+});
+
+/* ═══════════ CATALOGUE ═══════════ */
+var FILMS=[],CAT_F='all',OPEN_S={};
+function loadFilms(){
+  return api('/rest/v1/films?select='+FILM_COLS+'&order=created_at.desc')
+    .then(function(f){FILMS=f||[];fillSeriesDl();return FILMS})
+    .catch(function(e){toast(e.message);return []});
+}
+function seriesMap(){
+  var m={};
+  FILMS.forEach(function(f){if(f.series_id)(m[f.series_id]=m[f.series_id]||[]).push(f)});
+  Object.keys(m).forEach(function(k){m[k].sort(function(a,b){return (a.episode||0)-(b.episode||0)})});
+  return m;
+}
+function fillSeriesDl(){
+  $('#series-dl').innerHTML=Object.keys(seriesMap()).map(function(s){return '<option value="'+esc(s)+'">'}).join('');
+}
+$('#cat-q').addEventListener('input',renderCat);
+$$('#cat-seg button').forEach(function(b){b.addEventListener('click',function(){
+  $$('#cat-seg button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+  CAT_F=b.getAttribute('data-f');renderCat();
+})});
+function renderCat(){
+  var q=($('#cat-q').value||'').toLowerCase(),m=seriesMap(),h='';
+  if(CAT_F==='all'||CAT_F==='serie'||CAT_F==='draft'){
+    Object.keys(m).forEach(function(sid){
+      var eps=m[sid],e1=eps[0];
+      if(CAT_F==='draft'&&!eps.some(function(e){return !e.published}))return;
+      var title=(e1.title||sid).replace(/\s*[—-]\s*[ÉEé]pisode.*$/i,'');
+      if(q&&(title+' '+sid).toLowerCase().indexOf(q)<0)return;
+      var pub=eps.filter(function(e){return e.published}).length;
+      h+='<div class="row" data-exp="'+esc(sid)+'"><div class="pimg" style="'+(e1.poster_url?'background-image:url('+esc(e1.poster_url)+')':'')+'"></div>'
+        +'<div class="tx"><b>'+esc(title)+'</b><span>'+eps.length+' épisode'+(eps.length>1?'s':'')+' · '+pub+' publié'+(pub>1?'s':'')+'</span></div>'
+        +(pub<eps.length?'<span class="badge red">'+(eps.length-pub)+' BROUILLON'+(eps.length-pub>1?'S':'')+'</span>':'<span class="badge green">EN LIGNE</span>')
+        +'<span class="act">'+(OPEN_S[sid]?'▾':'▸')+'</span></div>';
+      if(OPEN_S[sid]){
+        h+='<div class="exp">';
+        if(pub<eps.length)h+='<button class="btn ghost" style="margin-bottom:.6rem;padding:.6rem" data-puball="'+esc(sid)+'">Tout publier ('+(eps.length-pub)+')</button>';
+        eps.forEach(function(e){h+=epRow(e)});
+        h+='</div>';
+      }
+    });
+  }
+  if(CAT_F!=='serie'){
+    FILMS.filter(function(f){return !f.series_id}).forEach(function(f){
+      if(CAT_F==='film'&&f.kind!=='film')return;
+      if(CAT_F==='clip'&&f.kind!=='clip')return;
+      if(CAT_F==='draft'&&f.published)return;
+      if(q&&(f.title||'').toLowerCase().indexOf(q)<0)return;
+      h+=epRow(f,true);
+    });
+  }
+  $('#cat-list').innerHTML=h||'<div class="empty">Aucun contenu ici pour l\u2019instant.<br/>Touchez « Publier » pour ajouter votre premier titre.</div>';
+  bindCat();
+}
+function epRow(e,solo){
+  return '<div class="row"><div class="pimg" style="height:52px;width:38px;'+(e.poster_url?'background-image:url('+esc(e.poster_url)+')':'')+'"></div>'
+    +'<div class="tx"><b>'+(solo?'':'Ép. '+(e.episode||'?')+' — ')+esc(e.title||'Sans titre')+'</b>'
+    +'<span>'+esc(e.kind||'')+(e.preview_seconds?' · aperçu '+e.preview_seconds+' s':'')+(e.language?' · '+esc(e.language):'')+'</span></div>'
+    +(e.published?'<span class="badge green">PUBLIÉ</span>':'<span class="badge red">BROUILLON</span>')
+    +'<button class="act" data-pub="'+esc(e.id)+'" aria-label="Basculer publication">'+(e.published?'Retirer':'Publier')+'</button>'
+    +'<button class="act" data-edit="'+esc(e.id)+'" aria-label="Modifier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 4.5l3 3L8 19l-4 1 1-4z"/></svg></button>'
+    +'<button class="act red" data-del="'+esc(e.id)+'" aria-label="Supprimer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4.5 6.5h15M9 6V4.5h6V6M7 6.5l.8 13h8.4l.8-13M10 10v6M14 10v6"/></svg></button></div>';
+}
+function bindCat(){
+  $$('#cat-list [data-exp]').forEach(function(r){r.addEventListener('click',function(e){
+    if(e.target.closest('[data-pub],[data-edit],[data-del],[data-puball]'))return;
+    var s=r.getAttribute('data-exp');OPEN_S[s]=!OPEN_S[s];renderCat();
+  })});
+  $$('#cat-list [data-pub]').forEach(function(b){b.addEventListener('click',function(e){
+    e.stopPropagation();
+    var id=b.getAttribute('data-pub'),f=FILMS.filter(function(x){return x.id===id})[0];
+    api('/rest/v1/films?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({published:!f.published})})
+    .then(function(){f.published=!f.published;renderCat();toast(f.published?'Publié ✓':'Passé en brouillon')})
+    .catch(function(err){toast(err.message)});
+  })});
+  $$('#cat-list [data-puball]').forEach(function(b){b.addEventListener('click',function(e){
+    e.stopPropagation();
+    var s=b.getAttribute('data-puball');
+    api('/rest/v1/films?series_id=eq.'+encodeURIComponent(s),{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({published:true})})
+    .then(function(){FILMS.forEach(function(f){if(f.series_id===s)f.published=true});renderCat();toast('Série entièrement publiée ✓')})
+    .catch(function(err){toast(err.message)});
+  })});
+  $$('#cat-list [data-edit]').forEach(function(b){b.addEventListener('click',function(e){
+    e.stopPropagation();startEdit(b.getAttribute('data-edit'));
+  })});
+  $$('#cat-list [data-del]').forEach(function(b){b.addEventListener('click',function(e){
+    e.stopPropagation();
+    var id=b.getAttribute('data-del'),f=FILMS.filter(function(x){return x.id===id})[0];
+    if(!confirm('Supprimer définitivement « '+(f&&f.title||'ce contenu')+' » ?'))return;
+    api('/rest/v1/films?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:{'Prefer':'return=minimal'}})
+    .then(function(){FILMS=FILMS.filter(function(x){return x.id!==id});renderCat();toast('Supprimé')})
+    .catch(function(err){toast(err.message)});
+  })});
+}
+
+/* ═══════════ PUBLIER ═══════════ */
+var EDIT_ID=null,F_KIND='serie',F_GEN={};
+(function(){
+  var box=$('#f-genres');
+  GENRES.forEach(function(g){
+    var b=document.createElement('button');b.className='chip';b.textContent=g;
+    b.addEventListener('click',function(){F_GEN[g]=!F_GEN[g];b.classList.toggle('on',!!F_GEN[g])});
+    box.appendChild(b);
+  });
+})();
+$('#f-gplus').addEventListener('keydown',function(e){
+  if(e.key!=='Enter')return;e.preventDefault();
+  var v=this.value.trim();if(!v)return;
+  F_GEN[v]=true;this.value='';
+  var b=document.createElement('button');b.className='chip on';b.textContent=v;
+  b.addEventListener('click',function(){F_GEN[v]=!F_GEN[v];b.classList.toggle('on',!!F_GEN[v])});
+  $('#f-genres').appendChild(b);
+});
+$$('#f-kindseg button').forEach(function(b){b.addEventListener('click',function(){
+  $$('#f-kindseg button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+  F_KIND=b.getAttribute('data-k');
+  $('#f-seriebox').style.display=F_KIND==='serie'?'block':'none';
+})});
+[$('#f-hd'),$('#f-pub')].forEach(function(t){t.addEventListener('click',function(){t.classList.toggle('on')})});
+$('#f-series').addEventListener('change',function(){
+  var s=this.value.trim(),m=seriesMap();
+  if(m[s]){
+    var mx=0;m[s].forEach(function(e){mx=Math.max(mx,e.episode||0)});
+    $('#f-episode').value=mx+1;
+    var base=(m[s][0].title||s).replace(/\s*[—-]\s*[ÉEé]pisode.*$/i,'');
+    $('#f-title').value=base+' — Épisode '+(mx+1);
+  }else if(s&&!$('#f-episode').value){$('#f-episode').value=1}
+});
+$('#f-poster').addEventListener('change',function(){
+  if(this.files&&this.files[0]){
+    $('#f-pdrop').classList.add('ok');$('#f-ptxt').textContent=this.files[0].name;
+    var img=$('#f-pprev');img.hidden=false;img.src=URL.createObjectURL(this.files[0]);
+  }
+});
+$('#f-video').addEventListener('change',function(){
+  if(this.files&&this.files[0]){
+    var f=this.files[0];
+    if(f.size>50*1024*1024){toast('Fichier > 50 Mo — utilisez plutôt Cloudflare Stream');this.value='';return}
+    $('#f-vdrop').classList.add('ok');$('#f-vtxt').textContent=f.name+' ('+Math.round(f.size/1048576)+' Mo)';
+  }
+});
+function prepAdd(){
+  EDIT_ID=null;$('#add-title').textContent='Publier un contenu';
+  $('#f-save').textContent='Publier';$('#f-cancel').style.display='none';
+  ['f-title','f-syn','f-episode','f-series','f-dur','f-vurl'].forEach(function(id){$('#'+id).value=''});
+  $('#f-poster').value='';$('#f-video').value='';
+  $('#f-pdrop').classList.remove('ok');$('#f-ptxt').textContent='Touchez pour choisir une image';$('#f-pprev').hidden=true;
+  $('#f-vdrop').classList.remove('ok');$('#f-vtxt').textContent='Touchez pour choisir la vidéo';
+  F_GEN={};$$('#f-genres .chip').forEach(function(c){c.classList.remove('on')});
+  $('#f-hd').classList.add('on');$('#f-pub').classList.add('on');
+  $('#f-preview').value='120';
+}
+function startEdit(id){
+  var f=FILMS.filter(function(x){return x.id===id})[0];if(!f)return;
+  prepAdd();EDIT_ID=id;
+  $('#add-title').textContent='Modifier « '+(f.title||'')+' »';
+  $('#f-save').textContent='Enregistrer les modifications';$('#f-cancel').style.display='flex';
+  F_KIND=f.series_id?'serie':(f.kind==='clip'?'clip':'film');
+  $$('#f-kindseg button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-k')===F_KIND)});
+  $('#f-seriebox').style.display=F_KIND==='serie'?'block':'none';
+  $('#f-series').value=f.series_id||'';$('#f-episode').value=f.episode||'';
+  $('#f-title').value=f.title||'';$('#f-syn').value=f.synopsis||'';
+  (f.genres||[]).forEach(function(g){F_GEN[g]=true});
+  $$('#f-genres .chip').forEach(function(c){c.classList.toggle('on',!!F_GEN[c.textContent])});
+  if(f.language)$('#f-lang').value=f.language;
+  if(f.region_tag)$('#f-region').value=f.region_tag;
+  $('#f-preview').value=String(f.preview_seconds||0);
+  $('#f-dur').value=f.duration_min||'';
+  $('#f-hd').classList.toggle('on',!!f.hd);
+  $('#f-pub').classList.toggle('on',!!f.published);
+  $$('.tabbar button').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-p')==='p-add')});
+  $$('.pane').forEach(function(x){x.classList.remove('on')});$('#p-add').classList.add('on');
+  window.scrollTo(0,0);
+}
+$('#f-cancel').addEventListener('click',prepAdd);
+function uploadFile(bucket,path,file){
+  function go(){
+    return fetch(SUPA_URL+'/storage/v1/object/'+bucket+'/'+encodeURIComponent(path),{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+SESSION.access_token,'apikey':SUPA_ANON,'Content-Type':file.type||'application/octet-stream','x-upsert':'true'},
+      body:file
+    }).then(function(r){
+      if(!r.ok)return r.text().then(function(t){var e=new Error('Upload : '+(t||'').slice(0,120));e.code=r.status;e.txt=t||'';throw e});
+      return SUPA_URL+'/storage/v1/object/public/'+bucket+'/'+encodeURIComponent(path);
+    });
+  }
+  return go().catch(function(e){
+    if((e.code===401||e.code===403)&&/exp|jwt|token/i.test(e.txt||'')){
+      toast('Session renouvelée, nouvel essai…');
+      return refreshSession().then(function(ok){if(!ok){clearS();location.reload();throw e}return go()});
+    }
+    throw e;
+  });
+}
+$('#f-save').addEventListener('click',function(){
+  var title=$('#f-title').value.trim();
+  if(!title){toast('Le titre est obligatoire');return}
+  var sid=F_KIND==='serie'?$('#f-series').value.trim().toLowerCase().replace(/\s+/g,'-'):null;
+  if(F_KIND==='serie'&&!sid){toast('Indiquez la série');return}
+  var ep=F_KIND==='serie'?parseInt($('#f-episode').value,10):null;
+  if(F_KIND==='serie'&&(!ep||ep<1)){toast('Numéro d\u2019épisode invalide');return}
+  var extUrl=$('#f-vurl').value.trim();
+  var posterF=$('#f-poster').files[0]||null,videoF=$('#f-video').files[0]||null;
+  if(!EDIT_ID&&!extUrl&&!videoF){toast('Ajoutez la vidéo (fichier ou lien Cloudflare)');return}
+  var id=EDIT_ID||(self.crypto&&crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16)}));
+  var btn=$('#f-save');btn.disabled=true;btn.textContent=(posterF||videoF)?'Téléversement…':'Enregistrement…';
+  var pUp=posterF?uploadFile('posters',id+'-poster.'+(posterF.name.split('.').pop()||'jpg'),posterF):Promise.resolve(null);
+  var vUp=extUrl?Promise.resolve(extUrl):(videoF?uploadFile('videos',id+'-video.mp4',videoF):Promise.resolve(null));
+  Promise.all([pUp,vUp]).then(function(urls){
+    var gs=Object.keys(F_GEN).filter(function(k){return F_GEN[k]});
+    var film={
+      id:id,kind:F_KIND==='serie'?'film':F_KIND,series_id:sid,episode:ep,
+      title:title,genres:gs,synopsis:$('#f-syn').value.trim()||null,
+      language:$('#f-lang').value,region_tag:$('#f-region').value,
+      preview_seconds:parseInt($('#f-preview').value,10)||0,
+      duration_min:parseInt($('#f-dur').value,10)||null,
+      hd:$('#f-hd').classList.contains('on'),
+      published:$('#f-pub').classList.contains('on'),
+      poster_url:urls[0]||undefined,video_url:urls[1]||undefined
+    };
+    if(!urls[0])delete film.poster_url;
+    if(!urls[1])delete film.video_url;
+    btn.textContent='Enregistrement…';
+    if(EDIT_ID){
+      delete film.id;
+      return api('/rest/v1/films?id=eq.'+encodeURIComponent(EDIT_ID),{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify(film)});
+    }
+    return api('/rest/v1/films',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(film)});
+  }).then(function(){
+    toast(EDIT_ID?'Modifications enregistrées ✓':'Contenu publié ✓');
+    prepAdd();
+    return loadFilms().then(renderCat);
+  }).catch(function(e){toast(e.message)})
+  .then(function(){btn.disabled=false;btn.textContent=EDIT_ID?'Enregistrer les modifications':'Publier'});
+});
+
+/* ═══════════ TABLEAU DE BORD ═══════════ */
+var NAMES={};
+function nameOf(uid){return NAMES[uid]||('Membre '+String(uid||'').slice(0,6))}
+function loadNames(ids){
+  ids=ids.filter(function(i,k,a){return i&&a.indexOf(i)===k&&!(i in NAMES)});
+  if(!ids.length)return Promise.resolve();
+  return api('/rest/v1/profiles?id=in.('+ids.join(',')+')&select=id,full_name')
+    .then(function(rows){(rows||[]).forEach(function(r){NAMES[r.id]=r.full_name||null})})
+    .catch(function(){});
+}
+function payBadge(s){
+  return s==='success'?'<span class="badge green">RÉUSSI</span>'
+    :s==='pending'?'<span class="badge gold">EN ATTENTE</span>'
+    :'<span class="badge red">ÉCHOUÉ</span>';
+}
+function loadDash(){
+  var done=function(){
+    $('#st-series').textContent=Object.keys(seriesMap()).length;
+    $('#st-eps').textContent=FILMS.filter(function(f){return f.series_id}).length;
+    $('#st-films').textContent=FILMS.filter(function(f){return !f.series_id}).length;
+    $('#st-drafts').textContent=FILMS.filter(function(f){return !f.published}).length;
+  };
+  if(FILMS.length)done();else loadFilms().then(done);
+  count('/rest/v1/profiles?select=id').then(function(n){$('#st-users').textContent=n==null?'—':n});
+  count('/rest/v1/subscriptions?select=id&status=eq.active&current_period_end=gte.'+encodeURIComponent(new Date().toISOString())).then(function(n){$('#st-subs').textContent=n==null?'—':n});
+  count('/rest/v1/watch_history?select=film_id').then(function(n){$('#st-views').textContent=n==null?'—':n});
+  api('/rest/v1/payments?select=user_id,amount_usd,status,created_at&order=created_at.desc&limit=100').then(function(p){
+    p=p||[];
+    var ok=p.filter(function(x){return x.status==='success'});
+    $('#st-rev').textContent=fmt$(ok.reduce(function(s,x){return s+(+x.amount_usd||0)},0));
+    var five=p.slice(0,5);
+    return loadNames(five.map(function(x){return x.user_id})).then(function(){
+      $('#dash-pays').innerHTML=five.length?five.map(function(x){
+        return '<div class="row"><div class="tx"><b>'+fmt$(+x.amount_usd||0)+' — '+esc(nameOf(x.user_id))+'</b><span>'+fmtDate(x.created_at)+'</span></div>'+payBadge(x.status)+'</div>';
+      }).join(''):'<div class="empty">Aucun paiement pour l\u2019instant — le premier arrive bientôt.</div>';
+    });
+  }).catch(function(){$('#dash-pays').innerHTML='<div class="empty">Statistiques indisponibles — exécutez admin-policies.sql (bandeau ci-dessus).</div>'});
+  api('/rest/v1/profiles?select=id,full_name,created_at&order=created_at.desc&limit=5').then(function(rows){
+    $('#dash-users').innerHTML=(rows&&rows.length)?rows.map(function(r){
+      return '<div class="row"><div class="tx"><b>'+esc(r.full_name||'Sans nom')+'</b><span>'+fmtDate(r.created_at)+'</span></div></div>';
+    }).join(''):'<div class="empty">—</div>';
+  }).catch(function(){
+    api('/rest/v1/profiles?select=id,full_name&limit=5').then(function(rows){
+      $('#dash-users').innerHTML=(rows||[]).map(function(r){return '<div class="row"><div class="tx"><b>'+esc(r.full_name||'Sans nom')+'</b></div></div>'}).join('')||'<div class="empty">—</div>';
+    }).catch(function(){$('#dash-users').innerHTML='<div class="empty">Indisponible</div>'});
+  });
+}
+
+/* ═══════════ VENTES ═══════════ */
+function loadSales(){
+  api('/rest/v1/payments?select=id,user_id,amount_usd,method,status,created_at&order=created_at.desc&limit=40').then(function(p){
+    p=p||[];
+    var ok=p.filter(function(x){return x.status==='success'});
+    var m0=new Date();m0.setDate(1);m0.setHours(0,0,0,0);
+    $('#sa-total').textContent=fmt$(ok.reduce(function(s,x){return s+(+x.amount_usd||0)},0));
+    $('#sa-month').textContent=fmt$(ok.filter(function(x){return new Date(x.created_at)>=m0}).reduce(function(s,x){return s+(+x.amount_usd||0)},0));
+    $('#sa-count').textContent=ok.length;
+    return loadNames(p.map(function(x){return x.user_id})).then(function(){
+      $('#sa-pays').innerHTML=p.length?p.map(function(x){
+        return '<div class="row"><div class="tx"><b>'+fmt$(+x.amount_usd||0)+' · '+esc(nameOf(x.user_id))+'</b><span>'+esc(x.method||'')+' · '+fmtDate(x.created_at)+'</span></div>'+payBadge(x.status)+'</div>';
+      }).join(''):'<div class="empty">Aucun paiement enregistré.</div>';
+    });
+  }).catch(function(e){$('#sa-pays').innerHTML='<div class="empty">'+esc(e.message)+'</div>'});
+  api('/rest/v1/subscriptions?select=id,user_id,plan_id,current_period_end&status=eq.active&order=current_period_end.desc&limit=40').then(function(s){
+    s=(s||[]).filter(function(x){return new Date(x.current_period_end)>new Date()});
+    $('#sa-active').textContent=s.length;
+    return loadNames(s.map(function(x){return x.user_id})).then(function(){
+      $('#sa-subs').innerHTML=s.length?s.map(function(x){
+        var vip=new Date(x.current_period_end).getFullYear()>=2098;
+        return '<div class="row"><div class="tx"><b>'+esc(nameOf(x.user_id))+'</b><span>'+(vip?'Accès illimité (VIP)':esc(x.plan_id||'')+' · expire le '+new Date(x.current_period_end).toLocaleDateString('fr-FR'))+'</span></div>'
+          +(vip?'<span class="badge gold">VIP</span>':'<button class="act" data-ext="'+esc(x.id)+'">+30 j</button>')+'</div>';
+      }).join(''):'<div class="empty">Aucun abonnement actif.</div>';
+      $$('#sa-subs [data-ext]').forEach(function(b){b.addEventListener('click',function(){
+        var id=b.getAttribute('data-ext'),sub=s.filter(function(x){return String(x.id)===String(id)})[0];
+        if(!sub)return;
+        var d=new Date(Math.max(Date.now(),new Date(sub.current_period_end).getTime())+30*864e5);
+        api('/rest/v1/subscriptions?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({current_period_end:d.toISOString()})})
+        .then(function(){toast('Prolongé jusqu\u2019au '+d.toLocaleDateString('fr-FR'));loadSales()})
+        .catch(function(e){toast(e.message)});
+      })});
+    });
+  }).catch(function(e){$('#sa-subs').innerHTML='<div class="empty">'+esc(e.message)+'</div>'});
+}
+
+/* ═══════════ MEMBRES ═══════════ */
+var USERS=[],ACTIVE_UIDS={};
+$('#u-q').addEventListener('input',renderUsers);
+function loadUsers(){
+  api('/rest/v1/subscriptions?select=id,user_id,current_period_end&status=eq.active&current_period_end=gte.'+encodeURIComponent(new Date().toISOString()))
+    .then(function(s){ACTIVE_UIDS={};(s||[]).forEach(function(x){ACTIVE_UIDS[x.user_id]=x});renderUsers()})
+    .catch(function(){});
+  api('/rest/v1/profiles?select=id,full_name,is_admin,created_at&order=created_at.desc&limit=200')
+    .then(function(rows){USERS=rows||[];renderUsers()})
+    .catch(function(){
+      api('/rest/v1/profiles?select=id,full_name,is_admin&limit=200')
+      .then(function(rows){USERS=rows||[];renderUsers()})
+      .catch(function(e){$('#u-list').innerHTML='<div class="empty">'+esc(e.message)+'</div>'});
+    });
+}
+function renderUsers(){
+  var q=($('#u-q').value||'').toLowerCase();
+  var list=USERS.filter(function(u){return !q||(u.full_name||'').toLowerCase().indexOf(q)>=0});
+  $('#u-count').textContent='Membres ('+USERS.length+')';
+  $('#u-list').innerHTML=list.length?list.map(function(u){
+    return '<div class="row"><div class="tx"><b>'+esc(u.full_name||'Sans nom')+'</b><span>'+(u.created_at?fmtDate(u.created_at):'')+'</span></div>'
+      +(ACTIVE_UIDS[u.id]?(new Date(ACTIVE_UIDS[u.id].current_period_end).getFullYear()>=2098?'<span class="badge gold">VIP ILLIMITÉ</span>':'<span class="badge gold">ABONNÉ</span>'):'')
+      +(u.is_admin?'<span class="badge">ADMIN</span>':'')
+      +'<button class="act" data-gift="'+esc(u.id)+'" aria-label="Offrir 30 jours"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M12 9v11M4 13h16M12 9c-2.5 0-4.5-1-4.5-2.7C7.5 4.9 8.6 4 10 4c1.6 0 2 2.4 2 5zm0 0c2.5 0 4.5-1 4.5-2.7C16.5 4.9 15.4 4 14 4c-1.6 0-2 2.4-2 5z"/></svg></button>'
+      +'<button class="act" data-adm="'+esc(u.id)+'" aria-label="Droits admin"><svg viewBox="0 0 24 24" width="16" height="16" fill="'+(u.is_admin?'#F5B921':'none')+'" stroke="'+(u.is_admin?'#F5B921':'currentColor')+'" stroke-width="1.9" stroke-linejoin="round"><path d="M12 3.5l2.5 5.6 6 .6-4.5 4 1.3 5.9-5.3-3.1-5.3 3.1 1.3-5.9-4.5-4 6-.6z"/></svg></button></div>';
+  }).join(''):'<div class="empty">Aucun membre trouvé.</div>';
+  $$('#u-list [data-gift]').forEach(function(b){b.addEventListener('click',function(){
+    openGift(b.getAttribute('data-gift'));
+  })});
+  $$('#u-list [data-adm]').forEach(function(b){b.addEventListener('click',function(){
+    var uid=b.getAttribute('data-adm'),u=USERS.filter(function(x){return x.id===uid})[0];
+    if(!u)return;
+    if(SESSION&&SESSION.user&&uid===SESSION.user.id&&u.is_admin){toast('Impossible de retirer vos propres droits');return}
+    if(!confirm((u.is_admin?'Retirer les droits admin de ':'Donner les droits admin à ')+(u.full_name||'ce membre')+' ?'))return;
+    api('/rest/v1/profiles?id=eq.'+encodeURIComponent(uid),{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({is_admin:!u.is_admin})})
+    .then(function(){u.is_admin=!u.is_admin;renderUsers();toast(u.is_admin?'Droits admin accordés ✓':'Droits admin retirés')})
+    .catch(function(e){toast(e.message)});
+  })});
+}
+
+/* ── Accès offerts (VIP / 30 j / retrait) ── */
+var GS_UID=null;
+function openGift(uid){
+  GS_UID=uid;
+  var u=USERS.filter(function(x){return x.id===uid})[0];
+  $('#gs-name').textContent='Accès de '+((u&&u.full_name)||'ce membre');
+  $('#gs-remove').style.display=ACTIVE_UIDS[uid]?'flex':'none';
+  $('#gsheet').style.display='flex';
+}
+function closeGift(){$('#gsheet').style.display='none'}
+$('#gs-cancel').addEventListener('click',closeGift);
+$('#gsheet').addEventListener('click',function(e){if(e.target.id==='gsheet')closeGift()});
+$('#gs-vip').addEventListener('click',function(){
+  var uid=GS_UID,cur=ACTIVE_UIDS[uid],END='2099-12-31T00:00:00Z';
+  var u=USERS.filter(function(x){return x.id===uid})[0];
+  if(!confirm('Donner un accès gratuit ILLIMITÉ à '+((u&&u.full_name)||'ce membre')+' ?'))return;
+  var p=cur
+    ?api('/rest/v1/subscriptions?id=eq.'+encodeURIComponent(cur.id),{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({current_period_end:END,status:'active'})})
+    :api('/rest/v1/subscriptions',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({user_id:uid,plan_id:'mois',status:'active',started_at:new Date().toISOString(),current_period_end:END})});
+  p.then(function(){toast('Accès illimité accordé ✓');closeGift();loadUsers()}).catch(function(e){toast(e.message)});
+});
+$('#gs-30').addEventListener('click',function(){
+  var uid=GS_UID,cur=ACTIVE_UIDS[uid],p;
+  if(cur){
+    var d=new Date(Math.max(Date.now(),new Date(cur.current_period_end).getTime())+30*864e5);
+    p=api('/rest/v1/subscriptions?id=eq.'+encodeURIComponent(cur.id),{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({current_period_end:d.toISOString()})});
+  }else{
+    p=api('/rest/v1/subscriptions',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({user_id:uid,plan_id:'mois',status:'active',started_at:new Date().toISOString(),current_period_end:new Date(Date.now()+30*864e5).toISOString()})});
+  }
+  p.then(function(){toast('30 jours offerts ✓');closeGift();loadUsers()}).catch(function(e){toast(e.message)});
+});
+$('#gs-remove').addEventListener('click',function(){
+  if(!confirm('Retirer l\u2019accès offert ? Le membre devra s\u2019abonner pour continuer.'))return;
+  api('/rest/v1/subscriptions?user_id=eq.'+encodeURIComponent(GS_UID)+'&status=eq.active',{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({status:'cancelled',current_period_end:new Date().toISOString()})})
+  .then(function(){toast('Accès retiré');closeGift();loadUsers()}).catch(function(e){toast(e.message)});
+});
+
+/* ── Démarrage ── */
+if(SESSION&&SESSION.access_token&&SESSION.user){
+  refreshSession().then(function(){
+    return api('/rest/v1/profiles?id=eq.'+SESSION.user.id+'&select=is_admin');
+  })
+  .then(function(rows){if(rows&&rows[0]&&rows[0].is_admin)showApp();else clearS()})
+  .catch(function(){});
+}
+</script>
+</body>
+</html>
