@@ -639,6 +639,20 @@ html{background:#060D16;}
   .fplay{font-size:1rem;cursor:pointer;}
   .fsave,.fclose,.plq .hd,.opq .hd,.plan,.pm{cursor:pointer;}
 }
+
+/* ═══ V7 : navigation & confort ═══ */
+#s-home .topbar{transition:transform .28s ease;}
+#s-home .topbar.hidebar{transform:translateY(-115%);}
+#netband{position:fixed;top:0;left:0;right:0;z-index:80;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--braise);color:#fff;font-size:.78rem;font-weight:600;padding:calc(var(--safe-t) + 7px) 1rem 8px;transform:translateY(-105%);transition:transform .3s ease;}
+#netband.on{transform:none;}
+.qwrap{position:relative;}
+.qwrap #q-in{width:100%;}
+.qclear{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;background:rgba(246,243,236,.14);border:none;color:#dfe4ea;display:none;align-items:center;justify-content:center;}
+.finner p.clamp3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:6px;}
+.finner p.clamp3.open{-webkit-line-clamp:unset;}
+.vmore{background:none;border:none;color:var(--soleil);font-size:.8rem;font-weight:600;padding:0 0 14px;font-family:inherit;}
+.fshare{position:absolute;top:10px;right:54px;width:34px;height:34px;border-radius:50%;background:rgba(6,13,22,.55);border:none;color:#fff;display:flex;align-items:center;justify-content:center;z-index:3;}
+#feed video{-webkit-touch-callout:none;-webkit-user-select:none;}
 </style>
 </head>
 <body>
@@ -837,6 +851,12 @@ function $(s){return document.querySelector(s)}
 function $$(s){return [].slice.call(document.querySelectorAll(s))}
 function toast(m){var e=document.createElement('div');e.className='toast';e.textContent=m;document.body.appendChild(e);setTimeout(function(){e.remove()},2800)}
 function buzz(ms){try{if(navigator.vibrate)navigator.vibrate(ms||30)}catch(_){}}
+var __wl=null;
+function wlOn(){try{if('wakeLock' in navigator)navigator.wakeLock.request('screen').then(function(l){__wl=l}).catch(function(){})}catch(_){}}
+function wlOff(){try{if(__wl){__wl.release();__wl=null}}catch(_){}}
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='visible'&&document.getElementById('player')&&document.getElementById('player').classList.contains('on'))wlOn();
+});
 function confettiIn(box){
   if(!box)return;box.style.position='relative';box.style.overflow='hidden';
   var cols=['#F5B921','#1B98C4','#E8503A','#ffffff'];
@@ -1168,7 +1188,15 @@ function skeletonHome(){
 }
 function renderHome(){
   var b=$('#home-body');
+  window.__catLoaded=true;
   if(!FILMS.length)FILMS=demoFilms();
+  if(document.querySelector('#s-films.on'))renderFilms();
+  try{
+    var __mf=location.search.match(/[?&]film=([\w-]+)/);
+    if(__mf&&!window.__dlF){window.__dlF=1;var __fid=__mf[1];
+      setTimeout(function(){if(FILMS.some(function(x){return x.id===__fid}))openFilmSheet(__fid)},450);
+    }
+  }catch(_){}
   if(!SERIES.length&&!FILMS.length){
     b.innerHTML='<div class="empty">Le catalogue arrive bientôt.<br/>Revenez très vite !</div>';return;
   }
@@ -1317,6 +1345,7 @@ function openPlayerShell(){
   document.documentElement.style.overflow='hidden';
   var lv=$('#player .lockveil');if(lv)lv.remove();
   clearNextCard();
+  wlOn();
   $('#pl-subpill').style.display=SUBSCRIBED?'none':'inline-flex';
   updSaveBtn();
   $$('#feed video').forEach(function(v){v.pause()});
@@ -1382,18 +1411,22 @@ function teardownPlayer(){
   $('#player').classList.remove('on');
   var lv=$('#player .lockveil');if(lv)lv.remove();
   clearNextCard();
+  wlOff();
 }
 function navPush(t){try{history.pushState({cw:t},'')}catch(_){}}
 function navPushTab(id){try{history.pushState({cw:'tab',tab:id},'')}catch(_){}}
 function navReplace(t){try{history.replaceState({cw:t},'')}catch(_){}}
+var __pos={};
 function goTab(id){
+  var cur=document.querySelector('.screen.on');
+  if(cur&&cur.id!=='s-feed')__pos[cur.id]=window.scrollY;
   $$('.tabbar button').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-tab')===id)});
   $$('.screen').forEach(function(x){x.classList.remove('on')});
   var s=$('#'+id);if(s)s.classList.add('on');
   if(id==='s-search')renderChips();
   if(id==='s-films')renderFilms();
   if(id!=='s-feed')$$('#feed video').forEach(function(v){v.pause()});
-  window.scrollTo(0,0);
+  window.scrollTo(0,(id==='s-feed')?0:(__pos[id]||0));
 }
 function closePlayerViaPop(){
   teardownPlayer();
@@ -1402,14 +1435,23 @@ function closePlayerViaPop(){
   renderList();renderHome();
 }
 window.addEventListener('popstate',function(){
-  if($('#player').classList.contains('on'))closePlayerViaPop();
-  else if($('#serie').classList.contains('on'))closeSerie();
-  else if($('#paywall').classList.contains('on'))closePaywall();
-  else{var st=history.state;goTab((st&&st.cw==='tab'&&st.tab)||'s-home');}
+  var fs=document.getElementById('fsheet');
+  if(fs){
+    fs.classList.remove('on');setTimeout(function(){fs.remove()},220);
+    if(window.__fsPlay){var fid=window.__fsPlay;window.__fsPlay=null;setTimeout(function(){openFilmSolo(fid)},40)}
+    return;
+  }
+  if($('#paywall').classList.contains('on')){if(window.__pwP)window.__pwP--;__pwClose();return;}
+  if($('#player').classList.contains('on')){closePlayerViaPop();return;}
+  if($('#serie').classList.contains('on')){closeSerie();return;}
+  var st=history.state;goTab((st&&st.cw==='tab'&&st.tab)||'s-home');
 });
 $('#pl-back').addEventListener('click',function(){history.back()});
 $('#pl-set').addEventListener('click',openQuality);
 pv.addEventListener('loadedmetadata',applySubsPref);
+var SPEEDS=[[1,'Normale'],[1.25,'\u00d71,25'],[1.5,'\u00d71,5']];
+function getRate(){try{var r=parseFloat(localStorage.getItem('cw2_rate'));return (r===1.25||r===1.5)?r:1}catch(_){return 1}}
+pv.addEventListener('loadedmetadata',function(){try{pv.playbackRate=getRate()}catch(_){}});
 function openEpisodesSheet(){
   var s=P.serie;if(!s)return;
   var cur=P.idx;
@@ -1655,8 +1697,17 @@ function buildFeed(){
       hint.className='sndhint';
       hint.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M4 9v6h3.5L12 19V5L7.5 9z"/><path d="M15.5 9.5a3.5 3.5 0 0 1 0 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Touchez pour le son';
       host.appendChild(hint);
-      var taps=0,tt=null;
+      var taps=0,tt=null,lp=null,held=false;
+      host.addEventListener('touchstart',function(e){
+        if(e.target.closest('button'))return;
+        lp=setTimeout(function(){held=true;vid.pause()},260);
+      },{passive:true});
+      host.addEventListener('touchend',function(){
+        clearTimeout(lp);
+        if(held){held=false;var pp=vid.play();if(pp&&pp.catch)pp.catch(function(){});host.__skip=1;setTimeout(function(){host.__skip=0},140)}
+      },{passive:true});
       host.addEventListener('click',function(e){
+        if(host.__skip)return;
         if(e.target.closest('button'))return;
         taps++;clearTimeout(tt);
         if(taps>=2){
@@ -1683,7 +1734,11 @@ function buildFeed(){
       });
       new IntersectionObserver(function(es){
         es.forEach(function(en){
-          if(en.isIntersecting){var p=vid.play();if(p&&p.catch)p.catch(function(){})}
+          if(en.isIntersecting){
+            var p=vid.play();if(p&&p.catch)p.catch(function(){});
+            var nx=host.nextElementSibling;var nv=nx&&nx.querySelector('video');
+            if(nv&&nv.preload!=='auto')nv.preload='auto';
+          }
           else vid.pause();
         });
       },{threshold:.55}).observe(host);
@@ -1836,7 +1891,7 @@ function startDemoPay(pl){
 function openPaywall(after){
   payAfter=after||null;PLAN='mois';PMETHOD=null;PAYSTEP=1;
   renderPaywall();
-  $('#paywall').classList.add('on');
+  showPay();
 }
 var PM_CC='+243',PMPHONE='',CARD={num:'',exp:'',cvv:''},ETU_FILE=null;
 function payExtra(){
@@ -1972,7 +2027,9 @@ function updatePayCta(){
   }
   g.textContent='Payer '+fmtFC(fc)+' avec '+m[1];
 }
-function closePaywall(){$('#paywall').classList.remove('on')}
+function __pwClose(){$('#paywall').classList.remove('on')}
+function showPay(){$('#paywall').classList.add('on');window.__pwP=(window.__pwP||0)+1;try{history.pushState({cw:'sheet'},'')}catch(_){}}
+function closePaywall(){if(window.__pwP){window.__pwP--;try{history.back();return}catch(_){}}__pwClose()}
 function doPay(){
   if(!SESSION){toast('Créez un compte pour vous abonner');closePaywall();window.__entered=false;showAuth();return}
   if(PLAN==='etu'&&!ETU_FILE){toast('Ajoutez une photo de votre carte d\u2019étudiant');var d=$('#etu-drop');if(d){d.classList.add('shake');setTimeout(function(){d.classList.remove('shake')},500)}return}
@@ -1991,7 +2048,7 @@ function doPay(){
   .catch(function(){startDemoPay(pl)});
 }
 function startPayCheck(){
-  $('#paywall').classList.add('on');
+  showPay();
   $('#pay-card').innerHTML=beatWait('V\u00e9rification du paiement','L\u2019abonnement s\u2019active automatiquement','<button id="pay-cancel">Fermer</button>');
   $('#pay-cancel').addEventListener('click',closePaywall);
   var tries=0;
@@ -2012,7 +2069,7 @@ function startPayCheck(){
   },3000);
 }
 function openPwReset(){
-  $('#paywall').classList.add('on');
+  showPay();
   $('#pay-card').innerHTML='<h3>Nouveau mot de passe</h3><small>Choisissez votre nouveau mot de passe COLLYWOOD.</small>'
     +'<input id="pw-new" type="password" placeholder="Nouveau mot de passe (6 caractères min)" style="width:100%;padding:.9rem;border-radius:12px;background:rgba(246,243,236,.06);border:1px solid rgba(246,243,236,.14);color:var(--ivoire);font-size:16px;margin:1rem 0;"/>'
     +'<button id="pay-go">Enregistrer</button><button id="pay-cancel">Annuler</button>';
@@ -2120,7 +2177,7 @@ function loadPayHist(){
 }
 $('#pf-sub').addEventListener('click',function(){if(SUBSCRIBED)openManageSub();else openPaywall()});
 $('#pf-install').addEventListener('click',openInstall);
-function sheet(html){$('#pay-card').innerHTML=html;$('#paywall').classList.add('on');var c=$('#pay-cancel');if(c)c.addEventListener('click',closePaywall);}
+function sheet(html){$('#pay-card').innerHTML=html;showPay();var c=$('#pay-cancel');if(c)c.addEventListener('click',closePaywall);}
 function openEditProfile(){
   if(!SESSION){toast('Connectez-vous d\'abord');return}
   sheet('<h3>Modifier le profil</h3><small>Ce nom apparaît sur votre compte.</small>'
@@ -2232,7 +2289,7 @@ function openNotifs(){
     +(SUBSCRIBED?'':'<div style="background:var(--carte);border:1px solid rgba(245,185,33,.35);border-radius:13px;padding:.9rem;"><b style="font-size:.92rem;color:var(--soleil);">Offre de lancement</b><p style="color:var(--cendre);font-size:.84rem;margin-top:.3rem;line-height:1.5;">Tout COLLYWOOD en illimité pour 3 $/mois, sans engagement.</p></div>')
     +'</div><button id="pay-cancel">Fermer</button>';
   $('#pay-cancel').addEventListener('click',closePaywall);
-  $('#paywall').classList.add('on');
+  showPay();
 }
 function openDownloads(){
   var list=getDl();
@@ -2266,7 +2323,7 @@ function openDownloads(){
       var list=getDl();list.splice(+b.getAttribute('data-dlr'),1);setDl(list);openDownloads();
     });
   });
-  $('#paywall').classList.add('on');
+  showPay();
 }
 $('#tb-bell').addEventListener('click',openNotifs);
 $('#tb-dl').addEventListener('click',openDownloads);
@@ -2310,6 +2367,8 @@ function applySubsPref(){
 function openQuality(){
   sheet('<h3>'+t('r_qual')+'</h3><div style="display:flex;flex-direction:column;gap:.6rem;margin:1rem 0;">'
     +QUALS.map(function(q){return '<button class="pbtn" data-q="'+q[0]+'">'+q[1]+(getQual()===q[0]?' <span style="color:var(--soleil)">✓</span>':' <span></span>')+'</button>'}).join('')
+    +'</div><h3 style="margin-top:.4rem">Vitesse de lecture</h3><div style="display:flex;gap:.6rem;margin:.8rem 0;">'
+    +SPEEDS.map(function(r){return '<button class="pbtn" style="flex:1;justify-content:center" data-r="'+r[0]+'">'+r[1]+(getRate()===r[0]?' <span style="color:var(--soleil)">\u2713</span>':'')+'</button>'}).join('')
     +'</div><p class="paynote">Sur iPhone (Safari), la qualité est ajustée automatiquement par le lecteur.</p><button id="pay-cancel">'+t('close')+'</button>');
   $$('#pay-card [data-q]').forEach(function(b){
     b.addEventListener('click',function(){
@@ -2317,6 +2376,14 @@ function openQuality(){
       var qv=$('#pf-qualv');if(qv)qv.textContent=qualLabel(getQual());
       applyQualityPref(pv);
       toast(t('r_qual')+' : '+qualLabel(getQual()));
+      closePaywall();
+    });
+  });
+  $$('#pay-card [data-r]').forEach(function(b){
+    b.addEventListener('click',function(){
+      try{localStorage.setItem('cw2_rate',b.getAttribute('data-r'))}catch(_){}
+      try{pv.playbackRate=getRate()}catch(_){}
+      toast('Vitesse : '+(getRate()===1?'normale':'\u00d7'+String(getRate()).replace('.',',')));
       closePaywall();
     });
   });
@@ -2362,7 +2429,7 @@ $('#pf-support').addEventListener('click',function(){
   $('#ct-tel').addEventListener('click',function(){location.href='tel:+243970130232'});
   $('#ct-mail').addEventListener('click',function(){location.href='mailto:support@collywood-plus.com'});
   $('#pay-cancel').addEventListener('click',closePaywall);
-  $('#paywall').classList.add('on');
+  showPay();
 });
 function demoFilms(){
   var L=[
@@ -2388,6 +2455,13 @@ function filmCardHtml(f){
 }
 function renderFilms(){
   var b=$('#films-body');if(!b)return;
+  if(!window.__catLoaded){
+    var sc='<div class="skel skcard"></div>';
+    b.innerHTML='<div class="skel skhero" style="margin:0 1rem 1.1rem;border-radius:18px"></div>'
+      +'<div class="sktt skel" style="margin-left:1rem"></div>'
+      +'<div class="skrow" style="padding:0 1rem">'+new Array(5).join(sc)+'</div>';
+    return;
+  }
   if(!FILMS.length){
     b.innerHTML='<div class="empty" style="padding-top:3.2rem">'
       +'<svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="var(--soleil)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="opacity:.9;margin-bottom:12px"><path d="M4 10.6h16v7.9a1.6 1.6 0 0 1-1.6 1.6H5.6A1.6 1.6 0 0 1 4 18.5z"/><path d="m4.5 10.6-.9-3.3 15.5-4.1.9 3.4z"/><path d="m8.3 9.5 2.3-3.8"/><path d="m13.1 8.2 2.3-3.8"/></svg>'
@@ -2422,20 +2496,39 @@ function openFilmSheet(fid){
   var v=document.createElement('div');v.id='fsheet';v.className='fsheet';
   v.innerHTML='<div class="fbox">'
     +'<div class="fcover"><div class="chbg" style="'+filmBg(f)+'"></div><div class="chsh"></div>'
-    +'<span class="fbadge fb2">FILM</span><button class="fclose" aria-label="'+t('close')+'"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'
+    +'<span class="fbadge fb2">FILM</span>'
+    +'<button class="fshare" aria-label="Partager"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.4"/><circle cx="17.5" cy="5.8" r="2.4"/><circle cx="17.5" cy="18.2" r="2.4"/><path d="M8.2 10.9l7-4.2M8.2 13.1l7 4.2"/></svg></button>'
+    +'<button class="fclose" aria-label="'+t('close')+'"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'
     +'<h3>'+esc(f.title)+'</h3></div>'
     +'<div class="finner"><div class="fmetaq">'+esc((f.genres&&f.genres.join(' \u00b7 '))||'Film')+(durTxt(f)?' \u00b7 '+durTxt(f):'')+'</div>'
-    +(f.synopsis?'<p>'+esc(f.synopsis)+'</p>':'')
+    +(f.synopsis?'<p class="clamp3">'+esc(f.synopsis)+'</p>':'')
     +'<button class="fplay">'+'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:-1px;margin-right:7px"><path d="M7 4.5v15l13-7.5z"/></svg>'+lbl+(pct?'<i style="width:'+pct+'%"></i>':'')+'</button>'
     +'<button class="fsave">'+bmS(on)+' '+(on?'Enregistr\u00e9':t('save'))+'</button></div></div>';
   document.body.appendChild(v);
   requestAnimationFrame(function(){requestAnimationFrame(function(){v.classList.add('on')})});
-  function close(){v.classList.remove('on');setTimeout(function(){v.remove()},260)}
+  try{history.pushState({cw:'sheet'},'')}catch(_){}
+  function close(){try{history.back()}catch(_){v.classList.remove('on');setTimeout(function(){v.remove()},220)}}
+  var pp2=v.querySelector('p.clamp3');
+  if(pp2&&pp2.scrollHeight>pp2.clientHeight+4){
+    var vm=document.createElement('button');vm.className='vmore';vm.textContent='Voir plus';
+    pp2.parentNode.insertBefore(vm,pp2.nextSibling);
+    vm.addEventListener('click',function(){
+      var op=pp2.classList.toggle('open');
+      vm.textContent=op?'Voir moins':'Voir plus';
+    });
+  }
   v.addEventListener('click',function(e){if(e.target===v)close()});
   v.querySelector('.fclose').addEventListener('click',close);
+  v.querySelector('.fshare').addEventListener('click',function(){
+    buzz(20);
+    var txt=f.title+' \u2014 un film \u00e0 voir sur Collywood+';
+    var url=location.origin+'/?film='+encodeURIComponent(f.id);
+    if(navigator.share){navigator.share({title:'Collywood+',text:txt,url:url}).catch(function(){})}
+    else window.open('https://wa.me/?text='+encodeURIComponent(txt+' '+url),'_blank');
+  });
   v.querySelector('.fplay').addEventListener('click',function(){
-    if(f.demo){buzz(15);toast('Ce film arrive tr\u00e8s bient\u00f4t');return}
-    buzz(15);close();openFilmSolo(f.id);
+    if(f.demo){buzz(15);toast('Ce film arrive très bientôt');return}
+    buzz(15);window.__fsPlay=f.id;close();
   });
   v.querySelector('.fsave').addEventListener('click',function(){
     if(f.demo){toast('Bient\u00f4t disponible');return}
@@ -2459,6 +2552,14 @@ function renderSearch(){
 }
 $('#q-in').addEventListener('input',renderSearch);
 $('#pf-logout').addEventListener('click',function(){
+  var b=this;
+  if(!b.__arm){
+    b.__arm=1;b.__t=b.textContent;
+    b.textContent='Toucher encore pour confirmer';b.style.color='var(--braise)';
+    setTimeout(function(){if(b.__arm){b.__arm=0;b.textContent=b.__t;b.style.color=''}},3200);
+    return;
+  }
+  b.__arm=0;b.textContent=b.__t;b.style.color='';
   clearSession();window.__entered=false;window.__pulled=false;SUBSCRIBED=false;MYLIST={};PROGRESS={};window.__pulledRows=null;try{localStorage.removeItem('cw2_demo_sub')}catch(_){};
   renderList();renderProfile();showAuth();toast(t('bye'));
 });
@@ -2467,7 +2568,13 @@ $('#pf-logout').addEventListener('click',function(){
 $$('.tabbar button').forEach(function(b){
   b.addEventListener('click',function(){
     buzz(12);
-    if(!b.classList.contains('on'))navPushTab(b.getAttribute('data-tab'));
+    if(b.classList.contains('on')){
+      var tid=b.getAttribute('data-tab');
+      if(tid==='s-feed'){var fd=$('#feed');if(fd)fd.scrollTo({top:0,behavior:'smooth'})}
+      else{__pos[tid]=0;window.scrollTo({top:0,behavior:'smooth'})}
+      return;
+    }
+    navPushTab(b.getAttribute('data-tab'));
     $$('.tabbar button').forEach(function(x){x.classList.remove('on')});
     $$('.screen').forEach(function(x){x.classList.remove('on')});
     b.classList.add('on');
@@ -2551,7 +2658,7 @@ function openInstall(){
     return;
   }
   var ios=/iPad|iPhone|iPod/.test(navigator.userAgent);
-  $('#paywall').classList.add('on');
+  showPay();
   $('#pay-card').innerHTML='<h3 style="margin:0 0 4px">Installer Collywood+</h3>'
     +'<small style="color:var(--cendre)">L\u2019application sur votre \u00e9cran d\u2019accueil \u2014 plein \u00e9cran, acc\u00e8s en un tap.</small>'
     +'<div class="pwrap" style="margin-top:1rem">'
@@ -2564,6 +2671,43 @@ function openInstall(){
     +'<button id="pay-cancel" style="margin-top:1rem">Fermer</button>';
   $('#pay-cancel').addEventListener('click',closePaywall);
 }
+/* ═══ V7 : bandeau hors-ligne ═══ */
+(function(){
+  var band=document.createElement('div');band.id='netband';
+  band.innerHTML='<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 8.5a14 14 0 0 1 20 0M5.5 12a9 9 0 0 1 13 0M9 15.4a4.5 4.5 0 0 1 6 0"/><path d="M12 19h.01"/><path d="M4 4l16 16"/></svg> Connexion perdue \u2014 reconnexion\u2026';
+  document.body.appendChild(band);
+  function upd(on){band.classList.toggle('on',!on)}
+  window.addEventListener('offline',function(){upd(false)});
+  window.addEventListener('online',function(){
+    upd(true);toast('Connexion r\u00e9tablie \u2713');
+    if(!window.__catLoaded)loadCatalog();
+  });
+  upd(navigator.onLine!==false);
+})();
+/* ═══ V7 : topbar escamotable (accueil) ═══ */
+(function(){
+  var last=0;
+  window.addEventListener('scroll',function(){
+    var tb=document.querySelector('#s-home .topbar');
+    if(!tb||!document.querySelector('#s-home.on'))return;
+    var y=window.scrollY;
+    if(y>70&&y-last>6)tb.classList.add('hidebar');
+    else if(last-y>4||y<=70)tb.classList.remove('hidebar');
+    last=y;
+  },{passive:true});
+})();
+/* ═══ V7 : croix pour effacer la recherche ═══ */
+(function(){
+  var qi=$('#q-in');if(!qi)return;
+  var w=document.createElement('div');w.className='qwrap';
+  qi.parentNode.insertBefore(w,qi);w.appendChild(qi);
+  var x=document.createElement('button');x.className='qclear';x.setAttribute('aria-label','Effacer');
+  x.innerHTML='<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+  w.appendChild(x);
+  function sync(){x.style.display=qi.value?'flex':'none'}
+  qi.addEventListener('input',sync);sync();
+  x.addEventListener('click',function(){buzz(10);qi.value='';sync();renderSearch();qi.focus()});
+})();
 /* ═══ CHANTIER : pull-to-refresh accueil ═══ */
 (function(){
   var home=$('#s-home');if(!home)return;
