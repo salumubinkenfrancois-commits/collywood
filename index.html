@@ -944,6 +944,39 @@ function enterOnce(){
   $('#app').classList.add('on');
   document.documentElement.style.overflow='';
   refreshSub(); pullSync(); renderProfile();
+  (function(){
+    var pf=document.querySelector('.pfoot');if(!pf||pf.__diag)return;pf.__diag=1;
+    var n=0,t0=0;
+    pf.addEventListener('click',function(){
+      var now=Date.now();if(now-t0>2500)n=0;t0=now;n++;
+      if(n<5)return;n=0;
+      var probe=document.createElement('div');
+      probe.style.cssText='position:fixed;left:-99px;bottom:0;padding-bottom:env(safe-area-inset-bottom,0px);width:1px;';
+      document.body.appendChild(probe);
+      var envB=probe.getBoundingClientRect().height;probe.remove();
+      var tb=document.querySelector('.tabbar');var r=tb?tb.getBoundingClientRect():{top:0,bottom:0,height:0};
+      var vv=window.visualViewport?Math.round(window.visualViewport.height):'n/a';
+      var sa=getComputedStyle(document.documentElement).getPropertyValue('--safe-b').trim();
+      var standalone=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+      var gap=Math.round(window.innerHeight-r.bottom);
+      var d=document.createElement('div');
+      d.style.cssText='position:fixed;inset:auto 10px 90px 10px;z-index:9999;background:#101D2E;border:1px solid #F5B921;border-radius:14px;padding:14px;font:12px/1.7 monospace;color:#fff;white-space:pre;';
+      d.textContent='DIAG v2.1\nstandalone: '+standalone
+        +'\ninnerHeight: '+window.innerHeight
+        +'\nclientHeight: '+document.documentElement.clientHeight
+        +'\nvisualViewport: '+vv
+        +'\nenv(inset-bottom): '+Math.round(envB)+'px'
+        +'\n--safe-b: '+sa
+        +'\ntabbar top/bottom: '+Math.round(r.top)+' / '+Math.round(r.bottom)
+        +'\ntabbar height: '+Math.round(r.height)
+        +'\nVIDE sous la barre: '+gap+'px';
+      var x=document.createElement('button');
+      x.textContent='Fermer';
+      x.style.cssText='margin-top:10px;background:#F5B921;border:none;border-radius:9px;padding:8px 14px;font-weight:700;color:#1a1509;';
+      x.onclick=function(){d.remove()};
+      d.appendChild(x);document.body.appendChild(d);
+    });
+  })();
   syncTopAvatar();
   if(isStandalone()){var ib=$('#pf-install');if(ib)ib.style.display='none';}
   try{
@@ -2491,7 +2524,13 @@ applyLang();
 /* ═══ CHANTIER : PWA — service worker + installation ═══ */
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js').catch(function(){});
+    navigator.serviceWorker.register('sw.js').then(function(reg){
+      if(reg&&reg.update)setTimeout(function(){reg.update().catch(function(){})},3000);
+    }).catch(function(){});
+  });
+  navigator.serviceWorker.addEventListener('controllerchange',function(){
+    if(window.__swR)return;window.__swR=true;
+    location.reload();
   });
 }
 var __bip=null;

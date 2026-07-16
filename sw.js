@@ -1,8 +1,8 @@
-/* COLLYWOOD — service worker v1
-   Stratégie : réseau d'abord pour la page (toujours à jour),
-   cache en secours (hors-ligne), jamais d'interception
-   des appels Supabase / CinetPay / vidéos (autres origines). */
-var CACHE = 'collywood-v2';
+/* COLLYWOOD — service worker v3
+   Lancement instantané : la page vient du cache immédiatement,
+   la nouvelle version se télécharge en arrière-plan et s'active
+   automatiquement (l'app se recharge une fois, toute seule). */
+var CACHE = 'collywood-v3';
 var CORE = ['./', 'logo.png', 'manifest.webmanifest'];
 
 self.addEventListener('install', function (e) {
@@ -34,11 +34,14 @@ self.addEventListener('fetch', function (e) {
 
   if (req.mode === 'navigate') {
     e.respondWith(
-      fetch(req).then(function (r) {
-        var cp = r.clone();
-        caches.open(CACHE).then(function (c) { c.put('./', cp); });
-        return r;
-      }).catch(function () { return caches.match('./'); })
+      caches.match('./').then(function (hit) {
+        var net = fetch(req).then(function (r) {
+          var cp = r.clone();
+          caches.open(CACHE).then(function (c) { c.put('./', cp); });
+          return r;
+        }).catch(function () { return hit; });
+        return hit || net;   /* cache instantané, sinon réseau */
+      })
     );
     return;
   }
