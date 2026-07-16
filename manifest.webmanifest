@@ -1,0 +1,16 @@
+{
+  "name": "COLLYWOOD",
+  "short_name": "COLLYWOOD",
+  "description": "Le cinéma congolais en format vertical — Là où le cœur bat plus fort",
+  "id": "./",
+  "start_url": "./?src=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B1420",
+  "theme_color": "#0B1420",
+  "lang": "fr",
+  "icons": [
+    { "src": "logo.png", "sizes": "631x631", "type": "image/png", "purpose": "any" }
+  ]
+}
