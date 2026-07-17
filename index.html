@@ -765,7 +765,7 @@ html{background:#060D16;}
   <!-- ═══ MA LISTE ═══ -->
   <section class="screen" id="s-films">
     <div class="pghead"><span style="width:36px"></span><div class="pgtitle" style="margin:0" id="tt-films">Films</div><span style="width:36px"></span></div>
-    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v2.4</small></div></div>
+    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v2.5</small></div></div>
   </section>
 
   <section class="screen" id="s-list">
@@ -829,7 +829,7 @@ html{background:#060D16;}
       <button class="pbtn" id="pf-terms"><span class="lft"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>Conditions d'utilisation</span><span><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" style="vertical-align:-1px"><path d="m9 5 7 7-7 7"/></svg></span></button>
     </div>
     <div class="pwrap"><button class="logoutbtn" id="pf-logout">Se déconnecter</button></div>
-    <p class="pfoot">COLLYWOOD+ · v2.4</p>
+    <p class="pfoot">COLLYWOOD+ · v2.5</p>
   </section>
 
   <nav class="tabbar">
@@ -1027,7 +1027,7 @@ function enterOnce(){
       var gap=Math.round(window.innerHeight-r.bottom);
       var d=document.createElement('div');
       d.style.cssText='position:fixed;inset:auto 10px 90px 10px;z-index:9999;background:#101D2E;border:1px solid #F5B921;border-radius:14px;padding:14px;font:12px/1.7 monospace;color:#fff;white-space:pre;';
-      d.textContent='DIAG v2.4\nstandalone: '+standalone
+      d.textContent='DIAG v2.5\nstandalone: '+standalone
         +'\ninnerHeight: '+window.innerHeight
         +'\nclientHeight: '+document.documentElement.clientHeight
         +'\nvisualViewport: '+vv
@@ -1236,6 +1236,13 @@ function skeletonHome(){
   var row='<div class="sktt skel"></div><div class="skrow">'+new Array(5).join(card)+'</div>';
   b.innerHTML='<div class="skel skhero"></div>'+row+row;
 }
+var IK='fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="17" height="17" viewBox="0 0 24 24"';
+  function sec(ic,tt,inner){return '<div class="sec"><h3>'+(ic||'')+tt+'</h3>'+inner+'</div>'}
+  var I_play='<svg '+IK+'><path d="M7 4.5l13 7.5-13 7.5z"/></svg>';
+  var I_flame='<svg '+IK+'><path d="M12 3c1 3-.5 4.5-1.5 5.5C9 10 8 11.5 8 13.5a4 4 0 0 0 8 0c0-1.5-.6-2.7-1.5-3.8-.4 1-1 1.6-1.8 2C13.5 9.5 14 6 12 3z"/></svg>';
+  var I_trophy='<svg '+IK+'><path d="M8 4h8v3a4 4 0 0 1-8 0z"/><path d="M8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4M12 11v4M9 19h6M10.5 15h3v4h-3z"/></svg>';
+  var I_spark='<svg '+IK+'><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg>';
+  var I_clap='<svg '+IK+'><path d="M4 10h16v9H4z"/><path d="M4 10l1.5-4.5L21 8l-1 2M8.2 6.6l2.2 2.9M12.6 5.9l2.2 2.9"/></svg>';
 function renderHome(){
   var b=$('#home-body');
   window.__catLoaded=true;
@@ -1259,13 +1266,7 @@ function renderHome(){
       +'<span class="cta">'+ICO_PLAY+t('hero_cta')+'</span></div></div>';
   }
   function row(list){return '<div class="hrow vrow">'+list.map(function(s){return cardHtml(s).replace('class="card"','class="card small"')}).join('')+'</div>'}
-  var IK='fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="17" height="17" viewBox="0 0 24 24"';
-  function sec(ic,tt,inner){return '<div class="sec"><h3>'+(ic||'')+tt+'</h3>'+inner+'</div>'}
-  var I_play='<svg '+IK+'><path d="M7 4.5l13 7.5-13 7.5z"/></svg>';
-  var I_flame='<svg '+IK+'><path d="M12 3c1 3-.5 4.5-1.5 5.5C9 10 8 11.5 8 13.5a4 4 0 0 0 8 0c0-1.5-.6-2.7-1.5-3.8-.4 1-1 1.6-1.8 2C13.5 9.5 14 6 12 3z"/></svg>';
-  var I_trophy='<svg '+IK+'><path d="M8 4h8v3a4 4 0 0 1-8 0z"/><path d="M8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4M12 11v4M9 19h6M10.5 15h3v4h-3z"/></svg>';
-  var I_spark='<svg '+IK+'><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg>';
-  var I_clap='<svg '+IK+'><path d="M4 10h16v9H4z"/><path d="M4 10l1.5-4.5L21 8l-1 2M8.2 6.6l2.2 2.9M12.6 5.9l2.2 2.9"/></svg>';
+  
   var started=SERIES.filter(function(s){return !s.demo&&s.eps.some(function(e){var p=PROGRESS[e.id];return p&&p.t>5})});
   if(started.length)h+=sec(I_play,t('sec_resume'),'<div class="hrow vrow">'+started.map(function(s){
     return cardHtml(s).replace('class="card"','class="card small"').replace('</button>','<span class="cpg"><i style="width:'+serieProgress(s)+'%"></i></span></button>');
