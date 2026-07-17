@@ -765,7 +765,7 @@ html{background:#060D16;}
   <!-- ═══ MA LISTE ═══ -->
   <section class="screen" id="s-films">
     <div class="pghead"><span style="width:36px"></span><div class="pgtitle" style="margin:0" id="tt-films">Films</div><span style="width:36px"></span></div>
-    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v2.5</small></div></div>
+    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v2.6</small></div></div>
   </section>
 
   <section class="screen" id="s-list">
@@ -829,7 +829,7 @@ html{background:#060D16;}
       <button class="pbtn" id="pf-terms"><span class="lft"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>Conditions d'utilisation</span><span><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" style="vertical-align:-1px"><path d="m9 5 7 7-7 7"/></svg></span></button>
     </div>
     <div class="pwrap"><button class="logoutbtn" id="pf-logout">Se déconnecter</button></div>
-    <p class="pfoot">COLLYWOOD+ · v2.5</p>
+    <p class="pfoot">COLLYWOOD+ · v2.6</p>
   </section>
 
   <nav class="tabbar">
@@ -1027,7 +1027,7 @@ function enterOnce(){
       var gap=Math.round(window.innerHeight-r.bottom);
       var d=document.createElement('div');
       d.style.cssText='position:fixed;inset:auto 10px 90px 10px;z-index:9999;background:#101D2E;border:1px solid #F5B921;border-radius:14px;padding:14px;font:12px/1.7 monospace;color:#fff;white-space:pre;';
-      d.textContent='DIAG v2.5\nstandalone: '+standalone
+      d.textContent='DIAG v2.6\nstandalone: '+standalone
         +'\ninnerHeight: '+window.innerHeight
         +'\nclientHeight: '+document.documentElement.clientHeight
         +'\nvisualViewport: '+vv
@@ -1168,7 +1168,7 @@ function loadCatalog(){
   __lastLoad=Date.now();
   if(!SERIES.length)skeletonHome();
   FILMS=[];
-  var cols='id,kind,preview_seconds,series_id,episode,title,genres,synopsis,poster_url,duration_min,price_usd,language,region_tag,hd,offline_ok,published,created_at';
+  var cols='id,kind,preview_seconds,series_id,episode,title,genres,synopsis,poster_url,duration_min,price_usd,language,region_tag,hd,offline_ok,published,created_at,featured';
   fetch(SUPA_URL+'/rest/v1/films?select='+cols+'&published=eq.true&order=created_at.asc',{headers:{'apikey':SUPA_ANON}})
   .then(function(r){return r.text().then(function(t){
     var j=null;try{j=JSON.parse(t)}catch(_){}
@@ -2575,7 +2575,9 @@ function renderFilms(){
     return;
   }
   var list=FILMS.slice().reverse();
-  var feat=list[0];
+  var feat=null;
+  for(var fi=0;fi<list.length;fi++){if(list[fi].featured){feat=list[fi];break}}
+  feat=feat||list[0];
   var h='<div class="cinehero" data-film="'+esc(feat.id)+'"><div class="chbg" style="'+filmBg(feat)+'">'+'<span class="mkA mkBig">'+esc(String(feat.title).charAt(0))+'</span>'+posterLayer(feat.poster_url)+'</div><div class="chsh"></div>'+(feat.demo?'<span class="mkTag">MAQUETTE</span>':'')
     +'<small>'+t('aff')+'</small><h1>'+esc(feat.title)+'</h1>'
     +'<div class="chmeta">'+esc((feat.genres&&feat.genres[0])||'Film')+(durTxt(feat)?' \u00b7 '+durTxt(feat):'')+'</div>'
