@@ -2,7 +2,7 @@
    Lancement instantané : la page vient du cache immédiatement,
    la nouvelle version se télécharge en arrière-plan et s'active
    automatiquement (l'app se recharge une fois, toute seule). */
-var CACHE = 'collywood-v4';
+var CACHE = 'collywood-v5';
 var CORE = ['./', 'logo.png', 'manifest.webmanifest'];
 
 self.addEventListener('install', function (e) {
@@ -47,16 +47,24 @@ self.addEventListener('fetch', function (e) {
   }
 
   if (req.mode === 'navigate') {
-    e.respondWith(
-      caches.match('./').then(function (hit) {
-        var net = fetch(req).then(function (r) {
-          var cp = r.clone();
-          caches.open(CACHE).then(function (c) { c.put('./', cp); });
-          return r;
-        }).catch(function () { return hit; });
-        return hit || net;   /* cache instantané, sinon réseau */
-      })
-    );
+    /* Seule la page d'accueil est servie en cache instantané.
+       admin.html (et toute autre page) = réseau d'abord. */
+    if (url.pathname === '/' || url.pathname === '/index.html') {
+      e.respondWith(
+        caches.match('./').then(function (hit) {
+          var net = fetch(req).then(function (r) {
+            var cp = r.clone();
+            caches.open(CACHE).then(function (c) { c.put('./', cp); });
+            return r;
+          }).catch(function () { return hit; });
+          return hit || net;
+        })
+      );
+    } else {
+      e.respondWith(
+        fetch(req).catch(function () { return caches.match(req); })
+      );
+    }
     return;
   }
 
