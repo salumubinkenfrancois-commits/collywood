@@ -765,7 +765,7 @@ html{background:#060D16;}
   <!-- ═══ MA LISTE ═══ -->
   <section class="screen" id="s-films">
     <div class="pghead"><span style="width:36px"></span><div class="pgtitle" style="margin:0" id="tt-films">Films</div><span style="width:36px"></span></div>
-    <div id="films-body"></div>
+    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v2.4</small></div></div>
   </section>
 
   <section class="screen" id="s-list">
@@ -829,7 +829,7 @@ html{background:#060D16;}
       <button class="pbtn" id="pf-terms"><span class="lft"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>Conditions d'utilisation</span><span><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" style="vertical-align:-1px"><path d="m9 5 7 7-7 7"/></svg></span></button>
     </div>
     <div class="pwrap"><button class="logoutbtn" id="pf-logout">Se déconnecter</button></div>
-    <p class="pfoot">COLLYWOOD+ · v2.3</p>
+    <p class="pfoot">COLLYWOOD+ · v2.4</p>
   </section>
 
   <nav class="tabbar">
@@ -1027,7 +1027,7 @@ function enterOnce(){
       var gap=Math.round(window.innerHeight-r.bottom);
       var d=document.createElement('div');
       d.style.cssText='position:fixed;inset:auto 10px 90px 10px;z-index:9999;background:#101D2E;border:1px solid #F5B921;border-radius:14px;padding:14px;font:12px/1.7 monospace;color:#fff;white-space:pre;';
-      d.textContent='DIAG v2.3\nstandalone: '+standalone
+      d.textContent='DIAG v2.4\nstandalone: '+standalone
         +'\ninnerHeight: '+window.innerHeight
         +'\nclientHeight: '+document.documentElement.clientHeight
         +'\nvisualViewport: '+vv
@@ -1207,7 +1207,9 @@ function loadCatalog(){
     feedBuilt=false; $('#feed').innerHTML='';
     if($('#s-feed').classList.contains('on'))buildFeed();
     if(window.__pulledRows)applySync();
-  }).catch(function(){ $('#home-body').innerHTML='<div class="empty">Impossible de charger le catalogue.<br/>Vérifiez votre connexion.</div><div style="text-align:center"><button class="retry" onclick="loadCatalog()">Réessayer</button></div>'; });
+  }).catch(function(){ window.__catLoaded=true;
+    if(document.querySelector('#s-films.on')){try{renderFilms()}catch(_){}}
+    $('#home-body').innerHTML='<div class="empty">Impossible de charger le catalogue.<br/>Vérifiez votre connexion.</div><div style="text-align:center"><button class="retry" onclick="loadCatalog()">Réessayer</button></div>'; });
 }
 function epLocked(s,e){
   if(SUBSCRIBED)return false;
@@ -2557,6 +2559,7 @@ function filmCardHtml(f){
 }
 function renderFilms(){
   var b=$('#films-body');if(!b)return;
+  try{
   if(!window.__catLoaded){
     var sc='<div class="skel skcard"></div>';
     b.innerHTML='<div class="skel skhero" style="margin:0 1rem 1.1rem;border-radius:18px"></div>'
@@ -2567,7 +2570,7 @@ function renderFilms(){
   if(!FILMS.length){
     b.innerHTML='<div class="empty" style="padding-top:3.2rem">'
       +'<svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="var(--soleil)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="opacity:.9;margin-bottom:12px"><path d="M4 10.6h16v7.9a1.6 1.6 0 0 1-1.6 1.6H5.6A1.6 1.6 0 0 1 4 18.5z"/><path d="m4.5 10.6-.9-3.3 15.5-4.1.9 3.4z"/><path d="m8.3 9.5 2.3-3.8"/><path d="m13.1 8.2 2.3-3.8"/></svg>'
-      +'<br/>'+t('films_empty')+'</div>';
+      +'<br/>'+t('films_empty')+'<br/><button class="retry" style="margin-top:14px" onclick="loadCatalog()">R\u00e9essayer</button></div>';
     return;
   }
   var list=FILMS.slice().reverse();
@@ -2582,6 +2585,9 @@ function renderFilms(){
     h+='<div class="sec"><h3>'+I_clap+esc(g)+'</h3><div class="hrow vrow">'+G[g].map(function(f){return filmCardHtml(f).replace('class="card"','class="card small"')}).join('')+'</div></div>';
   });
   b.innerHTML=h;
+  }catch(e){
+    b.innerHTML='<div class="empty" style="padding-top:3rem;color:#ffb3a7">Erreur d\u2019affichage :<br/><code style="font-size:.7rem;opacity:.85">'+esc(String(e&&e.message||e)).slice(0,180)+'</code><br/><button class="retry" style="margin-top:12px" onclick="renderFilms()">R\u00e9essayer</button></div>';
+  }
 }
 function gotoTab(id){var tb=document.querySelector('.tabbar button[data-tab="'+id+'"]');if(tb)tb.click()}
 function openFilmSheet(fid){
