@@ -271,7 +271,7 @@ button{user-select:none;-webkit-user-select:none;}
 .chip{flex:none;padding:.62rem 1.05rem;border-radius:22px;background:var(--carte);border:1px solid rgba(246,243,236,.16);font-size:.86rem;}
 .rankrow{padding-left:.4rem;}
 .rank{position:relative;flex:none;padding-left:31px;}
-.rank .num{position:absolute;left:-7px;bottom:26px;z-index:1;font-size:5rem;font-weight:900;font-style:italic;line-height:.72;background:linear-gradient(180deg,#F9DE94 0%,#EFB62F 52%,#A97407 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:1px rgba(0,0,0,.25);filter:drop-shadow(0 3px 5px rgba(0,0,0,.5));}
+.rank .num{position:absolute;left:-7px;bottom:26px;z-index:1;font-size:5rem;font-weight:900;font-style:italic;line-height:.72;color:transparent;-webkit-text-stroke:2px rgba(246,243,236,.34);filter:drop-shadow(0 4px 9px rgba(0,0,0,.55));}
 .rank .card{z-index:2;}
 .rkcol{position:relative;z-index:2;display:flex;flex-direction:column;gap:.42rem;}
 .rkmeta{font-size:.68rem;color:#d8c48a;display:flex;align-items:center;justify-content:center;gap:.3rem;white-space:nowrap;}
@@ -400,7 +400,7 @@ main>section.on{animation:secIn .28s ease;}
   /* ── Classement : chiffres monumentaux ── */
   .rankrow{padding-left:2.2rem;}
   .rank{padding-left:52px;}
-  .rank .num{font-size:8rem;bottom:38px;left:-14px;-webkit-text-stroke:1.5px rgba(0,0,0,.28);}
+  .rank .num{font-size:8rem;bottom:38px;left:-14px;-webkit-text-stroke:2.5px rgba(246,243,236,.30);}
   .rkmeta{font-size:.78rem;}
 
   /* ── Pour toi : colonne immersive centrée ── */
@@ -651,6 +651,30 @@ html{background:#060D16;}
 .vmore{background:none;border:none;color:var(--soleil);font-size:.8rem;font-weight:600;padding:0 0 14px;font-family:inherit;}
 .fshare{position:absolute;top:10px;right:54px;width:34px;height:34px;border-radius:50%;background:rgba(6,13,22,.55);border:none;color:#fff;display:flex;align-items:center;justify-content:center;z-index:3;}
 #feed video{-webkit-touch-callout:none;-webkit-user-select:none;}
+
+/* ═══ Lot 8 ═══ */
+.hinst{display:flex;align-items:center;gap:10px;margin:10px 1rem 2px;padding:10px 12px;background:var(--carte);border:1px solid rgba(245,185,33,.35);border-radius:14px;}
+.hinst[hidden]{display:none;}
+.hi-ic{width:34px;height:34px;border-radius:10px;background:rgba(245,185,33,.14);color:var(--soleil);display:flex;align-items:center;justify-content:center;flex:none;}
+.hi-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}
+.hi-tx b{font-size:.86rem;}
+.hi-tx small{font-size:.7rem;color:var(--cendre);}
+.hi-btn{background:var(--soleil);border:none;color:#1a1509;font-weight:700;font-size:.8rem;padding:.55rem .95rem;border-radius:20px;font-family:inherit;flex:none;}
+.hi-x{background:none;border:none;color:var(--cendre);width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex:none;}
+.istep{display:flex;gap:12px;align-items:flex-start;padding:.65rem .2rem;}
+.isn{width:30px;height:30px;border-radius:50%;background:var(--soleil);color:#1a1509;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none;font-size:.95rem;}
+.ist{font-size:.9rem;line-height:1.55;color:#dfe6ee;}
+.iwarn{background:rgba(232,80,58,.14);border:1px solid rgba(232,80,58,.4);border-radius:12px;padding:.7rem .8rem;font-size:.84rem;line-height:1.5;margin-bottom:.5rem;}
+.idone{background:rgba(93,202,165,.10);border:1px solid rgba(93,202,165,.35);border-radius:12px;padding:.7rem .8rem;font-size:.84rem;line-height:1.5;margin-top:.4rem;}
+.fpp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:rgba(6,13,22,.55);backdrop-filter:blur(4px);color:#fff;display:flex;align-items:center;justify-content:center;z-index:3;opacity:0;transition:opacity .18s,transform .18s;pointer-events:none;}
+.fpp.on{opacity:1;transform:translate(-50%,-50%) scale(1.04);}
+.fpp svg{margin-left:4px;}
+.mkA{position:absolute;right:2px;bottom:-12px;font-size:5rem;font-weight:900;font-style:italic;line-height:1;color:rgba(246,243,236,.10);z-index:1;pointer-events:none;letter-spacing:-.04em;}
+.mkA.mkBig{font-size:9rem;right:10px;bottom:-22px;color:rgba(246,243,236,.09);}
+.mkA.mkMid{font-size:7rem;right:8px;bottom:-18px;}
+.mkTag{position:absolute;top:10px;right:10px;z-index:2;font-size:.56rem;letter-spacing:.14em;font-weight:800;color:rgba(246,243,236,.55);border:1px solid rgba(246,243,236,.30);padding:3px 7px;border-radius:8px;}
+.avopt.avphoto{color:var(--cendre);display:flex;align-items:center;justify-content:center;border-style:dashed;}
+.avopt.avphoto.sel{border-style:solid;}
 </style>
 </head>
 <body>
@@ -711,6 +735,12 @@ html{background:#060D16;}
       <button class="tico" id="tb-bell" aria-label="Notifications"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6H4c.5-.5 2-2 2-6z"/><path d="M10 18.7a2 2 0 0 0 4 0"/></svg><i id="bell-dot"></i></button>
       <button class="av" data-go="profil" aria-label="Profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.5 20c1.3-3.4 4.1-5.2 7.5-5.2s6.2 1.8 7.5 5.2"/></svg></button>
     </header>
+      <div id="homeinstall" class="hinst" hidden>
+        <span class="hi-ic"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="m7.5 10 4.5 4.5L16.5 10"/><path d="M4.5 20.5h15"/></svg></span>
+        <span class="hi-tx"><b>Installez l’application</b><small>Plein écran, plus rapide, sur votre écran d’accueil</small></span>
+        <button class="hi-btn" id="hi-go">Installer</button>
+        <button class="hi-x" id="hi-x" aria-label="Plus tard"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
     <button class="searchbar" id="home-search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>Rechercher un film, une histoire…</button>
     <div id="home-body">
       <div class="hero skel"></div>
@@ -1592,9 +1622,11 @@ function renderChips(){
 function syncTopAvatar(){
   var b=document.querySelector('.topbar .av');if(!b)return;
   var cur=null;try{cur=localStorage.getItem('cw2_ava')}catch(_){}
+  var PH=null;try{PH=localStorage.getItem('cw2_avphoto')}catch(_){}
   var sv=b.querySelector('svg');
-  if(cur!==null&&window.AVAS&&AVAS[+cur]){b.style.background=AVAS[+cur];if(sv)sv.style.display='none';}
-  else{b.style.background='';if(sv)sv.style.display='';}
+  if(cur==='photo'&&PH){b.style.background='';b.style.backgroundImage='url('+PH+')';b.style.backgroundSize='cover';b.style.backgroundPosition='center';if(sv)sv.style.display='none';}
+  else if(cur!==null&&window.AVAS&&AVAS[+cur]){b.style.backgroundImage='';b.style.background=AVAS[+cur];if(sv)sv.style.display='none';}
+  else{b.style.backgroundImage='';b.style.background='';if(sv)sv.style.display='';}
 }
 var __ts=null,__tap={t:0,tm:null};
 $('#pl-veil').addEventListener('touchstart',function(e){
@@ -1743,9 +1775,20 @@ function buildFeed(){
         }
         tt=setTimeout(function(){
           taps=0;
-          vid.muted=!vid.muted;
-          if(!vid.muted&&hint){hint.remove();hint=null}
-          toast(vid.muted?t('sound_off'):t('sound_on'));
+          if(vid.muted){
+            vid.muted=false;
+            if(hint){hint.remove();hint=null}
+            toast(t('sound_on'));
+            return;
+          }
+          var pp=host.querySelector('.fpp');
+          if(!pp){
+            pp=document.createElement('div');pp.className='fpp';
+            pp.innerHTML='<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>';
+            host.appendChild(pp);
+          }
+          if(vid.paused){var pr=vid.play();if(pr&&pr.catch)pr.catch(function(){});pp.classList.remove('on');}
+          else{vid.pause();pp.classList.add('on');buzz(10);}
         },300);
       });
       new IntersectionObserver(function(es){
@@ -1754,6 +1797,7 @@ function buildFeed(){
             var p=vid.play();if(p&&p.catch)p.catch(function(){});
             var nx=host.nextElementSibling;var nv=nx&&nx.querySelector('video');
             if(nv&&nv.preload!=='auto')nv.preload='auto';
+            var po=host.querySelector('.fpp.on');if(po)po.classList.remove('on');
           }
           else vid.pause();
         });
@@ -2142,16 +2186,43 @@ var AVAS=[
 function applyAvatar(){
   var row=$('#pf-avrow');if(!row)return;
   var cur=null;try{cur=localStorage.getItem('cw2_ava')}catch(_){}
-  row.innerHTML=AVAS.map(function(g,i){
-    return '<button class="avopt'+(String(i)===cur?' sel':'')+'" data-ava="'+i+'" style="background:'+g+'" aria-label="Avatar '+(i+1)+'"></button>';
-  }).join('');
+  var PH=null;try{PH=localStorage.getItem('cw2_avphoto')}catch(_){}
+  var CAM='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5h3l1.6-2.3h6.8L17 8.5h3a1.5 1.5 0 0 1 1.5 1.5v8A1.5 1.5 0 0 1 20 19.5H4A1.5 1.5 0 0 1 2.5 18v-8A1.5 1.5 0 0 1 4 8.5z"/><circle cx="12" cy="13.5" r="3.4"/></svg>';
+  row.innerHTML='<button class="avopt avphoto'+(cur==='photo'&&PH?' sel':'')+'" data-ava="photo" aria-label="Ma photo" style="'+(PH?'background-image:url('+PH+');background-size:cover;background-position:center':'')+'">'+(PH?'':CAM)+'</button>'
+    +AVAS.map(function(g,i){
+      return '<button class="avopt'+(String(i)===cur?' sel':'')+'" data-ava="'+i+'" style="background:'+g+'" aria-label="Avatar '+(i+1)+'"></button>';
+    }).join('');
   [].slice.call(row.querySelectorAll('.avopt')).forEach(function(b){
     b.addEventListener('click',function(){
-      try{localStorage.setItem('cw2_ava',b.getAttribute('data-ava'))}catch(_){}
+      var v=b.getAttribute('data-ava');
+      if(v==='photo'){
+        var has=null;try{has=localStorage.getItem('cw2_avphoto')}catch(_){}
+        var already=null;try{already=localStorage.getItem('cw2_ava')}catch(_){}
+        if(!has||already==='photo'){var fi=$('#av-file');if(fi)fi.click();if(!has)return;}
+      }
+      try{localStorage.setItem('cw2_ava',v)}catch(_){}
       buzz(20);renderProfile();syncTopAvatar();
     });
   });
-  if(cur!==null&&AVAS[+cur]){var a=$('#pf-ava');a.innerHTML='';a.style.background=AVAS[+cur];}
+  var a=$('#pf-ava');
+  if(a){
+    if(cur==='photo'&&PH){a.innerHTML='';a.style.background='';a.style.backgroundImage='url('+PH+')';a.style.backgroundSize='cover';a.style.backgroundPosition='center';}
+    else if(cur!==null&&AVAS[+cur]){a.innerHTML='';a.style.backgroundImage='';a.style.background=AVAS[+cur];}
+    else{a.style.backgroundImage='';}
+  }
+  if(SESSION&&window.sb&&!window.__avC){
+    window.__avC=1;
+    try{
+      sb.from('profiles').select('avatar_b64').eq('id',__uid).single().then(function(r){
+        var d=r&&r.data&&r.data.avatar_b64;
+        var loc=null;try{loc=localStorage.getItem('cw2_avphoto')}catch(_){}
+        if(d&&!loc){
+          try{localStorage.setItem('cw2_avphoto',d);localStorage.setItem('cw2_ava','photo')}catch(_){}
+          applyAvatar();syncTopAvatar();
+        }
+      });
+    }catch(_){}
+  }
 }
 function loadSubGauge(){
   var g=$('#pf-gauge');if(!g)return;
@@ -2458,12 +2529,14 @@ function demoFilms(){
   return L.map(function(x,i){return {id:'demo-film-'+i,demo:true,title:x[0],genres:[x[1]],duration_min:x[2],synopsis:x[3],c:x[4],poster_url:''}});
 }
 function filmBg(f){
-  return f.poster_url?bgStyle(f.poster_url)
-    :'background:linear-gradient(160deg,'+((f.c&&f.c[0])||'#16283C')+' 0%,'+((f.c&&f.c[1])||'#1B98C4')+'55 55%,#0B1420 100%);';
+  if(f.poster_url)return bgStyle(f.poster_url);
+  var c0=(f.c&&f.c[0])||'#16283C',c1=(f.c&&f.c[1])||'#1B98C4';
+  return 'background:radial-gradient(130% 95% at 80% 12%,rgba(255,255,255,.12),transparent 46%),radial-gradient(160% 130% at 50% 120%,rgba(4,9,15,.92),transparent 55%),linear-gradient(160deg,'+c0+' 0%,'+c1+'55 55%,#0B1420 100%);background-size:cover;';
 }
 function durTxt(f){var m=+f.duration_min||0;if(!m)return'';return m>=60?Math.floor(m/60)+' h '+String(m%60).padStart(2,'0'):m+' min'}
 function filmCardHtml(f){
   return '<button class="card" data-film="'+esc(f.id)+'"><div class="bg" style="'+filmBg(f)+'"></div><div class="sh"></div>'
+    +(f.demo?'<span class="mkA">'+esc(String(f.title||'C').charAt(0))+'</span>':'')
     +'<span class="fbadge">FILM</span>'
     +(f.demo?'<span class="durb" style="background:var(--fleuve);border-color:transparent;color:#04121a;font-weight:800">BIENT\u00d4T</span>'
       :(durTxt(f)?'<span class="durb">'+durTxt(f)+'</span>':''))
@@ -2486,7 +2559,7 @@ function renderFilms(){
   }
   var list=FILMS.slice().reverse();
   var feat=list[0];
-  var h='<div class="cinehero" data-film="'+esc(feat.id)+'"><div class="chbg" style="'+filmBg(feat)+'"></div><div class="chsh"></div>'
+  var h='<div class="cinehero" data-film="'+esc(feat.id)+'"><div class="chbg" style="'+filmBg(feat)+'"></div><div class="chsh"></div>'+(feat.demo?'<span class="mkA mkBig">'+esc(String(feat.title).charAt(0))+'</span><span class="mkTag">MAQUETTE</span>':'')
     +'<small>'+t('aff')+'</small><h1>'+esc(feat.title)+'</h1>'
     +'<div class="chmeta">'+esc((feat.genres&&feat.genres[0])||'Film')+(durTxt(feat)?' \u00b7 '+durTxt(feat):'')+'</div>'
     +'<button class="chplay" data-film="'+esc(feat.id)+'">'+'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:-1px;margin-right:7px"><path d="M7 4.5v15l13-7.5z"/></svg>'+t('watch')+'</button></div>';
@@ -2511,7 +2584,7 @@ function openFilmSheet(fid){
   function bmS(o){return bmIcon(o).replace('width="26" height="26"','width="16" height="16"')}
   var v=document.createElement('div');v.id='fsheet';v.className='fsheet';
   v.innerHTML='<div class="fbox">'
-    +'<div class="fcover"><div class="chbg" style="'+filmBg(f)+'"></div><div class="chsh"></div>'
+    +'<div class="fcover"><div class="chbg" style="'+filmBg(f)+'"></div><div class="chsh"></div>'+(f.demo?'<span class="mkA mkMid">'+esc(String(f.title).charAt(0))+'</span>':'')
     +'<span class="fbadge fb2">FILM</span>'
     +'<button class="fshare" aria-label="Partager"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.4"/><circle cx="17.5" cy="5.8" r="2.4"/><circle cx="17.5" cy="18.2" r="2.4"/><path d="M8.2 10.9l7-4.2M8.2 13.1l7 4.2"/></svg></button>'
     +'<button class="fclose" aria-label="'+t('close')+'"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'
@@ -2587,7 +2660,7 @@ $$('.tabbar button').forEach(function(b){
     if(b.classList.contains('on')){
       var tid=b.getAttribute('data-tab');
       if(tid==='s-feed'){var fd=$('#feed');if(fd)fd.scrollTo({top:0,behavior:'smooth'})}
-      else{__pos[tid]=0;window.scrollTo({top:0,behavior:'smooth'})}
+      else{__pos[tid]=0;try{window.scrollTo({top:0,behavior:'smooth'})}catch(_){window.scrollTo(0,0)}}
       return;
     }
     navPushTab(b.getAttribute('data-tab'));
@@ -2669,25 +2742,91 @@ function openInstall(){
     var b=__bip;__bip=null;
     b.prompt();
     b.userChoice.then(function(r){
-      if(r&&r.outcome==='accepted'){toast('Collywood+ install\u00e9 \ud83c\udfac');buzz(30);}
+      if(r&&r.outcome==='accepted'){toast('Collywood+ install\u00e9'+ICO_OK);buzz(30);}
       else{__bip=b;}
     });
     return;
   }
-  var ios=/iPad|iPhone|iPod/.test(navigator.userAgent);
+  var ua=navigator.userAgent;
+  var ios=/iPad|iPhone|iPod/.test(ua);
+  var inApp=/(FBAN|FBAV|Instagram|Messenger|WhatsApp|Line\/)/i.test(ua)||(ios&&!/Safari/i.test(ua));
+  function step(n,txt){return '<div class="istep"><span class="isn">'+n+'</span><span class="ist">'+txt+'</span></div>'}
+  var SHARE='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--fleuve)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px"><rect x="5" y="9.5" width="14" height="11" rx="2.5"/><path d="M12 14.5V3.2"/><path d="m8.4 6.4 3.6-3.6 3.6 3.6"/></svg>';
+  var PLUSQ='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" style="vertical-align:-3px"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
+  var h='<h3 style="margin:0 0 4px">Installer Collywood+</h3>'
+    +'<small style="color:var(--cendre)">2 minutes, aucun t\u00e9l\u00e9chargement sur un magasin d\u2019applications \u2014 et c\u2019est gratuit.</small>'
+    +'<div class="pwrap" style="margin-top:1rem">';
+  if(inApp){
+    h+='<div class="iwarn">Vous \u00eates dans le navigateur d\u2019une autre application. Ouvrez d\u2019abord <b>collywood-plus.com</b> dans <b>Safari</b> (l\u2019ic\u00f4ne boussole bleue de votre iPhone), puis revenez ici.</div>';
+  }
+  if(ios){
+    h+=step(1,'Regardez tout en bas de votre \u00e9cran, au milieu : touchez le bouton <b>Partager</b> '+SHARE+' (un carr\u00e9 avec une fl\u00e8che vers le haut).')
+      +step(2,'Une liste appara\u00eet. Faites-la glisser vers le haut avec votre doigt, et touchez <b>\u00ab Sur l\u2019\u00e9cran d\u2019accueil \u00bb</b> '+PLUSQ+'.')
+      +step(3,'Touchez <b>\u00ab Ajouter \u00bb</b> en haut \u00e0 droite. C\u2019est fini !')
+      +'<div class="idone">L\u2019ic\u00f4ne <b>C+</b> appara\u00eet sur votre \u00e9cran d\u2019accueil, comme une vraie application. Touchez-la pour ouvrir Collywood+ en plein \u00e9cran.</div>';
+  }else{
+    h+=step(1,'Touchez le bouton <b>menu</b> de votre navigateur : les <b>trois points</b> en haut \u00e0 droite.')
+      +step(2,'Touchez <b>\u00ab Ajouter \u00e0 l\u2019\u00e9cran d\u2019accueil \u00bb</b> ou <b>\u00ab Installer l\u2019application \u00bb</b>.')
+      +step(3,'Confirmez. C\u2019est fini !')
+      +'<div class="idone">L\u2019ic\u00f4ne <b>C+</b> appara\u00eet sur votre \u00e9cran d\u2019accueil. Touchez-la pour ouvrir Collywood+ en plein \u00e9cran.</div>';
+  }
+  h+='</div><button id="pay-cancel">'+t('close')+'</button>';
   showPay();
-  $('#pay-card').innerHTML='<h3 style="margin:0 0 4px">Installer Collywood+</h3>'
-    +'<small style="color:var(--cendre)">L\u2019application sur votre \u00e9cran d\u2019accueil \u2014 plein \u00e9cran, acc\u00e8s en un tap.</small>'
-    +'<div class="pwrap" style="margin-top:1rem">'
-    +(ios
-      ?'<div class="pbtn"><span class="lft"><b style="color:var(--soleil)">1.</b>&nbsp;Touchez&nbsp;<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M12 15V4"/><path d="M8.5 7.5 12 4l3.5 3.5"/><rect x="5" y="11" width="14" height="9" rx="2"/></svg>&nbsp;<b>Partager</b>&nbsp;en bas de Safari</span></div>'
-       +'<div class="pbtn"><span class="lft"><b style="color:var(--soleil)">2.</b>&nbsp;Choisissez <b>\u00ab\u00a0Sur l\u2019\u00e9cran d\u2019accueil\u00a0\u00bb</b></span></div>'
-      :'<div class="pbtn"><span class="lft"><b style="color:var(--soleil)">1.</b>&nbsp;Ouvrez le menu <b>\u22ee</b> du navigateur</span></div>'
-       +'<div class="pbtn"><span class="lft"><b style="color:var(--soleil)">2.</b>&nbsp;<b>\u00ab\u00a0Installer l\u2019application\u00a0\u00bb</b></span></div>')
-    +'</div>'
-    +'<button id="pay-cancel" style="margin-top:1rem">Fermer</button>';
-  $('#pay-cancel').addEventListener('click',closePaywall);
+  $('#pay-card').innerHTML=h;
+  var pc=$('#pay-cancel');if(pc)pc.addEventListener('click',closePaywall);
 }
+/* ═══ Lot 8 : banni\u00e8re installer (web uniquement) ═══ */
+(function(){
+  var hb=$('#homeinstall');if(!hb)return;
+  var snooze=0;try{snooze=+localStorage.getItem('cw2_hib')||0}catch(_){}
+  if(!isStandalone()&&Date.now()>snooze)hb.hidden=false;
+  var go=$('#hi-go');if(go)go.addEventListener('click',function(){buzz(15);openInstall()});
+  var x=$('#hi-x');if(x)x.addEventListener('click',function(){
+    hb.hidden=true;buzz(10);
+    try{localStorage.setItem('cw2_hib',String(Date.now()+7*864e5))}catch(_){}
+  });
+})();
+/* ═══ Lot 8 : photo de profil (s\u00e9lecteur + compression) ═══ */
+(function(){
+  var f=document.createElement('input');
+  f.type='file';f.accept='image/*';f.id='av-file';f.hidden=true;
+  document.body.appendChild(f);
+  f.addEventListener('change',function(){
+    var file=f.files&&f.files[0];f.value='';
+    if(!file)return;
+    var url=URL.createObjectURL(file);
+    var img=new Image();
+    img.onload=function(){
+      var S=256,c=document.createElement('canvas');c.width=S;c.height=S;
+      var x=c.getContext('2d');
+      var r=Math.max(S/img.width,S/img.height),w=img.width*r,h=img.height*r;
+      x.drawImage(img,(S-w)/2,(S-h)/2,w,h);
+      URL.revokeObjectURL(url);
+      var d=c.toDataURL('image/jpeg',0.82);
+      try{localStorage.setItem('cw2_avphoto',d);localStorage.setItem('cw2_ava','photo')}catch(_){}
+      applyAvatar();syncTopAvatar();buzz(25);
+      toast('Photo de profil mise \u00e0 jour'+ICO_OK);
+      try{if(window.sb&&__uid)sb.from('profiles').update({avatar_b64:d}).eq('id',__uid).then(function(){})}catch(_){}
+    };
+    img.onerror=function(){URL.revokeObjectURL(url);toast('Image illisible \u2014 essayez une autre photo.')};
+    img.src=url;
+  });
+})();
+/* ═══ Lot 8 : r\u00e9alignement du feed apr\u00e8s changement de viewport ═══ */
+(function(){
+  if(!window.visualViewport)return;
+  var t;
+  visualViewport.addEventListener('resize',function(){
+    clearTimeout(t);
+    t=setTimeout(function(){
+      var fd=$('#feed');
+      if(!fd||!document.querySelector('#s-feed.on'))return;
+      var h=fd.clientHeight;if(!h)return;
+      var i=Math.round(fd.scrollTop/h);
+      fd.scrollTo({top:i*h});
+    },170);
+  });
+})();
 /* ═══ V7 : bandeau hors-ligne ═══ */
 (function(){
   var band=document.createElement('div');band.id='netband';
