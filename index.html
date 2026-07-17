@@ -669,7 +669,9 @@ html{background:#060D16;}
 .fpp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:rgba(6,13,22,.55);backdrop-filter:blur(4px);color:#fff;display:flex;align-items:center;justify-content:center;z-index:3;opacity:0;transition:opacity .18s,transform .18s;pointer-events:none;}
 .fpp.on{opacity:1;transform:translate(-50%,-50%) scale(1.04);}
 .fpp svg{margin-left:4px;}
-.mkA{position:absolute;right:2px;bottom:-12px;font-size:5rem;font-weight:900;font-style:italic;line-height:1;color:rgba(246,243,236,.10);z-index:1;pointer-events:none;letter-spacing:-.04em;}
+.mkA{position:absolute;right:2px;bottom:-12px;font-size:5rem;font-weight:900;font-style:italic;line-height:1;color:rgba(246,243,236,.10);z-index:0;pointer-events:none;letter-spacing:-.04em;}
+.ldimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .45s ease;z-index:1;}
+.ldimg.on{opacity:1;}
 .mkA.mkBig{font-size:9rem;right:10px;bottom:-22px;color:rgba(246,243,236,.09);}
 .mkA.mkMid{font-size:7rem;right:8px;bottom:-18px;}
 .mkTag{position:absolute;top:10px;right:10px;z-index:2;font-size:.56rem;letter-spacing:.14em;font-weight:800;color:rgba(246,243,236,.55);border:1px solid rgba(246,243,236,.30);padding:3px 7px;border-radius:8px;}
@@ -1830,7 +1832,7 @@ function rowHtml(s,extra,pct){
 }
 function rowFilm(f,extra,pct){
   return '<button class="prow" data-film="'+esc(f.id)+'">'
-    +'<div class="pimg" style="'+filmBg(f)+'"><span class="fbadge">FILM</span>'+(pct?'<span class="cpg"><i style="width:'+pct+'%"></i></span>':'')+'</div>'
+    +'<div class="pimg" style="'+filmBg(f)+'">'+posterLayer(f.poster_url)+'<span class="fbadge">FILM</span>'+(pct?'<span class="cpg"><i style="width:'+pct+'%"></i></span>':'')+'</div>'
     +'<div class="ptx"><b>'+esc(f.title)+'</b><span>'+esc(extra)+'</span></div>'
     +'<span class="go">'+t('watch')+' '+ICO_CHEV+'</span></button>';
 }
@@ -2528,15 +2530,25 @@ function demoFilms(){
   ];
   return L.map(function(x,i){return {id:'demo-film-'+i,demo:true,title:x[0],genres:[x[1]],duration_min:x[2],synopsis:x[3],c:x[4],poster_url:''}});
 }
+function filmPal(f){
+  if(f.c)return f.c;
+  var k=String(f.id||f.title||''),h=0;
+  for(var i=0;i<k.length;i++)h=(h*31+k.charCodeAt(i))>>>0;
+  var P=[['#3B1F47','#1B98C4'],['#0E3A52','#F5B921'],['#4A2408','#E8503A'],['#123D2A','#5DCAA5'],['#2B1040','#7A4FD0'],['#26303B','#9BB8C9']];
+  return P[h%P.length];
+}
 function filmBg(f){
-  if(f.poster_url)return bgStyle(f.poster_url);
-  var c0=(f.c&&f.c[0])||'#16283C',c1=(f.c&&f.c[1])||'#1B98C4';
-  return 'background:radial-gradient(130% 95% at 80% 12%,rgba(255,255,255,.12),transparent 46%),radial-gradient(160% 130% at 50% 120%,rgba(4,9,15,.92),transparent 55%),linear-gradient(160deg,'+c0+' 0%,'+c1+'55 55%,#0B1420 100%);background-size:cover;';
+  var c=filmPal(f);
+  return 'background:radial-gradient(130% 95% at 80% 12%,rgba(255,255,255,.12),transparent 46%),radial-gradient(160% 130% at 50% 120%,rgba(4,9,15,.92),transparent 55%),linear-gradient(160deg,'+c[0]+' 0%,'+c[1]+'55 55%,#0B1420 100%);background-size:cover;';
+}
+function posterLayer(u){
+  if(!u)return"";
+  var v=encodeURI(String(u)).replace(/'/g,"%27").replace(/"/g,"%22");
+  return "<img class=\"ldimg\" loading=\"lazy\" decoding=\"async\" alt=\"\" src=\""+v+"\" onload=\"this.classList.add('on')\" onerror=\"this.remove()\"/>";
 }
 function durTxt(f){var m=+f.duration_min||0;if(!m)return'';return m>=60?Math.floor(m/60)+' h '+String(m%60).padStart(2,'0'):m+' min'}
 function filmCardHtml(f){
-  return '<button class="card" data-film="'+esc(f.id)+'"><div class="bg" style="'+filmBg(f)+'"></div><div class="sh"></div>'
-    +(f.demo?'<span class="mkA">'+esc(String(f.title||'C').charAt(0))+'</span>':'')
+  return '<button class="card" data-film="'+esc(f.id)+'"><div class="bg" style="'+filmBg(f)+'">'+'<span class="mkA">'+esc(String(f.title||'C').charAt(0))+'</span>'+posterLayer(f.poster_url)+'</div><div class="sh"></div>'
     +'<span class="fbadge">FILM</span>'
     +(f.demo?'<span class="durb" style="background:var(--fleuve);border-color:transparent;color:#04121a;font-weight:800">BIENT\u00d4T</span>'
       :(durTxt(f)?'<span class="durb">'+durTxt(f)+'</span>':''))
@@ -2559,7 +2571,7 @@ function renderFilms(){
   }
   var list=FILMS.slice().reverse();
   var feat=list[0];
-  var h='<div class="cinehero" data-film="'+esc(feat.id)+'"><div class="chbg" style="'+filmBg(feat)+'"></div><div class="chsh"></div>'+(feat.demo?'<span class="mkA mkBig">'+esc(String(feat.title).charAt(0))+'</span><span class="mkTag">MAQUETTE</span>':'')
+  var h='<div class="cinehero" data-film="'+esc(feat.id)+'"><div class="chbg" style="'+filmBg(feat)+'">'+'<span class="mkA mkBig">'+esc(String(feat.title).charAt(0))+'</span>'+posterLayer(feat.poster_url)+'</div><div class="chsh"></div>'+(feat.demo?'<span class="mkTag">MAQUETTE</span>':'')
     +'<small>'+t('aff')+'</small><h1>'+esc(feat.title)+'</h1>'
     +'<div class="chmeta">'+esc((feat.genres&&feat.genres[0])||'Film')+(durTxt(feat)?' \u00b7 '+durTxt(feat):'')+'</div>'
     +'<button class="chplay" data-film="'+esc(feat.id)+'">'+'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:-1px;margin-right:7px"><path d="M7 4.5v15l13-7.5z"/></svg>'+t('watch')+'</button></div>';
@@ -2584,7 +2596,7 @@ function openFilmSheet(fid){
   function bmS(o){return bmIcon(o).replace('width="26" height="26"','width="16" height="16"')}
   var v=document.createElement('div');v.id='fsheet';v.className='fsheet';
   v.innerHTML='<div class="fbox">'
-    +'<div class="fcover"><div class="chbg" style="'+filmBg(f)+'"></div><div class="chsh"></div>'+(f.demo?'<span class="mkA mkMid">'+esc(String(f.title).charAt(0))+'</span>':'')
+    +'<div class="fcover"><div class="chbg" style="'+filmBg(f)+'">'+'<span class="mkA mkMid">'+esc(String(f.title).charAt(0))+'</span>'+posterLayer(f.poster_url)+'</div><div class="chsh"></div>'
     +'<span class="fbadge fb2">FILM</span>'
     +'<button class="fshare" aria-label="Partager"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.4"/><circle cx="17.5" cy="5.8" r="2.4"/><circle cx="17.5" cy="18.2" r="2.4"/><path d="M8.2 10.9l7-4.2M8.2 13.1l7 4.2"/></svg></button>'
     +'<button class="fclose" aria-label="'+t('close')+'"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'

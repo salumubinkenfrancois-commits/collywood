@@ -487,6 +487,24 @@ function startEdit(id){
   window.scrollTo(0,0);
 }
 $('#f-cancel').addEventListener('click',prepAdd);
+function shrinkPoster(file){
+  return new Promise(function(res){
+    try{
+      var url=URL.createObjectURL(file);
+      var img=new Image();
+      img.onload=function(){
+        var W=Math.min(720,img.width||720);
+        var H=Math.round((img.height||1080)*W/(img.width||720));
+        var c=document.createElement('canvas');c.width=W;c.height=H;
+        c.getContext('2d').drawImage(img,0,0,W,H);
+        URL.revokeObjectURL(url);
+        c.toBlob(function(b){res(b||file)},'image/jpeg',0.8);
+      };
+      img.onerror=function(){URL.revokeObjectURL(url);res(file)};
+      img.src=url;
+    }catch(_){res(file)}
+  });
+}
 function uploadFile(bucket,path,file){
   function go(){
     return fetch(SUPA_URL+'/storage/v1/object/'+bucket+'/'+encodeURIComponent(path),{
@@ -518,7 +536,7 @@ $('#f-save').addEventListener('click',function(){
   if(!EDIT_ID&&!extUrl&&!videoF){toast('Ajoutez la vidéo (fichier ou lien Cloudflare)');return}
   var id=EDIT_ID||(self.crypto&&crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16)}));
   var btn=$('#f-save');btn.disabled=true;btn.textContent=(posterF||videoF)?'Téléversement…':'Enregistrement…';
-  var pUp=posterF?uploadFile('posters',id+'-poster.'+(posterF.name.split('.').pop()||'jpg'),posterF):Promise.resolve(null);
+  var pUp=posterF?shrinkPoster(posterF).then(function(b){return uploadFile('posters',id+'-poster.jpg',b)}):Promise.resolve(null);
   var vUp=extUrl?Promise.resolve(extUrl):(videoF?uploadFile('videos',id+'-video.mp4',videoF):Promise.resolve(null));
   Promise.all([pUp,vUp]).then(function(urls){
     var gs=Object.keys(F_GEN).filter(function(k){return F_GEN[k]});
