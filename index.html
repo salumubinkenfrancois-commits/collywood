@@ -797,7 +797,7 @@ html{background:#060D16;}
   <!-- ═══ MA LISTE ═══ -->
   <section class="screen" id="s-films">
     <div class="pghead"><span style="width:36px"></span><div class="pgtitle" style="margin:0" id="tt-films">Films</div><span style="width:36px"></span></div>
-    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v3.1</small></div></div>
+    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v3.2</small></div></div>
   </section>
 
   <section class="screen" id="s-list">
@@ -861,7 +861,7 @@ html{background:#060D16;}
       <button class="pbtn" id="pf-terms"><span class="lft"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>Conditions d'utilisation</span><span><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" style="vertical-align:-1px"><path d="m9 5 7 7-7 7"/></svg></span></button>
     </div>
     <div class="pwrap"><button class="logoutbtn" id="pf-logout">Se déconnecter</button></div>
-    <p class="pfoot">COLLYWOOD+ · v3.1</p>
+    <p class="pfoot">COLLYWOOD+ · v3.2</p>
   </section>
 
   <nav class="tabbar">
@@ -1059,7 +1059,7 @@ function enterOnce(){
       var gap=Math.round(window.innerHeight-r.bottom);
       var d=document.createElement('div');
       d.style.cssText='position:fixed;inset:auto 10px 90px 10px;z-index:9999;background:#101D2E;border:1px solid #F5B921;border-radius:14px;padding:14px;font:12px/1.7 monospace;color:#fff;white-space:pre;';
-      d.textContent='DIAG v3.1\nstandalone: '+standalone
+      d.textContent='DIAG v3.2\nstandalone: '+standalone
         +'\ninnerHeight: '+window.innerHeight
         +'\nclientHeight: '+document.documentElement.clientHeight
         +'\nvisualViewport: '+vv
@@ -1458,7 +1458,6 @@ function openEpisode(s,idx){
 function openFilmSolo(fid){
   var f=FILMS.find(function(x){return x.id===fid});if(!f)return;
   if(f.demo){toast('Ce film arrive tr\u00e8s bient\u00f4t');return}
-  if(!f.video_url){toast('Vid\u00e9o indisponible pour ce film');return}
   var wasOpen=$('#player').classList.contains('on');
   P={serie:null,idx:-1,film:f};
   $('#pl-ep').textContent=f.duration_min?f.duration_min+' min':'Film';
