@@ -797,7 +797,7 @@ html{background:#060D16;}
   <!-- ═══ MA LISTE ═══ -->
   <section class="screen" id="s-films">
     <div class="pghead"><span style="width:36px"></span><div class="pgtitle" style="margin:0" id="tt-films">Films</div><span style="width:36px"></span></div>
-    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v3.0</small></div></div>
+    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v3.1</small></div></div>
   </section>
 
   <section class="screen" id="s-list">
@@ -861,7 +861,7 @@ html{background:#060D16;}
       <button class="pbtn" id="pf-terms"><span class="lft"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>Conditions d'utilisation</span><span><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" style="vertical-align:-1px"><path d="m9 5 7 7-7 7"/></svg></span></button>
     </div>
     <div class="pwrap"><button class="logoutbtn" id="pf-logout">Se déconnecter</button></div>
-    <p class="pfoot">COLLYWOOD+ · v3.0</p>
+    <p class="pfoot">COLLYWOOD+ · v3.1</p>
   </section>
 
   <nav class="tabbar">
@@ -1059,7 +1059,7 @@ function enterOnce(){
       var gap=Math.round(window.innerHeight-r.bottom);
       var d=document.createElement('div');
       d.style.cssText='position:fixed;inset:auto 10px 90px 10px;z-index:9999;background:#101D2E;border:1px solid #F5B921;border-radius:14px;padding:14px;font:12px/1.7 monospace;color:#fff;white-space:pre;';
-      d.textContent='DIAG v3.0\nstandalone: '+standalone
+      d.textContent='DIAG v3.1\nstandalone: '+standalone
         +'\ninnerHeight: '+window.innerHeight
         +'\nclientHeight: '+document.documentElement.clientHeight
         +'\nvisualViewport: '+vv
@@ -1334,6 +1334,8 @@ function renderHome(){
 document.addEventListener('click',function(e){
   var c=e.target.closest('[data-serie]');
   if(c){openSerie(c.getAttribute('data-serie'));return}
+  var pf=e.target.closest('[data-playfilm]');
+  if(pf){buzz(15);openFilmSolo(pf.getAttribute('data-playfilm'));return}
   var gc=e.target.closest('[data-gchip]');
   if(gc){window.__filmG=gc.getAttribute('data-gchip');buzz(10);renderFilms();return}
   var fa=e.target.closest('[data-films-all]');
@@ -1456,6 +1458,7 @@ function openEpisode(s,idx){
 function openFilmSolo(fid){
   var f=FILMS.find(function(x){return x.id===fid});if(!f)return;
   if(f.demo){toast('Ce film arrive tr\u00e8s bient\u00f4t');return}
+  if(!f.video_url){toast('Vid\u00e9o indisponible pour ce film');return}
   var wasOpen=$('#player').classList.contains('on');
   P={serie:null,idx:-1,film:f};
   $('#pl-ep').textContent=f.duration_min?f.duration_min+' min':'Film';
@@ -1523,14 +1526,13 @@ function closePlayerViaPop(){
   renderList();renderHome();
 }
 window.addEventListener('popstate',function(){
+  if($('#paywall').classList.contains('on')){if(window.__pwP)window.__pwP--;__pwClose();return;}
+  if($('#player').classList.contains('on')){closePlayerViaPop();return;}
   var fs=document.getElementById('fsheet');
   if(fs){
     fs.classList.remove('on');setTimeout(function(){fs.remove()},220);
-    if(window.__fsPlay){var fid=window.__fsPlay;window.__fsPlay=null;setTimeout(function(){openFilmSolo(fid)},40)}
     return;
   }
-  if($('#paywall').classList.contains('on')){if(window.__pwP)window.__pwP--;__pwClose();return;}
-  if($('#player').classList.contains('on')){closePlayerViaPop();return;}
   if($('#serie').classList.contains('on')){closeSerie();return;}
   var st=history.state;goTab((st&&st.cw==='tab'&&st.tab)||'s-home');
 });
@@ -2627,7 +2629,7 @@ function renderFilms(){
       +'<h1>'+esc(feat.title)+'</h1>'
       +'<div class="fbmeta">'+esc(String((feat.genres&&feat.genres[0])||'Film').toUpperCase())+(durTxt(feat)?' \u00b7 '+durTxt(feat).toUpperCase():'')+(feat.year?' \u00b7 '+esc(feat.year):'')+'</div>'
       +(feat.director?'<div class="fbby">Un film de '+esc(feat.director)+'</div>':'')
-      +'<button class="chplay" data-film="'+esc(feat.id)+'">'+PLAYSVG+t('watch')+'</button>'
+      +'<button class="chplay" data-playfilm="'+esc(feat.id)+'">'+PLAYSVG+t('watch')+'</button>'
     +'</div>'
   +'</div>';
   var GSET={};
@@ -2720,7 +2722,7 @@ function openFilmSheet(fid){
   });
   v.querySelector('.fplay').addEventListener('click',function(){
     if(f.demo){buzz(15);toast('Ce film arrive tr\u00e8s bient\u00f4t');return}
-    buzz(15);window.__fsPlay=f.id;close();
+    buzz(15);openFilmSolo(f.id);
   });
   v.querySelector('.fsave').addEventListener('click',function(){
     if(f.demo){toast('Bient\u00f4t disponible');return}
