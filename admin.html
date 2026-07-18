@@ -175,6 +175,15 @@ small{color:var(--cendre)}
       <div class="fg"><label>Aperçu gratuit</label><select id="f-preview"><option value="0">Aucun</option><option value="30">30 secondes</option><option value="60">1 minute</option><option value="120" selected>2 minutes</option></select></div>
       <div class="fg"><label>Durée (minutes)</label><input id="f-dur" type="number" inputmode="numeric" min="1" placeholder="Optionnel"/></div>
     </div>
+    <div class="grid2">
+      <div class="fg"><label>Année de sortie</label><input id="f-year" type="number" inputmode="numeric" min="1980" max="2100" placeholder="2026"/></div>
+      <div class="fg"><label>Classification</label><select id="f-rating"><option value="">—</option><option>Tout public</option><option>10+</option><option>12+</option><option>16+</option><option>18+</option></select></div>
+    </div>
+    <div class="grid2">
+      <div class="fg"><label>Réalisation</label><input id="f-director" placeholder="Nom du réalisateur / de la réalisatrice"/></div>
+      <div class="fg"><label>Langues du film</label><input id="f-langs" placeholder="Lingala · VF"/></div>
+    </div>
+    <div class="fg"><label>Distribution (acteurs principaux)</label><input id="f-cast" placeholder="Nom 1 · Nom 2 · Nom 3"/></div>
     <div class="tglrow">Qualité HD<i class="tgl on" id="f-hd"></i></div>
     <div class="tglrow">Publier immédiatement<i class="tgl on" id="f-pub"></i></div>
     <div class="fg"><label>Affiche (l'affiche de l'épisode 1 devient celle de la série)</label>
@@ -232,7 +241,7 @@ small{color:var(--cendre)}
 <script>
 var SUPA_URL='https://qckjbvivsyqbsujjbbcf.supabase.co';
 var SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFja2pidml2c3lxYnN1ampiYmNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NzUyMTAsImV4cCI6MjA5OTM1MTIxMH0.ZQNUWGBPvxp3IY26e23v9d0hhhaOKxqSUhOZ5ZeTCh0';
-var FILM_COLS='id,kind,preview_seconds,series_id,episode,title,genres,synopsis,poster_url,duration_min,price_usd,language,region_tag,hd,offline_ok,published,created_at,featured';
+var FILM_COLS='id,kind,preview_seconds,series_id,episode,title,genres,synopsis,poster_url,duration_min,price_usd,language,region_tag,hd,offline_ok,published,created_at,featured,year,director,cast_names,languages,rating';
 var GENRES=['Drame','Romance','Comédie','Action','Société','Famille','Thriller','Foi','Musique','Histoire','Biopic','Jeunesse'];
 
 function $(s){return document.querySelector(s)}
@@ -489,6 +498,11 @@ function startEdit(id){
   if(f.region_tag)$('#f-region').value=f.region_tag;
   $('#f-preview').value=String(f.preview_seconds||0);
   $('#f-dur').value=f.duration_min||'';
+  $('#f-year').value=f.year||'';
+  $('#f-director').value=f.director||'';
+  $('#f-cast').value=f.cast_names||'';
+  $('#f-langs').value=f.languages||'';
+  $('#f-rating').value=f.rating||'';
   $('#f-hd').classList.toggle('on',!!f.hd);
   $('#f-pub').classList.toggle('on',!!f.published);
   $$('.tabbar button').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-p')==='p-add')});
@@ -656,6 +670,11 @@ $('#f-save').addEventListener('click',function(){
       language:$('#f-lang').value,region_tag:$('#f-region').value,
       preview_seconds:parseInt($('#f-preview').value,10)||0,
       duration_min:parseInt($('#f-dur').value,10)||null,
+      year:parseInt($('#f-year').value,10)||null,
+      director:$('#f-director').value.trim()||null,
+      cast_names:$('#f-cast').value.trim()||null,
+      languages:$('#f-langs').value.trim()||null,
+      rating:$('#f-rating').value||null,
       hd:$('#f-hd').classList.contains('on'),
       published:$('#f-pub').classList.contains('on'),
       poster_url:urls[0]||undefined,video_url:urls[1]||undefined

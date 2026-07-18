@@ -677,6 +677,38 @@ html{background:#060D16;}
 .mkTag{position:absolute;top:10px;right:10px;z-index:2;font-size:.56rem;letter-spacing:.14em;font-weight:800;color:rgba(246,243,236,.55);border:1px solid rgba(246,243,236,.30);padding:3px 7px;border-radius:8px;}
 .avopt.avphoto{color:var(--cendre);display:flex;align-items:center;justify-content:center;border-style:dashed;}
 .avopt.avphoto.sel{border-style:solid;}
+
+/* ═══ Design B+ — Films ═══ */
+.fbhero{position:relative;width:100%;height:min(122vw,600px);overflow:hidden;cursor:pointer;background:var(--carte);}
+.fbimg{position:absolute;inset:0;}
+.fbsh{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,9,15,.28) 0%,transparent 30%,rgba(4,9,15,.55) 60%,#0B1420 97%);z-index:1;}
+.fbtx{position:absolute;left:0;right:0;bottom:0;padding:0 18px 20px;z-index:2;}
+.fbtx small{color:var(--soleil);font-weight:700;letter-spacing:.16em;font-size:.66rem;}
+.fbtx h1{font-size:2.15rem;line-height:1.02;margin:6px 0 8px;letter-spacing:-.5px;}
+.fbmeta{font-size:.74rem;letter-spacing:.08em;color:rgba(246,243,236,.78);font-weight:600;}
+.fbby{font-size:.8rem;color:rgba(246,243,236,.6);margin-top:3px;}
+.fbtx .chplay{margin-top:13px;}
+.fbhero .mkTag{top:calc(var(--safe-t) + 10px);}
+.gchips{display:flex;gap:8px;overflow-x:auto;padding:14px 1rem 4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.gchips::-webkit-scrollbar{display:none}
+.gchip{flex:none;background:var(--carte);border:1px solid rgba(246,243,236,.14);color:var(--cendre);font-size:.8rem;font-weight:600;padding:.5rem .95rem;border-radius:20px;font-family:inherit;}
+.gchip.on{background:var(--soleil);border-color:var(--soleil);color:#1a1509;}
+.fcover.fchaute{height:240px;}
+.fcred{background:rgba(246,243,236,.05);border:1px solid rgba(246,243,236,.08);border-radius:14px;padding:12px 14px;margin:0 0 14px;display:flex;flex-direction:column;gap:9px;}
+.fcred div{font-size:.83rem;line-height:1.45;color:#dfe6ee;}
+.fcred span{display:block;font-size:.62rem;letter-spacing:.14em;font-weight:700;color:rgba(246,243,236,.5);margin-bottom:2px;text-transform:uppercase;}
+.fsimtt{font-size:.68rem;letter-spacing:.16em;font-weight:700;color:rgba(246,243,236,.55);margin:18px 0 10px;}
+.fsim{padding:0;}
+#films-body{padding-bottom:1rem;}
+@media(min-width:1024px){
+  .fbhero{height:460px;border-radius:0 0 28px 28px;}
+  .fbtx{padding:0 2.2rem 28px;}
+  .fbtx h1{font-size:3rem;}
+  .gchips{padding:16px 2.2rem 4px;}
+  .gchip{cursor:pointer;}
+  .gchip:hover{color:var(--ivoire);}
+  .fcover.fchaute{height:290px;}
+}
 </style>
 </head>
 <body>
@@ -765,7 +797,7 @@ html{background:#060D16;}
   <!-- ═══ MA LISTE ═══ -->
   <section class="screen" id="s-films">
     <div class="pghead"><span style="width:36px"></span><div class="pgtitle" style="margin:0" id="tt-films">Films</div><span style="width:36px"></span></div>
-    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v2.7</small></div></div>
+    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v3.0</small></div></div>
   </section>
 
   <section class="screen" id="s-list">
@@ -829,7 +861,7 @@ html{background:#060D16;}
       <button class="pbtn" id="pf-terms"><span class="lft"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>Conditions d'utilisation</span><span><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" style="vertical-align:-1px"><path d="m9 5 7 7-7 7"/></svg></span></button>
     </div>
     <div class="pwrap"><button class="logoutbtn" id="pf-logout">Se déconnecter</button></div>
-    <p class="pfoot">COLLYWOOD+ · v2.7</p>
+    <p class="pfoot">COLLYWOOD+ · v3.0</p>
   </section>
 
   <nav class="tabbar">
@@ -1027,7 +1059,7 @@ function enterOnce(){
       var gap=Math.round(window.innerHeight-r.bottom);
       var d=document.createElement('div');
       d.style.cssText='position:fixed;inset:auto 10px 90px 10px;z-index:9999;background:#101D2E;border:1px solid #F5B921;border-radius:14px;padding:14px;font:12px/1.7 monospace;color:#fff;white-space:pre;';
-      d.textContent='DIAG v2.7\nstandalone: '+standalone
+      d.textContent='DIAG v3.0\nstandalone: '+standalone
         +'\ninnerHeight: '+window.innerHeight
         +'\nclientHeight: '+document.documentElement.clientHeight
         +'\nvisualViewport: '+vv
@@ -1168,7 +1200,7 @@ function loadCatalog(){
   __lastLoad=Date.now();
   if(!SERIES.length)skeletonHome();
   FILMS=[];
-  var cols='id,kind,preview_seconds,series_id,episode,title,genres,synopsis,poster_url,duration_min,price_usd,language,region_tag,hd,offline_ok,published,created_at,featured';
+  var cols='id,kind,preview_seconds,series_id,episode,title,genres,synopsis,poster_url,duration_min,price_usd,language,region_tag,hd,offline_ok,published,created_at,featured,year,director,cast_names,languages,rating';
   fetch(SUPA_URL+'/rest/v1/films?select='+cols+'&published=eq.true&order=created_at.asc',{headers:{'apikey':SUPA_ANON}})
   .then(function(r){return r.text().then(function(t){
     var j=null;try{j=JSON.parse(t)}catch(_){}
@@ -1302,6 +1334,8 @@ function renderHome(){
 document.addEventListener('click',function(e){
   var c=e.target.closest('[data-serie]');
   if(c){openSerie(c.getAttribute('data-serie'));return}
+  var gc=e.target.closest('[data-gchip]');
+  if(gc){window.__filmG=gc.getAttribute('data-gchip');buzz(10);renderFilms();return}
   var fa=e.target.closest('[data-films-all]');
   if(fa){gotoTab('s-films');return}
   var f=e.target.closest('[data-film]');
@@ -2528,13 +2562,13 @@ $('#pf-support').addEventListener('click',function(){
 });
 function demoFilms(){
   var L=[
-   ['La Nuit de Bandal','Drame',107,'Une coupure d\u2019\u00e9lectricit\u00e9 plonge Bandal dans le noir. Trois destins se croisent, les secrets remontent \u00e0 la surface.',['#3B1F47','#1B98C4']],
-   ['Fleuve d\u2019Or','Drame',92,'Sur le fleuve Congo, un p\u00eacheur d\u00e9couvre une cargaison qui va changer sa vie \u2014 ou la briser.',['#0E3A52','#F5B921']],
-   ['Mama Moziki','Com\u00e9die',65,'La reine des moziki de Matonge organise le mariage du si\u00e8cle. Rien ne se passera comme pr\u00e9vu.',['#4A2408','#E8503A']],
-   ['Le Pari de Papa Jo','Com\u00e9die',81,'Papa Jo parie le salon familial sur un match de football. Sa femme ne doit jamais l\u2019apprendre.',['#123D2A','#5DCAA5']],
-   ['Goma mon Amour','Romance',118,'Entre le lac Kivu et le volcan, deux c\u0153urs que tout oppose apprennent \u00e0 battre ensemble.',['#2B1040','#7A4FD0']]
+   ['La Nuit de Bandal','Drame',107,'Une coupure d\u2019\u00e9lectricit\u00e9 plonge Bandal dans le noir. Trois destins se croisent, les secrets remontent \u00e0 la surface.',['#3B1F47','#1B98C4'],2026,'Nadia Lombe','12+','A. Mukendi \u00b7 S. Kalala \u00b7 R. Bope'],
+   ['Fleuve d\u2019Or','Drame',92,'Sur le fleuve Congo, un p\u00eacheur d\u00e9couvre une cargaison qui va changer sa vie \u2014 ou la briser.',['#0E3A52','#F5B921'],2025,'Serge Ilunga','12+','P. Tshim \u00b7 M. Ngalula'],
+   ['Mama Moziki','Com\u00e9die',65,'La reine des moziki de Matonge organise le mariage du si\u00e8cle. Rien ne se passera comme pr\u00e9vu.',['#4A2408','#E8503A'],2026,'Clarisse Bemba','Tout public','G. Mwamba \u00b7 F. Kanku'],
+   ['Le Pari de Papa Jo','Com\u00e9die',81,'Papa Jo parie le salon familial sur un match de football. Sa femme ne doit jamais l\u2019apprendre.',['#123D2A','#5DCAA5'],2025,'Didier Kasongo','Tout public','J. Ngoy \u00b7 C. Ilunga'],
+   ['Goma mon Amour','Romance',118,'Entre le lac Kivu et le volcan, deux c\u0153urs que tout oppose apprennent \u00e0 battre ensemble.',['#2B1040','#7A4FD0'],2026,'A\u00efcha Mirindi','12+','L. Bahati \u00b7 K. Safari']
   ];
-  return L.map(function(x,i){return {id:'demo-film-'+i,demo:true,title:x[0],genres:[x[1]],duration_min:x[2],synopsis:x[3],c:x[4],poster_url:''}});
+  return L.map(function(x,i){return {id:'demo-film-'+i,demo:true,title:x[0],genres:[x[1]],duration_min:x[2],synopsis:x[3],c:x[4],year:x[5],director:x[6],rating:x[7],cast_names:x[8],languages:'Lingala \u00b7 VF',poster_url:''}});
 }
 function filmPal(f){
   if(f.c)return f.c;
@@ -2580,13 +2614,35 @@ function renderFilms(){
   var feat=null;
   for(var fi=0;fi<list.length;fi++){if(list[fi].featured){feat=list[fi];break}}
   feat=feat||list[0];
-  var h='<div class="cinehero" data-film="'+esc(feat.id)+'"><div class="chbg" style="'+filmBg(feat)+'">'+'<span class="mkA mkBig">'+esc(String(feat.title).charAt(0))+'</span>'+posterLayer(feat.poster_url)+'</div><div class="chsh"></div>'+(feat.demo?'<span class="mkTag">MAQUETTE</span>':'')
-    +'<small>'+t('aff')+'</small><h1>'+esc(feat.title)+'</h1>'
-    +'<div class="chmeta">'+esc((feat.genres&&feat.genres[0])||'Film')+(durTxt(feat)?' \u00b7 '+durTxt(feat):'')+'</div>'
-    +'<button class="chplay" data-film="'+esc(feat.id)+'">'+'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:-1px;margin-right:7px"><path d="M7 4.5v15l13-7.5z"/></svg>'+t('watch')+'</button></div>';
+  var PLAYSVG='<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:-1px;margin-right:8px"><path d="M7 4.5v15l13-7.5z"/></svg>';
+  var h='<div class="fbhero" data-film="'+esc(feat.id)+'">'
+    +'<div class="fbimg" style="'+filmBg(feat)+'">'
+      +'<span class="mkA mkBig">'+esc(String(feat.title).charAt(0))+'</span>'
+      +posterLayer(feat.poster_url)
+    +'</div>'
+    +'<div class="fbsh"></div>'
+    +(feat.demo?'<span class="mkTag">MAQUETTE</span>':'')
+    +'<div class="fbtx">'
+      +'<small>'+t('aff')+'</small>'
+      +'<h1>'+esc(feat.title)+'</h1>'
+      +'<div class="fbmeta">'+esc(String((feat.genres&&feat.genres[0])||'Film').toUpperCase())+(durTxt(feat)?' \u00b7 '+durTxt(feat).toUpperCase():'')+(feat.year?' \u00b7 '+esc(feat.year):'')+'</div>'
+      +(feat.director?'<div class="fbby">Un film de '+esc(feat.director)+'</div>':'')
+      +'<button class="chplay" data-film="'+esc(feat.id)+'">'+PLAYSVG+t('watch')+'</button>'
+    +'</div>'
+  +'</div>';
+  var GSET={};
+  list.forEach(function(f){((f.genres&&f.genres.length)?f.genres:[t('films')]).forEach(function(g){GSET[g]=1})});
+  var gcur=window.__filmG||'all';
+  if(gcur!=='all'&&!GSET[gcur]){gcur='all';window.__filmG='all'}
+  h+='<div class="gchips"><button class="gchip'+(gcur==='all'?' on':'')+'" data-gchip="all">Tout</button>'
+    +Object.keys(GSET).map(function(g){
+      return '<button class="gchip'+(gcur===g?' on':'')+'" data-gchip="'+esc(g)+'">'+esc(g)+'</button>';
+    }).join('')
+    +'</div>';
   var G={};
   list.forEach(function(f){((f.genres&&f.genres.length)?f.genres:[t('films')]).forEach(function(g){(G[g]=G[g]||[]).push(f)})});
   Object.keys(G).forEach(function(g){
+    if(gcur!=='all'&&g!==gcur)return;
     h+='<div class="sec"><h3>'+I_clap+esc(g)+'</h3><div class="hrow vrow">'+G[g].map(function(f){return filmCardHtml(f).replace('class="card"','class="card small"')}).join('')+'</div></div>';
   });
   b.innerHTML=h;
@@ -2596,8 +2652,11 @@ function renderFilms(){
 }
 function gotoTab(id){var tb=document.querySelector('.tabbar button[data-tab="'+id+'"]');if(tb)tb.click()}
 function openFilmSheet(fid){
+  try{
   var f=FILMS.find(function(x){return x.id===fid});if(!f)return openFilmSolo(fid);
-  var old=document.getElementById('fsheet');if(old)old.remove();
+  var old=document.getElementById('fsheet');
+  var had=!!old;
+  if(old)old.remove();
   var pr=PROGRESS[f.id];var pct=0,lbl=t('watch');
   if(pr&&pr.t>60){
     var d=pr.d||((+f.duration_min||90)*60);
@@ -2606,20 +2665,40 @@ function openFilmSheet(fid){
   }
   var on=!!MYLIST[f.id];
   function bmS(o){return bmIcon(o).replace('width="26" height="26"','width="16" height="16"')}
+  var PLAYSVG='<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:-1px;margin-right:7px"><path d="M7 4.5v15l13-7.5z"/></svg>';
+  var metabits=[esc((f.genres&&f.genres.join(' \u00b7 '))||'Film')];
+  if(durTxt(f))metabits.push(durTxt(f));
+  if(f.year)metabits.push(esc(f.year));
+  if(f.rating)metabits.push(esc(f.rating));
+  var sims=FILMS.filter(function(x){
+    if(x.id===f.id)return false;
+    var a=f.genres||[],c=x.genres||[];
+    for(var i=0;i<a.length;i++)if(c.indexOf(a[i])>=0)return true;
+    return false;
+  }).slice(0,6);
   var v=document.createElement('div');v.id='fsheet';v.className='fsheet';
   v.innerHTML='<div class="fbox">'
-    +'<div class="fcover"><div class="chbg" style="'+filmBg(f)+'">'+'<span class="mkA mkMid">'+esc(String(f.title).charAt(0))+'</span>'+posterLayer(f.poster_url)+'</div><div class="chsh"></div>'
+    +'<div class="fcover fchaute"><div class="chbg" style="'+filmBg(f)+'">'+'<span class="mkA mkMid">'+esc(String(f.title).charAt(0))+'</span>'+posterLayer(f.poster_url)+'</div><div class="chsh"></div>'
     +'<span class="fbadge fb2">FILM</span>'
     +'<button class="fshare" aria-label="Partager"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.4"/><circle cx="17.5" cy="5.8" r="2.4"/><circle cx="17.5" cy="18.2" r="2.4"/><path d="M8.2 10.9l7-4.2M8.2 13.1l7 4.2"/></svg></button>'
     +'<button class="fclose" aria-label="'+t('close')+'"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'
     +'<h3>'+esc(f.title)+'</h3></div>'
-    +'<div class="finner"><div class="fmetaq">'+esc((f.genres&&f.genres.join(' \u00b7 '))||'Film')+(durTxt(f)?' \u00b7 '+durTxt(f):'')+'</div>'
+    +'<div class="finner">'
+    +'<div class="fmetaq">'+metabits.join(' \u00b7 ')+'</div>'
     +(f.synopsis?'<p class="clamp3">'+esc(f.synopsis)+'</p>':'')
-    +'<button class="fplay">'+'<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:-1px;margin-right:7px"><path d="M7 4.5v15l13-7.5z"/></svg>'+lbl+(pct?'<i style="width:'+pct+'%"></i>':'')+'</button>'
-    +'<button class="fsave">'+bmS(on)+' '+(on?'Enregistr\u00e9':t('save'))+'</button></div></div>';
+    +((f.director||f.cast_names||f.languages)?
+      '<div class="fcred">'
+      +(f.director?'<div><span>R\u00e9alisation</span>'+esc(f.director)+'</div>':'')
+      +(f.cast_names?'<div><span>Distribution</span>'+esc(f.cast_names)+'</div>':'')
+      +(f.languages?'<div><span>Langues</span>'+esc(f.languages)+'</div>':'')
+      +'</div>':'')
+    +'<button class="fplay">'+PLAYSVG+lbl+(pct?'<i style="width:'+pct+'%"></i>':'')+'</button>'
+    +'<button class="fsave">'+bmS(on)+' '+(on?'Enregistr\u00e9':t('save'))+'</button>'
+    +(sims.length?'<div class="fsimtt">FILMS SIMILAIRES</div><div class="hrow vrow fsim">'+sims.map(function(x){return filmCardHtml(x).replace('class="card"','class="card small"')}).join('')+'</div>':'')
+    +'</div></div>';
   document.body.appendChild(v);
   requestAnimationFrame(function(){requestAnimationFrame(function(){v.classList.add('on')})});
-  try{history.pushState({cw:'sheet'},'')}catch(_){}
+  if(!had){try{history.pushState({cw:'sheet'},'')}catch(_){}}
   function close(){try{history.back()}catch(_){v.classList.remove('on');setTimeout(function(){v.remove()},220)}}
   var pp2=v.querySelector('p.clamp3');
   if(pp2&&pp2.scrollHeight>pp2.clientHeight+4){
@@ -2640,7 +2719,7 @@ function openFilmSheet(fid){
     else window.open('https://wa.me/?text='+encodeURIComponent(txt+' '+url),'_blank');
   });
   v.querySelector('.fplay').addEventListener('click',function(){
-    if(f.demo){buzz(15);toast('Ce film arrive très bientôt');return}
+    if(f.demo){buzz(15);toast('Ce film arrive tr\u00e8s bient\u00f4t');return}
     buzz(15);window.__fsPlay=f.id;close();
   });
   v.querySelector('.fsave').addEventListener('click',function(){
@@ -2650,8 +2729,9 @@ function openFilmSheet(fid){
     if(now)MYLIST[f.id]=true;else delete MYLIST[f.id];
     syncList(f.id,now);renderList();buzz(20);
     this.innerHTML=bmS(now)+' '+(now?'Enregistr\u00e9':t('save'));
-    toast(now?'Enregistr\u00e9'+ICO_OK+'':'Retir\u00e9 des enregistr\u00e9s');
+    toast(now?'Enregistr\u00e9'+ICO_OK:'Retir\u00e9 des enregistr\u00e9s');
   });
+  }catch(e){toast('Erreur fiche : '+String(e&&e.message||e).slice(0,80))}
 }
 function renderSearch(){
   var q=$('#q-in').value.trim().toLowerCase();
