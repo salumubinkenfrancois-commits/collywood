@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="robots" content="noindex,nofollow"/>
-<title>COLLYWOOD — Administration</title>
+<title>COLLYWOOD+ — Studio (Séries)</title>
 <link rel="manifest" href="manifest-admin.webmanifest"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
@@ -155,7 +155,7 @@ small{color:var(--cendre)}
   <section class="pane" id="p-cat">
     <div class="searchbar"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="cat-q" placeholder="Rechercher un titre, une série…"/></div>
     <div class="seg" id="cat-seg">
-      <button data-f="all" class="on">Tout</button><button data-f="serie">Séries</button><button data-f="film">Films</button><button data-f="clip">Clips</button><button data-f="draft">Brouillons</button>
+      <button data-f="all" class="on">Tout</button><button data-f="serie">Séries</button><button data-f="clip">Clips</button><button data-f="draft">Brouillons</button>
     </div>
     <div id="cat-list"><div class="spin"></div></div>
   </section>
@@ -164,7 +164,7 @@ small{color:var(--cendre)}
   <section class="pane" id="p-add">
     <h2 id="add-title">Publier un contenu</h2>
     <div class="seg" id="f-kindseg">
-      <button data-k="serie" class="on">Épisode de série</button><button data-k="film">Film</button><button data-k="clip">Clip</button>
+      <button data-k="serie" class="on">Épisode de série</button><button data-k="clip">Clip</button>
     </div>
     <div id="f-seriebox">
       <div class="fg"><label>Série (identifiant — ex : le-serment-de-goma)</label><input id="f-series" list="series-dl" placeholder="Choisir ou créer une série" autocapitalize="none"/><datalist id="series-dl"></datalist></div>
@@ -392,10 +392,10 @@ function epRow(e,solo){
     +'<div class="tx"><b>'+(solo?'':'Ép. '+(e.episode||'?')+' — ')+esc(e.title||'Sans titre')+'</b>'
     +'<span>'+esc(e.kind||'')+(e.preview_seconds?' · aperçu '+e.preview_seconds+' s':'')+(e.language?' · '+esc(e.language):'')+'</span></div>'
     +(e.published?'<span class="badge green">PUBLIÉ</span>':'<span class="badge red">BROUILLON</span>')
-    +((!e.series_id&&e.kind==='film')?('<button class="act" data-star="'+esc(e.id)+'"'+(e.featured?' style="color:var(--soleil)"':'')+' aria-label="Mettre \u00e0 la une"><svg viewBox="0 0 24 24" fill="'+(e.featured?'currentColor':'none')+'" stroke="currentColor" stroke-width="2" stroke-linejoin="round" width="16" height="16"><path d="M12 3.6l2.5 5.1 5.6.8-4 3.9.9 5.6-5-2.6-5 2.6.9-5.6-4-3.9 5.6-.8z"/></svg></button>'):'')
+    
      +'<button class="act" data-pub="'+esc(e.id)+'" aria-label="Basculer publication">'+(e.published?'Retirer':'Publier')+'</button>'
     +'<button class="act" data-poster="'+esc(e.id)+'" aria-label="Changer l\u2019affiche"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m5 18 5-5 3.2 3.2L17 12l3 3.5"/></svg></button>'
-     +(e.kind==='film'?'<button class="act" data-pland="'+esc(e.id)+'" aria-label="Image paysage 16:9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="2.5" y="6.5" width="19" height="11" rx="2"/><path d="m5 15 4-4 3 3 3.5-3.5L20 14"/></svg></button>':'')
+     
      +'<button class="act" data-video="'+esc(e.id)+'" aria-label="Remplacer la vid\u00e9o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="3.5" y="5.5" width="12.5" height="13" rx="2.5"/><path d="m16 10.6 4.5-2.6v8l-4.5-2.6z"/></svg></button>'
      +'<button class="act" data-edit="'+esc(e.id)+'" aria-label="Modifier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 4.5l3 3L8 19l-4 1 1-4z"/></svg></button>'
     +'<button class="act red" data-del="'+esc(e.id)+'" aria-label="Supprimer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4.5 6.5h15M9 6V4.5h6V6M7 6.5l.8 13h8.4l.8-13M10 10v6M14 10v6"/></svg></button></div>';
