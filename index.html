@@ -89,7 +89,7 @@ img{display:block;}
 .hero .tx{position:absolute;left:1rem;right:1rem;bottom:.9rem;}
 .hero .k{color:var(--soleil);font-size:.68rem;letter-spacing:.22em;font-weight:700;}
 .hero h2{font-size:1.35rem;margin:.2rem 0 .5rem;}
-.hero .cta{display:inline-flex;align-items:center;gap:.5rem;background:var(--soleil);color:#1a1509;font-weight:700;padding:.55rem 1.1rem;border-radius:22px;font-size:.9rem;}
+.hero .cta{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:var(--soleil);color:#1a1509;font-weight:800;padding:.85rem 1.6rem;border-radius:26px;font-size:.98rem;box-shadow:0 12px 28px rgba(245,185,33,.35);letter-spacing:.01em;}
 .sec{margin:0 1rem 1.4rem;}
 .sec h3{font-size:1.02rem;margin-bottom:.7rem;}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem;}
@@ -714,7 +714,8 @@ html{background:#060D16;}
 @media (orientation:landscape){
   #player .top{padding-left:calc(14px + env(safe-area-inset-left,0px));padding-right:calc(14px + env(safe-area-inset-right,0px));}
   #player .bottom{padding-left:calc(14px + env(safe-area-inset-left,0px));padding-right:calc(14px + env(safe-area-inset-right,0px));}
-  #player #pl-syn{display:none;}
+  #player .pside,#player .binfo,#pl-subpill{display:none !important;}
+  #pbar{left:calc(1rem + env(safe-area-inset-left,0px));right:calc(1rem + env(safe-area-inset-right,0px));}
 }
 
 /* ═══ v4 — Entr\u00e9e libre ═══ */
@@ -747,8 +748,8 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
 .gh{font-size:1.18rem;font-weight:800;letter-spacing:-.02em;}
 .gh .ghv{color:var(--cendre);margin-top:2px;}
 .fbtx .chplay{width:100%;justify-content:center;font-size:1.02rem;padding:.95rem;box-shadow:0 12px 28px rgba(245,185,33,.32);}
-.card.cfilm{width:216px;aspect-ratio:16/9;}
-.card.cfilm.small{width:198px;}
+.card.cfilm{width:220px;height:auto;aspect-ratio:16/9;}
+.card.cfilm.small{width:200px;height:auto;}
 .card.cfilm .mkA{font-size:3.4rem;bottom:-8px;right:4px;}
 .card.cfilm .tt{bottom:20px;}
 .card.cfilm .gg{bottom:6px;}
@@ -874,7 +875,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
   <!-- ═══ MA LISTE ═══ -->
   <section class="screen" id="s-films">
     <div class="pghead"><span style="width:36px"></span><div class="pgtitle" style="margin:0" id="tt-films">Films</div><span style="width:36px"></span></div>
-    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v4.9</small></div></div>
+    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v4.9.1</small></div></div>
   </section>
 
   <section class="screen" id="s-list">
@@ -939,7 +940,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
       <button class="pbtn" id="pf-terms"><span class="lft"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>Conditions d'utilisation</span><span><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" style="vertical-align:-1px"><path d="m9 5 7 7-7 7"/></svg></span></button>
     </div>
     <div class="pwrap"><button class="logoutbtn" id="pf-logout">Se déconnecter</button></div>
-    <p class="pfoot">COLLYWOOD+ · v4.9</p>
+    <p class="pfoot">COLLYWOOD+ · v4.9.1</p>
   </section>
 
   <nav class="tabbar">
@@ -1235,7 +1236,7 @@ function enterOnce(){
       var gap=Math.round(window.innerHeight-r.bottom);
       var d=document.createElement('div');
       d.style.cssText='position:fixed;inset:auto 10px 90px 10px;z-index:9999;background:#101D2E;border:1px solid #F5B921;border-radius:14px;padding:14px;font:12px/1.7 monospace;color:#fff;white-space:pre;';
-      d.textContent='DIAG v4.9\nstandalone: '+standalone
+      d.textContent='DIAG v4.9.1\nstandalone: '+standalone
         +'\ninnerHeight: '+window.innerHeight
         +'\nclientHeight: '+document.documentElement.clientHeight
         +'\nvisualViewport: '+vv
@@ -1664,14 +1665,11 @@ function showTapPlay(){
     b.remove();
     buzz(15);
     var pr=pv.play();if(pr&&pr.catch)pr.catch(function(){});
-    if(P.film){
+    if(P.film&&!pv.webkitEnterFullscreen){
       try{
-        if(pv.webkitEnterFullscreen){pv.webkitEnterFullscreen();}
-        else{
-          var h=$('#player');
-          if(h.requestFullscreen)h.requestFullscreen();
-          if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(function(){});
-        }
+        var h=$('#player');
+        if(h.requestFullscreen)h.requestFullscreen();
+        if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(function(){});
       }catch(_){}
     }
   });
@@ -1783,9 +1781,11 @@ window.addEventListener('popstate',function(){
 $('#pl-back').addEventListener('click',function(){history.back()});
 $('#pl-fs').addEventListener('click',function(){
   buzz(12);
-  try{
-    if(pv.webkitEnterFullscreen){pv.webkitEnterFullscreen();return}
-  }catch(_){}
+  if(pv.webkitEnterFullscreen){
+    /* iOS : notre lecteur occupe déjà tout l'écran — on guide la rotation */
+    toast('Tourne ton t\u00e9l\u00e9phone \u2014 plein \u00e9cran cin\u00e9ma');
+    return;
+  }
   var host=document.getElementById('player');
   var rq=host.requestFullscreen||host.webkitRequestFullscreen;
   if(rq){
@@ -2111,11 +2111,18 @@ pv.addEventListener('playing',function(){
   if(window.__wantFS){
     window.__wantFS=0;
     try{
-      if(pv.webkitEnterFullscreen){pv.webkitEnterFullscreen();}
-      else{
+      if(!pv.webkitEnterFullscreen){
+        /* Android / desktop : plein écran du CONTENEUR — notre interface reste maître */
         var h=$('#player');
         if(h.requestFullscreen)h.requestFullscreen();
         if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(function(){});
+      }else if(window.matchMedia&&matchMedia('(orientation: portrait)').matches){
+        try{
+          if(!sessionStorage.getItem('cw2_rotT')){
+            sessionStorage.setItem('cw2_rotT','1');
+            toast('Tourne ton t\u00e9l\u00e9phone pour le plein \u00e9cran cin\u00e9ma');
+          }
+        }catch(_){}
       }
     }catch(_){}
   }
