@@ -832,6 +832,18 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
 .fbtx h1{font-size:1.72rem;}
 .fbimg .mkA{font-size:7rem;bottom:-18px;}
 @media(min-width:1024px){.fbhero{height:min(38vw,460px);}}
+
+/* ═══ v5.2 · Accueil B+ v2 ═══ */
+.fbcar{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;}
+.fbcar::-webkit-scrollbar{display:none}
+.fbslide{position:relative;flex:none;width:100%;height:min(112vw,540px);overflow:hidden;background:var(--carte);scroll-snap-align:start;}
+.fbslide .fbimg{position:absolute;inset:0;background-size:cover;background-position:center top;}
+.fbslide .fbtx h1{font-size:2rem;}
+.hdots{display:flex;gap:6px;justify-content:center;margin:10px 0 2px;}
+.hdots i{width:6px;height:6px;border-radius:50%;background:rgba(246,243,236,.25);transition:all .25s;}
+.hdots i.on{width:18px;border-radius:4px;background:var(--soleil);}
+.hchips{position:sticky;top:0;z-index:6;display:flex;gap:8px;overflow-x:auto;padding:14px 16px 10px;margin-top:14px;scrollbar-width:none;background:linear-gradient(180deg,var(--nuit) 78%,transparent);}
+.hchips::-webkit-scrollbar{display:none}
 </style>
 </head>
 <body>
@@ -921,7 +933,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
   <!-- ═══ MA LISTE ═══ -->
   <section class="screen" id="s-films">
     <div class="pghead"><span style="width:36px"></span><div class="pgtitle" style="margin:0" id="tt-films">Films</div><span style="width:36px"></span></div>
-    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v5.1</small></div></div>
+    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v5.2</small></div></div>
   </section>
 
   <section class="screen" id="s-list">
@@ -986,7 +998,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
       <button class="pbtn" id="pf-terms"><span class="lft"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>Conditions d'utilisation</span><span><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" style="vertical-align:-1px"><path d="m9 5 7 7-7 7"/></svg></span></button>
     </div>
     <div class="pwrap"><button class="logoutbtn" id="pf-logout">Se déconnecter</button></div>
-    <p class="pfoot">COLLYWOOD+ · v5.1</p>
+    <p class="pfoot">COLLYWOOD+ · v5.2</p>
   </section>
 
   <nav class="tabbar">
@@ -1136,10 +1148,10 @@ function serieProgress(s){
 }
 var LANGS={fr:'Français',en:'English',ln:'Lingala',sw:'Swahili'};
 var I18N={
-fr:{tab_home:'Accueil',tab_feed:'Pour toi',tab_list:'Enregistrés',search_ph:'Rechercher un film, une histoire…',q_ph:'Titre, genre, catégorie…',q_hint:'Cherchez une histoire, un film ou un genre<br/>(ex : Drame, Romance, Comédie…)',sec_resume:'Reprendre la lecture',sec_pop:'Populaire',sec_rank:'Classement',sec_new:'Nouveautés',sec_cat:'Catégories',sec_all:'Toutes les histoires',hero_k:'NOUVELLE HISTOIRE',hero_cta:'Regarder — Ép. 1-2 gratuits',films:'Films',eps:'épisodes',episode:'Épisode',free_lbl:'gratuits',watch_ep:'Regarder Ép.',resume_ep:'Reprendre Ép.',save:'Enregistrer',login_first:'Connectez-vous d\u2019abord',sound_on:'Son activé',sound_off:'Son coupé',see_story:'Voir l\u2019histoire',ep1_free:'ÉP. 1-2 GRATUITS',share:'Partager',episodes_b:'Épisodes',download:'Télécharger',dl_done:'Épisode ajouté à vos téléchargements',last_ep:'Dernier épisode',lock_l1:'La suite de l\u2019histoire est réservée aux abonnés.',lock_l2:'Tout COLLYWOOD pour 8 500 FC/mois.',lock_btn:'S\u2019abonner maintenant',subpill:'S\u2019abonner · 8 500 FC/mois',list_title:'Enregistrés',resume_title:'Reprendre',list_empty:'Enregistrez vos histoires et films avec le marque-page pour les retrouver ici.',resume_empty:'Vos histoires en cours apparaîtront ici.',resume_at:'Reprendre à l\u2019épisode',logout:'Se déconnecter',bye:'À bientôt sur COLLYWOOD',p_fid:'CARTE FIDÉLITÉ',p_hist:'HISTORIQUE',p_sub:'ABONNEMENT & PAIEMENTS',p_short:'RACCOURCIS',p_set:'PARAMÈTRES',p_help:'AIDE',r_sub:'S\u2019abonner à Collywood+',r_pay:'Moyen de paiement',r_list:'Enregistrés',r_dl:'Téléchargements',r_edit:'Modifier le profil',r_pass:'Changer le mot de passe',r_qual:'Qualité vidéo',r_subs:'Sous-titres par défaut',r_lang:'Langue de l\u2019application',r_helpc:'Centre d\u2019aide',r_priv:'Politique de confidentialité',r_terms:'Conditions d\u2019utilisation',r_supp:'Contacter le service client',lb_wifi:'Télécharger en Wi-Fi uniquement',lb_data:'Mode économie de données',lb_notif:'Notifications',sub_cta:'S\u2019abonner ·',cancel:'Annuler',close:'Fermer',subs_off:'Désactivés',watch:'Regarder',remove:'Retirer',hist_empty:'Aucun film regardé pour l\u2019instant',auth_sub:'Le premier service de streaming du cinéma congolais au format vertical. Découvrez les 2 premiers épisodes de chaque série gratuitement. Accès illimité pour seulement 8 500 FC/mois, sans engagement.',g_btn:'Continuer avec Google',email_btn:'Continuer avec un e-mail',login:'Se connecter',create_acc:'Créer un compte',forgot:'Mot de passe oublié ?',aff:'À L\u2019AFFICHE',see_all:'Tout voir',films_empty:'Les films arrivent très bientôt sur COLLYWOOD.',srch:'Recherche'},
-en:{tab_home:'Home',tab_feed:'For you',tab_list:'Saved',search_ph:'Search a film or a story…',q_ph:'Title, genre, category…',q_hint:'Search a story, a film or a genre<br/>(e.g. Drama, Romance, Comedy…)',sec_resume:'Continue watching',sec_pop:'Popular',sec_rank:'Top ranking',sec_new:'New releases',sec_cat:'Categories',sec_all:'All stories',hero_k:'NEW STORY',hero_cta:'Watch — Ep. 1-2 free',films:'Films',eps:'episodes',episode:'Episode',free_lbl:'free',watch_ep:'Watch Ep.',resume_ep:'Resume Ep.',save:'Save',login_first:'Please sign in first',sound_on:'Sound on',sound_off:'Muted',see_story:'View story',ep1_free:'EP. 1-2 FREE',share:'Share',episodes_b:'Episodes',download:'Download',dl_done:'Episode added to your downloads',last_ep:'Last episode',lock_l1:'The rest of this story is for subscribers.',lock_l2:'All of COLLYWOOD for 8,500 FC/month.',lock_btn:'Subscribe now',subpill:'Subscribe · 8,500 FC/month',list_title:'Saved',resume_title:'Continue',list_empty:'Save stories and films with the bookmark to find them here.',resume_empty:'Stories you started will appear here.',resume_at:'Resume at episode',logout:'Sign out',bye:'See you soon on COLLYWOOD',p_fid:'LOYALTY CARD',p_hist:'HISTORY',p_sub:'SUBSCRIPTION & PAYMENTS',p_short:'SHORTCUTS',p_set:'SETTINGS',p_help:'HELP',r_sub:'Subscribe to Collywood+',r_pay:'Payment method',r_list:'Saved',r_dl:'Downloads',r_edit:'Edit profile',r_pass:'Change password',r_qual:'Video quality',r_subs:'Default subtitles',r_lang:'App language',r_helpc:'Help center',r_priv:'Privacy policy',r_terms:'Terms of use',r_supp:'Contact support',lb_wifi:'Download on Wi-Fi only',lb_data:'Data saver mode',lb_notif:'Notifications',sub_cta:'Subscribe ·',cancel:'Cancel',close:'Close',subs_off:'Off',watch:'Watch',remove:'Remove',hist_empty:'No films watched yet',auth_sub:'The first streaming service for Congolese cinema in vertical format. Enjoy the first 2 episodes of every series for free. Unlimited access for just 8,500 FC/month, no commitment.',g_btn:'Continue with Google',email_btn:'Continue with e-mail',login:'Sign in',create_acc:'Create account',forgot:'Forgot password?',aff:'NOW SHOWING',see_all:'See all',films_empty:'Films are coming very soon to COLLYWOOD.',srch:'Search'},
-ln:{tab_home:'Ndako',tab_feed:'Mpo na yo',tab_list:'Bibombami',search_ph:'Luka filme to lisolo…',q_ph:'Titre, genre…',q_hint:'Luka lisolo, filme to genre',sec_resume:'Kokoba kotala',sec_pop:'Oyo elingami',sec_rank:'Molongo ya liboso',sec_new:'Ya sika',sec_cat:'Mitindo',sec_all:'Masolo nyonso',hero_k:'LISOLO YA SIKA',hero_cta:'Tala — Ép. 1-2 ofele',films:'Bafilme',eps:'ba épisodes',episode:'Épisode',free_lbl:'ofele',watch_ep:'Tala Ép.',resume_ep:'Kokoba Ép.',save:'Bomba',login_first:'Kota nanu na compte',sound_on:'Mongongo efungwami',sound_off:'Mongongo ekangami',see_story:'Tala lisolo',ep1_free:'ÉP. 1-2 OFELE',share:'Kabola',episodes_b:'Ba épisodes',download:'Kitisa',dl_done:'Épisode ebombami',last_ep:'Épisode ya suka',lock_l1:'Suite ya lisolo ezali mpo na ba abonnés.',lock_l2:'COLLYWOOD mobimba na 8 500 FC/sanza.',lock_btn:'Zwa abonnement',subpill:'Abonnement · 8 500 FC/sanza',list_title:'Bibombami',resume_title:'Kokoba',list_empty:'Bomba masolo mpe bafilme na marque-page mpo omona yango awa.',resume_empty:'Masolo oyo obandaki ekomonana awa.',resume_at:'Kokoba na épisode',logout:'Bima',bye:'Tokomonana na COLLYWOOD',p_fid:'KARTA YA FIDÉLITÉ',p_hist:'HISTORIQUE',p_sub:'ABONNEMENT & BAFUTA',p_short:'BANZELA YA MBANGU',p_set:'BA PARAMÈTRES',p_help:'LISALISI',r_sub:'Zwa Collywood+',r_pay:'Ndenge ya kofuta',r_list:'Bibombami',r_dl:'Ba téléchargements',r_edit:'Bongisa profil',r_pass:'Bongola mot de passe',r_qual:'Qualité ya video',r_subs:'Ba sous-titres',r_lang:'Monoko ya application',r_helpc:'Esika ya lisalisi',r_priv:'Politique ya confidentialité',r_terms:'Mibeko ya kosalela',r_supp:'Benga service client',lb_wifi:'Kitisa kaka na Wi-Fi',lb_data:'Mode ya kobomba data',lb_notif:'Ba notifications',sub_cta:'Zwa ·',cancel:'Tika',close:'Kanga',subs_off:'Ekangami',watch:'Tala',remove:'Longola',hist_empty:'Naino otali eloko te',auth_sub:'Service ya liboso ya streaming ya cinéma ya Congo na format vertical. Tala ba épisodes 2 ya liboso ya série nyonso ofele. Accès illimité na 8 500 FC/sanza kaka.',g_btn:'Kota na Google',email_btn:'Kota na e-mail',login:'Kota',create_acc:'Sala compte',forgot:'Obosani mot de passe ?',aff:'EZALI KOBIMA',see_all:'Tala nyonso',films_empty:'Bafilme ekoya kala te na COLLYWOOD.',srch:'Boluki'},
-sw:{tab_home:'Nyumbani',tab_feed:'Kwa ajili yako',tab_list:'Zilizohifadhiwa',search_ph:'Tafuta filamu au hadithi…',q_ph:'Jina, aina…',q_hint:'Tafuta hadithi, filamu au aina',sec_resume:'Endelea kutazama',sec_pop:'Maarufu',sec_rank:'Orodha ya juu',sec_new:'Mpya',sec_cat:'Aina',sec_all:'Hadithi zote',hero_k:'HADITHI MPYA',hero_cta:'Tazama — Kip. 1-2 bure',films:'Filamu',eps:'vipindi',episode:'Kipindi',free_lbl:'bure',watch_ep:'Tazama Kip.',resume_ep:'Endelea Kip.',save:'Hifadhi',login_first:'Ingia kwanza',sound_on:'Sauti imewashwa',sound_off:'Sauti imezimwa',see_story:'Ona hadithi',ep1_free:'KIP. 1-2 BURE',share:'Shiriki',episodes_b:'Vipindi',download:'Pakua',dl_done:'Kipindi kimehifadhiwa',last_ep:'Kipindi cha mwisho',lock_l1:'Sehemu iliyobaki ni ya waliojisajili.',lock_l2:'COLLYWOOD yote kwa FC 8,500/mwezi.',lock_btn:'Jisajili sasa',subpill:'Jisajili · FC 8,500/mwezi',list_title:'Zilizohifadhiwa',resume_title:'Endelea',list_empty:'Hifadhi hadithi na filamu kwa alama ya kuhifadhi ili uzione hapa.',resume_empty:'Hadithi ulizoanza zitaonekana hapa.',resume_at:'Endelea kipindi',logout:'Toka',bye:'Tutaonana COLLYWOOD',p_fid:'KADI YA UAMINIFU',p_hist:'HISTORIA',p_sub:'USAJILI & MALIPO',p_short:'NJIA ZA MKATO',p_set:'MIPANGILIO',p_help:'MSAADA',r_sub:'Jisajili Collywood+',r_pay:'Njia ya malipo',r_list:'Zilizohifadhiwa',r_dl:'Upakuaji',r_edit:'Hariri wasifu',r_pass:'Badilisha nenosiri',r_qual:'Ubora wa video',r_subs:'Manukuu chaguo-msingi',r_lang:'Lugha ya programu',r_helpc:'Kituo cha msaada',r_priv:'Sera ya faragha',r_terms:'Masharti ya matumizi',r_supp:'Wasiliana na msaada',lb_wifi:'Pakua kwa Wi-Fi pekee',lb_data:'Hali ya kuokoa data',lb_notif:'Arifa',sub_cta:'Jisajili ·',cancel:'Ghairi',close:'Funga',subs_off:'Zimezimwa',watch:'Tazama',remove:'Ondoa',hist_empty:'Bado hujatazama chochote',auth_sub:'Huduma ya kwanza ya utiririshaji wa sinema ya Kongo katika muundo wa wima. Tazama vipindi 2 vya kwanza vya kila mfululizo bure. Ufikiaji usio na kikomo kwa FC 8,500/mwezi tu.',g_btn:'Endelea na Google',email_btn:'Endelea na barua pepe',login:'Ingia',create_acc:'Fungua akaunti',forgot:'Umesahau nenosiri?',aff:'INAONYESHWA SASA',see_all:'Ona zote',films_empty:'Filamu zinakuja hivi karibuni COLLYWOOD.',srch:'Utafutaji'}
+fr:{tab_home:'Accueil',tab_feed:'Pour toi',tab_list:'Enregistrés',search_ph:'Rechercher un film, une histoire…',q_ph:'Titre, genre, catégorie…',q_hint:'Cherchez une histoire, un film ou un genre<br/>(ex : Drame, Romance, Comédie…)',sec_resume:'Reprendre la lecture',sec_pop:'Populaire',sec_rank:'Classement',sec_new:'Nouveautés',sec_cat:'Catégories',sec_all:'Toutes les histoires',hero_k:'NOUVELLE HISTOIRE',hero_cta:'Regarder — Ép. 1-2 gratuits',films:'Films',eps:'épisodes',episode:'Épisode',free_lbl:'gratuits',watch_ep:'Regarder Ép.',resume_ep:'Reprendre Ép.',save:'Enregistrer',login_first:'Connectez-vous d\u2019abord',sound_on:'Son activé',sound_off:'Son coupé',see_story:'Voir l\u2019histoire',ep1_free:'ÉP. 1-2 GRATUITS',hb_resume:'REPRENDRE',hb_new:'NOUVELLE HISTOIRE',hb_disc:'À DÉCOUVRIR',hb_watch:'Regarder',hb_repep:'Reprendre Ép.',top_week:'Top 10 cette semaine',hb_all:'Tout',share:'Partager',episodes_b:'Épisodes',download:'Télécharger',dl_done:'Épisode ajouté à vos téléchargements',last_ep:'Dernier épisode',lock_l1:'La suite de l\u2019histoire est réservée aux abonnés.',lock_l2:'Tout COLLYWOOD pour 8 500 FC/mois.',lock_btn:'S\u2019abonner maintenant',subpill:'S\u2019abonner · 8 500 FC/mois',list_title:'Enregistrés',resume_title:'Reprendre',list_empty:'Enregistrez vos histoires et films avec le marque-page pour les retrouver ici.',resume_empty:'Vos histoires en cours apparaîtront ici.',resume_at:'Reprendre à l\u2019épisode',logout:'Se déconnecter',bye:'À bientôt sur COLLYWOOD',p_fid:'CARTE FIDÉLITÉ',p_hist:'HISTORIQUE',p_sub:'ABONNEMENT & PAIEMENTS',p_short:'RACCOURCIS',p_set:'PARAMÈTRES',p_help:'AIDE',r_sub:'S\u2019abonner à Collywood+',r_pay:'Moyen de paiement',r_list:'Enregistrés',r_dl:'Téléchargements',r_edit:'Modifier le profil',r_pass:'Changer le mot de passe',r_qual:'Qualité vidéo',r_subs:'Sous-titres par défaut',r_lang:'Langue de l\u2019application',r_helpc:'Centre d\u2019aide',r_priv:'Politique de confidentialité',r_terms:'Conditions d\u2019utilisation',r_supp:'Contacter le service client',lb_wifi:'Télécharger en Wi-Fi uniquement',lb_data:'Mode économie de données',lb_notif:'Notifications',sub_cta:'S\u2019abonner ·',cancel:'Annuler',close:'Fermer',subs_off:'Désactivés',watch:'Regarder',remove:'Retirer',hist_empty:'Aucun film regardé pour l\u2019instant',auth_sub:'Le premier service de streaming du cinéma congolais au format vertical. Découvrez les 2 premiers épisodes de chaque série gratuitement. Accès illimité pour seulement 8 500 FC/mois, sans engagement.',g_btn:'Continuer avec Google',email_btn:'Continuer avec un e-mail',login:'Se connecter',create_acc:'Créer un compte',forgot:'Mot de passe oublié ?',aff:'À L\u2019AFFICHE',see_all:'Tout voir',films_empty:'Les films arrivent très bientôt sur COLLYWOOD.',srch:'Recherche'},
+en:{tab_home:'Home',tab_feed:'For you',tab_list:'Saved',search_ph:'Search a film or a story…',q_ph:'Title, genre, category…',q_hint:'Search a story, a film or a genre<br/>(e.g. Drama, Romance, Comedy…)',sec_resume:'Continue watching',sec_pop:'Popular',sec_rank:'Top ranking',sec_new:'New releases',sec_cat:'Categories',sec_all:'All stories',hero_k:'NEW STORY',hero_cta:'Watch — Ep. 1-2 free',films:'Films',eps:'episodes',episode:'Episode',free_lbl:'free',watch_ep:'Watch Ep.',resume_ep:'Resume Ep.',save:'Save',login_first:'Please sign in first',sound_on:'Sound on',sound_off:'Muted',see_story:'View story',ep1_free:'EP. 1-2 FREE',hb_resume:'CONTINUE',hb_new:'NEW STORY',hb_disc:'DISCOVER',hb_watch:'Watch',hb_repep:'Resume Ep.',top_week:'Top 10 this week',hb_all:'All',share:'Share',episodes_b:'Episodes',download:'Download',dl_done:'Episode added to your downloads',last_ep:'Last episode',lock_l1:'The rest of this story is for subscribers.',lock_l2:'All of COLLYWOOD for 8,500 FC/month.',lock_btn:'Subscribe now',subpill:'Subscribe · 8,500 FC/month',list_title:'Saved',resume_title:'Continue',list_empty:'Save stories and films with the bookmark to find them here.',resume_empty:'Stories you started will appear here.',resume_at:'Resume at episode',logout:'Sign out',bye:'See you soon on COLLYWOOD',p_fid:'LOYALTY CARD',p_hist:'HISTORY',p_sub:'SUBSCRIPTION & PAYMENTS',p_short:'SHORTCUTS',p_set:'SETTINGS',p_help:'HELP',r_sub:'Subscribe to Collywood+',r_pay:'Payment method',r_list:'Saved',r_dl:'Downloads',r_edit:'Edit profile',r_pass:'Change password',r_qual:'Video quality',r_subs:'Default subtitles',r_lang:'App language',r_helpc:'Help center',r_priv:'Privacy policy',r_terms:'Terms of use',r_supp:'Contact support',lb_wifi:'Download on Wi-Fi only',lb_data:'Data saver mode',lb_notif:'Notifications',sub_cta:'Subscribe ·',cancel:'Cancel',close:'Close',subs_off:'Off',watch:'Watch',remove:'Remove',hist_empty:'No films watched yet',auth_sub:'The first streaming service for Congolese cinema in vertical format. Enjoy the first 2 episodes of every series for free. Unlimited access for just 8,500 FC/month, no commitment.',g_btn:'Continue with Google',email_btn:'Continue with e-mail',login:'Sign in',create_acc:'Create account',forgot:'Forgot password?',aff:'NOW SHOWING',see_all:'See all',films_empty:'Films are coming very soon to COLLYWOOD.',srch:'Search'},
+ln:{tab_home:'Ndako',tab_feed:'Mpo na yo',tab_list:'Bibombami',search_ph:'Luka filme to lisolo…',q_ph:'Titre, genre…',q_hint:'Luka lisolo, filme to genre',sec_resume:'Kokoba kotala',sec_pop:'Oyo elingami',sec_rank:'Molongo ya liboso',sec_new:'Ya sika',sec_cat:'Mitindo',sec_all:'Masolo nyonso',hero_k:'LISOLO YA SIKA',hero_cta:'Tala — Ép. 1-2 ofele',films:'Bafilme',eps:'ba épisodes',episode:'Épisode',free_lbl:'ofele',watch_ep:'Tala Ép.',resume_ep:'Kokoba Ép.',save:'Bomba',login_first:'Kota nanu na compte',sound_on:'Mongongo efungwami',sound_off:'Mongongo ekangami',see_story:'Tala lisolo',ep1_free:'ÉP. 1-2 OFELE',hb_resume:'KOBÁ LISUSU',hb_new:'LISOLO YA SIKA',hb_disc:'LUKÁ',hb_watch:'Tala',hb_repep:'Kobá Ép.',top_week:'Top 10 ya pɔsɔ',hb_all:'Nyɔnsɔ',share:'Kabola',episodes_b:'Ba épisodes',download:'Kitisa',dl_done:'Épisode ebombami',last_ep:'Épisode ya suka',lock_l1:'Suite ya lisolo ezali mpo na ba abonnés.',lock_l2:'COLLYWOOD mobimba na 8 500 FC/sanza.',lock_btn:'Zwa abonnement',subpill:'Abonnement · 8 500 FC/sanza',list_title:'Bibombami',resume_title:'Kokoba',list_empty:'Bomba masolo mpe bafilme na marque-page mpo omona yango awa.',resume_empty:'Masolo oyo obandaki ekomonana awa.',resume_at:'Kokoba na épisode',logout:'Bima',bye:'Tokomonana na COLLYWOOD',p_fid:'KARTA YA FIDÉLITÉ',p_hist:'HISTORIQUE',p_sub:'ABONNEMENT & BAFUTA',p_short:'BANZELA YA MBANGU',p_set:'BA PARAMÈTRES',p_help:'LISALISI',r_sub:'Zwa Collywood+',r_pay:'Ndenge ya kofuta',r_list:'Bibombami',r_dl:'Ba téléchargements',r_edit:'Bongisa profil',r_pass:'Bongola mot de passe',r_qual:'Qualité ya video',r_subs:'Ba sous-titres',r_lang:'Monoko ya application',r_helpc:'Esika ya lisalisi',r_priv:'Politique ya confidentialité',r_terms:'Mibeko ya kosalela',r_supp:'Benga service client',lb_wifi:'Kitisa kaka na Wi-Fi',lb_data:'Mode ya kobomba data',lb_notif:'Ba notifications',sub_cta:'Zwa ·',cancel:'Tika',close:'Kanga',subs_off:'Ekangami',watch:'Tala',remove:'Longola',hist_empty:'Naino otali eloko te',auth_sub:'Service ya liboso ya streaming ya cinéma ya Congo na format vertical. Tala ba épisodes 2 ya liboso ya série nyonso ofele. Accès illimité na 8 500 FC/sanza kaka.',g_btn:'Kota na Google',email_btn:'Kota na e-mail',login:'Kota',create_acc:'Sala compte',forgot:'Obosani mot de passe ?',aff:'EZALI KOBIMA',see_all:'Tala nyonso',films_empty:'Bafilme ekoya kala te na COLLYWOOD.',srch:'Boluki'},
+sw:{tab_home:'Nyumbani',tab_feed:'Kwa ajili yako',tab_list:'Zilizohifadhiwa',search_ph:'Tafuta filamu au hadithi…',q_ph:'Jina, aina…',q_hint:'Tafuta hadithi, filamu au aina',sec_resume:'Endelea kutazama',sec_pop:'Maarufu',sec_rank:'Orodha ya juu',sec_new:'Mpya',sec_cat:'Aina',sec_all:'Hadithi zote',hero_k:'HADITHI MPYA',hero_cta:'Tazama — Kip. 1-2 bure',films:'Filamu',eps:'vipindi',episode:'Kipindi',free_lbl:'bure',watch_ep:'Tazama Kip.',resume_ep:'Endelea Kip.',save:'Hifadhi',login_first:'Ingia kwanza',sound_on:'Sauti imewashwa',sound_off:'Sauti imezimwa',see_story:'Ona hadithi',ep1_free:'KIP. 1-2 BURE',hb_resume:'ENDELEA',hb_new:'HADITHI MPYA',hb_disc:'GUNDUA',hb_watch:'Tazama',hb_repep:'Endelea Kip.',top_week:'Top 10 wiki hii',hb_all:'Zote',share:'Shiriki',episodes_b:'Vipindi',download:'Pakua',dl_done:'Kipindi kimehifadhiwa',last_ep:'Kipindi cha mwisho',lock_l1:'Sehemu iliyobaki ni ya waliojisajili.',lock_l2:'COLLYWOOD yote kwa FC 8,500/mwezi.',lock_btn:'Jisajili sasa',subpill:'Jisajili · FC 8,500/mwezi',list_title:'Zilizohifadhiwa',resume_title:'Endelea',list_empty:'Hifadhi hadithi na filamu kwa alama ya kuhifadhi ili uzione hapa.',resume_empty:'Hadithi ulizoanza zitaonekana hapa.',resume_at:'Endelea kipindi',logout:'Toka',bye:'Tutaonana COLLYWOOD',p_fid:'KADI YA UAMINIFU',p_hist:'HISTORIA',p_sub:'USAJILI & MALIPO',p_short:'NJIA ZA MKATO',p_set:'MIPANGILIO',p_help:'MSAADA',r_sub:'Jisajili Collywood+',r_pay:'Njia ya malipo',r_list:'Zilizohifadhiwa',r_dl:'Upakuaji',r_edit:'Hariri wasifu',r_pass:'Badilisha nenosiri',r_qual:'Ubora wa video',r_subs:'Manukuu chaguo-msingi',r_lang:'Lugha ya programu',r_helpc:'Kituo cha msaada',r_priv:'Sera ya faragha',r_terms:'Masharti ya matumizi',r_supp:'Wasiliana na msaada',lb_wifi:'Pakua kwa Wi-Fi pekee',lb_data:'Hali ya kuokoa data',lb_notif:'Arifa',sub_cta:'Jisajili ·',cancel:'Ghairi',close:'Funga',subs_off:'Zimezimwa',watch:'Tazama',remove:'Ondoa',hist_empty:'Bado hujatazama chochote',auth_sub:'Huduma ya kwanza ya utiririshaji wa sinema ya Kongo katika muundo wa wima. Tazama vipindi 2 vya kwanza vya kila mfululizo bure. Ufikiaji usio na kikomo kwa FC 8,500/mwezi tu.',g_btn:'Endelea na Google',email_btn:'Endelea na barua pepe',login:'Ingia',create_acc:'Fungua akaunti',forgot:'Umesahau nenosiri?',aff:'INAONYESHWA SASA',see_all:'Ona zote',films_empty:'Filamu zinakuja hivi karibuni COLLYWOOD.',srch:'Utafutaji'}
 };
 var LOCALE='fr';try{LOCALE=localStorage.getItem('cw2_lang')||'fr'}catch(_){}
 function t(k){var d=I18N[LOCALE]||I18N.fr;return d[k]||I18N.fr[k]||k}
@@ -1288,7 +1300,7 @@ function enterOnce(){
       var gap=Math.round(window.innerHeight-r.bottom);
       var d=document.createElement('div');
       d.style.cssText='position:fixed;inset:auto 10px 90px 10px;z-index:9999;background:#101D2E;border:1px solid #F5B921;border-radius:14px;padding:14px;font:12px/1.7 monospace;color:#fff;white-space:pre;';
-      d.textContent='DIAG v5.1\nstandalone: '+standalone
+      d.textContent='DIAG v5.2\nstandalone: '+standalone
         +'\ninnerHeight: '+window.innerHeight
         +'\nclientHeight: '+document.documentElement.clientHeight
         +'\nvisualViewport: '+vv
@@ -1523,39 +1535,112 @@ function renderHome(){
   if(!SERIES.length&&!FILMS.length){
     b.innerHTML='<div class="empty">Le catalogue arrive bientôt.<br/>Revenez très vite !</div>';return;
   }
-  var h='';
-  var hero=SERIES.filter(function(s){return !s.demo})[0]||SERIES[0];
-  if(hero){
-    h+='<div class="hero" data-serie="'+esc(hero.id)+'"><div class="bg" style="'+posterCss(hero)+'"></div><div class="sh"></div>'
-      +'<div class="tx"><div class="k">'+t('hero_k')+'</div><h2>'+esc(hero.title)+'</h2>'
-      +'<span class="cta">'+ICO_PLAY+t('hero_cta')+'</span></div></div>';
+  if(!window.__topReq){
+    window.__topReq=1;
+    try{
+      api('/rest/v1/rpc/top_series',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p_days:7})})
+      .then(function(rows){
+        if(rows&&rows.length){window.__topIds=rows.map(function(r){return r.sid});renderHome();}
+      }).catch(function(){});
+    }catch(_){}
   }
+  var HG=window.__homeG||'all';
+  var h='';
   function row(list){return '<div class="hrow vrow">'+list.map(function(s){return cardHtml(s).replace('class="card"','class="card small"')}).join('')+'</div>'}
-  
+  var real=SERIES.filter(function(x){return !x.demo});
+  var base=real.length?real:SERIES;
   var started=SERIES.filter(function(s){return !s.demo&&s.eps.some(function(e){var p=PROGRESS[e.id];return p&&p.t>5})});
+
+  /* ── Carrousel héros ── */
+  var byNew=base.slice().sort(function(a,b){return (b.at||0)-(a.at||0)});
+  var topS=null;
+  if(window.__topIds){
+    for(var ti=0;ti<window.__topIds.length&&!topS;ti++){
+      var cand=base.filter(function(x){return x.id===window.__topIds[ti]})[0];
+      if(cand)topS=cand;
+    }
+  }
+  var picks=[],pid={};
+  function pick(sr,tag,cta){if(sr&&!pid[sr.id]&&picks.length<3){pid[sr.id]=1;picks.push({s:sr,tag:tag,cta:cta})}}
+  if(started[0]){
+    var c0=started[0],seen=0;
+    c0.eps.forEach(function(ep,ix){var pp=PROGRESS[ep.id];if(pp&&pp.t>5)seen=ix});
+    pick(c0,t('hb_resume'),t('hb_repep')+' '+((c0.eps[seen]&&(c0.eps[seen].episode||seen+1))||1));
+  }
+  pick(byNew[0],t('hb_new'),t('hb_watch'));
+  pick(topS||byNew[1],t('hb_disc'),t('hb_watch'));
+  if(!picks.length)pick(base[0]||SERIES[0],t('hb_new'),t('hb_watch'));
+  function slideHtml(pk){
+    var sr=pk.s,n=sr.eps.length;
+    return '<div class="fbslide" data-serie="'+esc(sr.id)+'">'
+      +'<div class="fbimg" style="'+posterCss(sr)+'"></div><div class="fbsh"></div>'
+      +'<div class="fbtx"><small>'+pk.tag+'</small><h1>'+esc(sr.title)+'</h1>'
+      +'<div class="fbmeta">'+esc((sr.genre||'').toUpperCase())+' \u00b7 '+n+' \u00c9PISODES \u00b7 '+t('ep1_free')+'</div>'
+      +'<button class="chplay" data-serieplay="'+esc(sr.id)+'">'+ICO_PLAY+esc(pk.cta)+'</button></div></div>';
+  }
+  h+='<div class="fbcar" id="fbcar">'+picks.map(slideHtml).join('')+'</div>';
+  if(picks.length>1){
+    h+='<div class="hdots" id="hdots">'+picks.map(function(_,i){return '<i'+(i?'':' class="on"')+'></i>'}).join('')+'</div>';
+  }
+
+  /* ── Reprendre ── */
   if(started.length)h+=sec(I_play,t('sec_resume'),'<div class="hrow vrow">'+started.map(function(s){
     return cardHtml(s).replace('class="card"','class="card small"').replace('</button>','<span class="cpg"><i style="width:'+serieProgress(s)+'%"></i></span></button>');
   }).join('')+'</div>');
-  var pop=SERIES.slice().sort(function(a,b){return b.eps.length-a.eps.length});
-  h+=sec(I_flame,t('sec_pop'),row(pop.slice(0,10)));
-  h+='<div class="sec"><h3>'+I_trophy+t('sec_rank')+'</h3><div class="hrow rankrow">'+SERIES.slice(0,5).map(function(s,i){
+
+  /* ── Top 10 réel ── */
+  var rankBase;
+  if(window.__topIds&&window.__topIds.length){
+    rankBase=[];
+    window.__topIds.forEach(function(id){
+      var f=SERIES.filter(function(x){return x.id===id})[0];
+      if(f)rankBase.push(f);
+    });
+    SERIES.forEach(function(s){if(rankBase.length<10&&rankBase.indexOf(s)<0)rankBase.push(s)});
+  }else{
+    rankBase=SERIES.slice().sort(function(a,b){return b.eps.length-a.eps.length});
+  }
+  h+='<div class="sec"><h3>'+I_trophy+t('top_week')+'</h3><div class="hrow rankrow">'+rankBase.slice(0,10).map(function(s,i){
+    var rm=[];
+    if(s.rating)rm.push(STAR+' '+s.rating);
+    if(s.views)rm.push(s.views+' vues');
     return '<div class="rank"><span class="num">'+(i+1)+'</span><div class="rkcol">'
       +cardHtml(s).replace('class="card"','class="card small"')
-      +'<div class="rkmeta">'+STAR+' '+s.rating+' · '+s.views+' vues</div></div></div>';
+      +(rm.length?'<div class="rkmeta">'+rm.join(' \u00b7 ')+'</div>':'')+'</div></div>';
   }).join('')+'</div></div>';
-  h+=sec(I_spark,t('sec_new'),row(SERIES.slice().sort(function(a,b){return b.at-a.at}).slice(0,10)));
-  var GEN={};SERIES.forEach(function(s){GEN[s.genre]=1});
-  h+='<div class="sec"><h3>'+I_clap+t('sec_cat')+'</h3><div class="chips">'+Object.keys(GEN).map(function(g){
-    return '<button class="chip" data-genre="'+esc(g)+'">'+esc(g)+'</button>';
-  }).join('')+'</div></div>';
-  h+='<div class="sec"><h3>'+t('sec_all')+'</h3><div class="grid">'+SERIES.map(cardHtml).join('')+'</div></div>';
+
+  /* ── Chips collantes ── */
+  var GEN={};SERIES.forEach(function(s){if(s.genre)GEN[s.genre]=1});
+  var gkeys=Object.keys(GEN);
+  h+='<div class="hchips" id="hchips"><button class="gchip'+(HG==='all'?' on':'')+'" data-hg="all">'+t('hb_all')+'</button>'
+    +gkeys.map(function(g){return '<button class="gchip'+(HG===g?' on':'')+'" data-hg="'+esc(g)+'">'+esc(g)+'</button>'}).join('')+'</div>';
+
+  var NF=(HG==='all')?SERIES:SERIES.filter(function(s){return s.genre===HG});
+
+  /* ── Nouveautés ── */
+  h+=sec(I_spark,t('sec_new'),row(NF.slice().sort(function(a,b){return b.at-a.at}).slice(0,10)));
+
+  /* ── Toutes les histoires ── */
+  h+='<div class="sec"><h3>'+t('sec_all')+(HG!=='all'?' \u2014 '+esc(HG):'')+'</h3><div class="grid">'+NF.map(cardHtml).join('')+'</div></div>';
+
+  /* ── Films ── */
   if(FILMS.length){
     h+='<div class="sec"><h3>'+I_clap+t('films')+'<span class="seeall" data-films-all>'+t('see_all')+' <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" style="vertical-align:-1px"><path d="m9 5 7 7-7 7"/></svg></span></h3>'
       +'<div class="hrow vrow">'+FILMS.slice(-6).reverse().map(function(f){return filmCardHtml(f).replace('class="card cfilm"','class="card cfilm small"')}).join('')+'</div></div>';
   }
   b.innerHTML=h;
+  try{
+    var car=document.getElementById('fbcar');
+    var ds=document.getElementById('hdots');
+    if(car&&ds){
+      car.addEventListener('scroll',function(){
+        var ix=Math.round(car.scrollLeft/Math.max(1,car.clientWidth));
+        [].forEach.call(ds.children,function(d,k){d.className=k===ix?'on':''});
+      },{passive:true});
+    }
+  }catch(_){}
   if(!window.__casc){window.__casc=true;
-    [].slice.call(b.querySelectorAll('.hero,.card')).slice(0,13).forEach(function(el,i){
+    [].slice.call(b.querySelectorAll('.fbslide,.card')).slice(0,13).forEach(function(el,i){
       el.style.opacity='0';
       el.style.animation='cwIn .5s cubic-bezier(.2,.8,.3,1.15) forwards';
       el.style.animationDelay=(0.05+i*0.06)+'s';
@@ -1563,6 +1648,25 @@ function renderHome(){
   }
 }
 document.addEventListener('click',function(e){
+  var hg=e.target.closest('[data-hg]');
+  if(hg){
+    window.__homeG=hg.getAttribute('data-hg');
+    buzz(8);
+    renderHome();
+    return;
+  }
+  var spb=e.target.closest('[data-serieplay]');
+  if(spb){
+    buzz(15);
+    var __sid=spb.getAttribute('data-serieplay');
+    var __so=SERIES.find(function(x){return x.id===__sid});
+    if(__so){
+      var __seen=0;
+      __so.eps.forEach(function(ep,ix){var pp=PROGRESS[ep.id];if(pp&&pp.t>5)__seen=ix});
+      openEpisode(__so,__seen);
+    }
+    return;
+  }
   var c=e.target.closest('[data-serie]');
   if(c){openSerie(c.getAttribute('data-serie'));return}
   var pf=e.target.closest('[data-playfilm]');
