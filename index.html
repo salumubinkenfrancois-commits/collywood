@@ -764,8 +764,8 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
 
 /* ═══ F2 · Lecteur Forteresse ═══ */
 #player{touch-action:manipulation;}
-#player .top,#player .binfo,#pbar,#pl-subpill,.cwc,.cw-utils,.cwshade{transition:opacity .28s;}
-#player.chrome-off .top,#player.chrome-off .binfo,#player.chrome-off #pbar,#player.chrome-off #pl-subpill,#player.chrome-off .cwc,#player.chrome-off .cw-utils,#player.chrome-off .cwshade{opacity:0;pointer-events:none;}
+#player .top,#player .binfo,#pbar,.cwc,.cw-utils,.cwshade,#player .plwm{transition:opacity .28s;}
+#player.chrome-off .top,#player.chrome-off .binfo,#player.chrome-off #pbar,#player.chrome-off .cwc,#player.chrome-off .cw-utils,#player.chrome-off .cwshade,#player.chrome-off .plwm{opacity:0;pointer-events:none;}
 #player.locked .top>*:not(#pl-lock){opacity:0;pointer-events:none;}
 #player.locked .top{background:transparent;}
 #player.locked .binfo,#player.locked #pbar,#player.locked #pl-subpill,#player.locked .cwc,#player.locked .cw-utils,#player.locked .cwshade{opacity:0;pointer-events:none;}
@@ -823,6 +823,15 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
 #cwc-p{width:auto;height:auto;background:none;}
 #cwc-p svg{width:62px;height:62px;}
 .lockveil{z-index:8;background:rgba(4,9,15,.9);}
+
+/* ═══ v5.1 · Lecteur pur + Films Netflix ═══ */
+#pl-subpill{display:none !important;}
+#player.locked .plwm{opacity:0;}
+.fbhero{height:min(64vw,420px);}
+.fbsh{background:linear-gradient(180deg,rgba(4,9,15,.2) 0%,transparent 24%,rgba(11,20,32,.66) 58%,var(--nuit) 94%);}
+.fbtx h1{font-size:1.72rem;}
+.fbimg .mkA{font-size:7rem;bottom:-18px;}
+@media(min-width:1024px){.fbhero{height:min(38vw,460px);}}
 </style>
 </head>
 <body>
@@ -912,7 +921,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
   <!-- ═══ MA LISTE ═══ -->
   <section class="screen" id="s-films">
     <div class="pghead"><span style="width:36px"></span><div class="pgtitle" style="margin:0" id="tt-films">Films</div><span style="width:36px"></span></div>
-    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v5.0.1</small></div></div>
+    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v5.1</small></div></div>
   </section>
 
   <section class="screen" id="s-list">
@@ -977,7 +986,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
       <button class="pbtn" id="pf-terms"><span class="lft"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>Conditions d'utilisation</span><span><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" style="vertical-align:-1px"><path d="m9 5 7 7-7 7"/></svg></span></button>
     </div>
     <div class="pwrap"><button class="logoutbtn" id="pf-logout">Se déconnecter</button></div>
-    <p class="pfoot">COLLYWOOD+ · v5.0.1</p>
+    <p class="pfoot">COLLYWOOD+ · v5.1</p>
   </section>
 
   <nav class="tabbar">
@@ -1279,7 +1288,7 @@ function enterOnce(){
       var gap=Math.round(window.innerHeight-r.bottom);
       var d=document.createElement('div');
       d.style.cssText='position:fixed;inset:auto 10px 90px 10px;z-index:9999;background:#101D2E;border:1px solid #F5B921;border-radius:14px;padding:14px;font:12px/1.7 monospace;color:#fff;white-space:pre;';
-      d.textContent='DIAG v5.0.1\nstandalone: '+standalone
+      d.textContent='DIAG v5.1\nstandalone: '+standalone
         +'\ninnerHeight: '+window.innerHeight
         +'\nclientHeight: '+document.documentElement.clientHeight
         +'\nvisualViewport: '+vv
@@ -3092,13 +3101,22 @@ $('#pf-support').addEventListener('click',function(){
 });
 function demoFilms(){
   var L=[
-   ['La Nuit de Bandal','Drame',107,'Une coupure d\u2019\u00e9lectricit\u00e9 plonge Bandal dans le noir. Trois destins se croisent, les secrets remontent \u00e0 la surface.',['#3B1F47','#1B98C4'],2026,'Nadia Lombe','12+','A. Mukendi \u00b7 S. Kalala \u00b7 R. Bope'],
-   ['Fleuve d\u2019Or','Drame',92,'Sur le fleuve Congo, un p\u00eacheur d\u00e9couvre une cargaison qui va changer sa vie \u2014 ou la briser.',['#0E3A52','#F5B921'],2025,'Serge Ilunga','12+','P. Tshim \u00b7 M. Ngalula'],
-   ['Mama Moziki','Com\u00e9die',65,'La reine des moziki de Matonge organise le mariage du si\u00e8cle. Rien ne se passera comme pr\u00e9vu.',['#4A2408','#E8503A'],2026,'Clarisse Bemba','Tout public','G. Mwamba \u00b7 F. Kanku'],
-   ['Le Pari de Papa Jo','Com\u00e9die',81,'Papa Jo parie le salon familial sur un match de football. Sa femme ne doit jamais l\u2019apprendre.',['#123D2A','#5DCAA5'],2025,'Didier Kasongo','Tout public','J. Ngoy \u00b7 C. Ilunga'],
-   ['Goma mon Amour','Romance',118,'Entre le lac Kivu et le volcan, deux c\u0153urs que tout oppose apprennent \u00e0 battre ensemble.',['#2B1040','#7A4FD0'],2026,'A\u00efcha Mirindi','12+','L. Bahati \u00b7 K. Safari']
+    ['Larmes du Fleuve','Drame',2024,96],
+    ['Nuit sur Lubumbashi','Thriller',2023,89],
+    ['Le Serment de Nia','Romance',2025,102],
+    ['Mabele, la Terre','Drame',2024,110],
+    ['Rires de Matonge','Com\u00e9die',2025,95],
+    ['La Dette du Sang','Thriller',2024,101],
+    ['Bana Campus','Com\u00e9die',2023,88],
+    ['Le Choix d\u2019Esp\u00e9rance','Foi',2025,93],
+    ['Fleurs de Kinshasa','Romance',2024,99],
+    ['L\u2019H\u00e9ritier','Drame',2023,104],
+    ['Temp\u00eate sur le Lac','Aventure',2025,97],
+    ['Sika, Reine de la Sape','Com\u00e9die',2024,92]
   ];
-  return L.map(function(x,i){return {id:'demo-film-'+i,demo:true,title:x[0],genres:[x[1]],duration_min:x[2],synopsis:x[3],c:x[4],year:x[5],director:x[6],rating:x[7],cast_names:x[8],languages:'Lingala \u00b7 VF',poster_url:''}});
+  return L.map(function(x,i){
+    return {id:'demo-f'+i,kind:'film',demo:true,published:true,title:x[0],genre:x[1],year:x[2],duration_min:x[3],price_usd:(i%3?3:0),director:'Collywood Studio',synopsis:'Bient\u00f4t sur Collywood+.'};
+  });
 }
 function filmPal(f){
   if(f.c)return f.c;
@@ -3171,6 +3189,12 @@ function renderFilms(){
     +'</div>';
   var G={};
   list.forEach(function(f){((f.genres&&f.genres.length)?f.genres:[t('films')]).forEach(function(g){(G[g]=G[g]||[]).push(f)})});
+  var __nv=list.slice().sort(function(a,b){return (b.year||0)-(a.year||0)}).slice(0,6);
+  if(__nv.length){
+    h+='<div class="sec"><h3 class="gh">Nouveaut\u00e9s<svg class=\"ghv\" viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m9 5 7 7-7 7\"/></svg></h3><div class="hrow vrow">'
+      +__nv.map(function(f){return filmCardHtml(f).replace('class="card cfilm"','class="card cfilm small"')}).join('')
+      +'</div></div>';
+  }
   Object.keys(G).forEach(function(g){
     if(gcur!=='all'&&g!==gcur)return;
     h+='<div class="sec"><h3 class="gh">'+esc(g)+'<svg class="ghv" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg></h3><div class="hrow vrow">'+G[g].map(function(f){return filmCardHtml(f).replace('class="card cfilm"','class="card cfilm small"')}).join('')+'</div></div>';
