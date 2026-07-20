@@ -812,6 +812,17 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
   .cwc{gap:3.4rem;}
   .cw-utils{justify-content:center;}
 }
+
+/* ═══ v5.0.1 · Scalpel ═══ */
+#player{height:100dvh;bottom:auto;}
+#pbar{display:flex;align-items:center;gap:12px;}
+#pbar .ptrk{flex:1;}
+#cwtime{position:static;flex:none;}
+.cwc button{background:none;border:none;backdrop-filter:none;width:auto;height:auto;padding:10px;}
+.cwc button svg{width:38px;height:38px;filter:drop-shadow(0 3px 9px rgba(0,0,0,.72));}
+#cwc-p{width:auto;height:auto;background:none;}
+#cwc-p svg{width:62px;height:62px;}
+.lockveil{z-index:8;background:rgba(4,9,15,.9);}
 </style>
 </head>
 <body>
@@ -901,7 +912,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
   <!-- ═══ MA LISTE ═══ -->
   <section class="screen" id="s-films">
     <div class="pghead"><span style="width:36px"></span><div class="pgtitle" style="margin:0" id="tt-films">Films</div><span style="width:36px"></span></div>
-    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v5.0</small></div></div>
+    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v5.0.1</small></div></div>
   </section>
 
   <section class="screen" id="s-list">
@@ -966,7 +977,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
       <button class="pbtn" id="pf-terms"><span class="lft"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>Conditions d'utilisation</span><span><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" style="vertical-align:-1px"><path d="m9 5 7 7-7 7"/></svg></span></button>
     </div>
     <div class="pwrap"><button class="logoutbtn" id="pf-logout">Se déconnecter</button></div>
-    <p class="pfoot">COLLYWOOD+ · v5.0</p>
+    <p class="pfoot">COLLYWOOD+ · v5.0.1</p>
   </section>
 
   <nav class="tabbar">
@@ -1268,7 +1279,7 @@ function enterOnce(){
       var gap=Math.round(window.innerHeight-r.bottom);
       var d=document.createElement('div');
       d.style.cssText='position:fixed;inset:auto 10px 90px 10px;z-index:9999;background:#101D2E;border:1px solid #F5B921;border-radius:14px;padding:14px;font:12px/1.7 monospace;color:#fff;white-space:pre;';
-      d.textContent='DIAG v5.0\nstandalone: '+standalone
+      d.textContent='DIAG v5.0.1\nstandalone: '+standalone
         +'\ninnerHeight: '+window.innerHeight
         +'\nclientHeight: '+document.documentElement.clientHeight
         +'\nvisualViewport: '+vv
