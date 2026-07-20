@@ -859,6 +859,18 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
 .hml{flex:1;background:rgba(20,29,41,.85);border:1px solid rgba(246,243,236,.2);color:var(--ivoire);font-family:inherit;font-weight:700;font-size:.92rem;border-radius:24px;padding:.72rem .6rem;}
 .fbhero .fbimg,.fbhero .fbtx{transition:opacity .26s;}
 .fbhero.fbfade .fbimg,.fbhero.fbfade .fbtx{opacity:0;}
+
+/* ═══ v5.4 · Cinéma rotatif + billboard + chips top ═══ */
+#player.cwrot{width:100vh;height:100vw;top:0;left:100vw;bottom:auto;transform:rotate(90deg);transform-origin:0 0;}
+#player.cwrot video{width:100%;height:100%;object-fit:contain;}
+.hbrow{gap:12px;margin-top:15px;}
+.hbrow .chplay{background:var(--soleil) !important;color:#1a1509 !important;font-weight:800;font-size:.98rem;padding:.85rem .6rem;border-radius:14px;box-shadow:0 12px 26px rgba(245,185,33,.35);}
+.hml{background:rgba(246,243,236,.14) !important;border:1.5px solid rgba(246,243,236,.4);color:#fff;font-weight:700;font-size:.95rem;border-radius:14px;padding:.85rem .6rem;backdrop-filter:blur(10px);}
+.hml:active,.hbrow .chplay:active{transform:scale(.97);}
+.hchips.top{margin-top:0;padding-top:12px;}
+.chipsep{flex:none;width:1px;align-self:stretch;margin:6px 6px;background:rgba(246,243,236,.18);}
+.gchip.gfilm{border-color:rgba(245,185,33,.55);color:var(--soleil);}
+#freepill{display:none !important;}
 </style>
 </head>
 <body>
@@ -948,7 +960,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
   <!-- ═══ MA LISTE ═══ -->
   <section class="screen" id="s-films">
     <div class="pghead"><span style="width:36px"></span><div class="pgtitle" style="margin:0" id="tt-films">Films</div><span style="width:36px"></span></div>
-    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v5.3</small></div></div>
+    <div id="films-body"><div class="empty" style="padding-top:3rem;opacity:.75">Chargement du catalogue…<br/><small style="opacity:.55">build v5.4</small></div></div>
   </section>
 
   <section class="screen" id="s-list">
@@ -1013,7 +1025,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
       <button class="pbtn" id="pf-terms"><span class="lft"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>Conditions d'utilisation</span><span><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" style="vertical-align:-1px"><path d="m9 5 7 7-7 7"/></svg></span></button>
     </div>
     <div class="pwrap"><button class="logoutbtn" id="pf-logout">Se déconnecter</button></div>
-    <p class="pfoot">COLLYWOOD+ · v5.3</p>
+    <p class="pfoot">COLLYWOOD+ · v5.4</p>
   </section>
 
   <nav class="tabbar">
@@ -1315,7 +1327,7 @@ function enterOnce(){
       var gap=Math.round(window.innerHeight-r.bottom);
       var d=document.createElement('div');
       d.style.cssText='position:fixed;inset:auto 10px 90px 10px;z-index:9999;background:#101D2E;border:1px solid #F5B921;border-radius:14px;padding:14px;font:12px/1.7 monospace;color:#fff;white-space:pre;';
-      d.textContent='DIAG v5.3\nstandalone: '+standalone
+      d.textContent='DIAG v5.4\nstandalone: '+standalone
         +'\ninnerHeight: '+window.innerHeight
         +'\nclientHeight: '+document.documentElement.clientHeight
         +'\nvisualViewport: '+vv
@@ -1601,7 +1613,11 @@ function renderHome(){
       +'<button class="hml" data-ml="'+esc(sr.id)+'">'+(MYLIST[sr.id]?'\u2713 ':'+ ')+t('hb_ml')+'</button>'
       +'</div></div></div>';
   }
-  h+='<div class="pillsnav"><button data-pill="series">'+t('pill_series')+'</button><button data-pill="films">'+t('films')+'</button><button data-pill="new">'+t('sec_new')+'</button><button data-pill="cats">'+t('sec_cat')+'</button></div>';
+  var GENx={};SERIES.forEach(function(sx){if(sx.genre)GENx[sx.genre]=1});
+  var gkx=Object.keys(GENx);
+  h+='<div class="hchips top" id="hchips"><button class="gchip'+(HG==='all'?' on':'')+'" data-hg="all">'+t('hb_all')+'</button>'
+    +gkx.map(function(g){return '<button class="gchip'+(HG===g?' on':'')+'" data-hg="'+esc(g)+'">'+esc(g)+'</button>'}).join('')
+    +'<span class="chipsep"></span><button class="gchip gfilm" data-pill="films">'+t('films')+'</button></div>';
   h+='<div class="fbcar" id="fbcar">'+picks.map(slideHtml).join('')+'</div>';
   if(picks.length>1){
     h+='<div class="hdots" id="hdots">'+picks.map(function(_,i){return '<i'+(i?'':' class="on"')+'></i>'}).join('')+'</div>';
@@ -1636,12 +1652,6 @@ function renderHome(){
       +cardHtml(s).replace('class="card"','class="card small"')
       +(rm.length?'<div class="rkmeta">'+rm.join(' \u00b7 ')+'</div>':'')+'</div></div>';
   }).join('')+'</div></div>';
-
-  /* ── Chips collantes ── */
-  var GEN={};SERIES.forEach(function(s){if(s.genre)GEN[s.genre]=1});
-  var gkeys=Object.keys(GEN);
-  h+='<div class="hchips" id="hchips"><button class="gchip'+(HG==='all'?' on':'')+'" data-hg="all">'+t('hb_all')+'</button>'
-    +gkeys.map(function(g){return '<button class="gchip'+(HG===g?' on':'')+'" data-hg="'+esc(g)+'">'+esc(g)+'</button>'}).join('')+'</div>';
 
   var NF=(HG==='all')?SERIES:SERIES.filter(function(s){return s.genre===HG});
 
@@ -1852,8 +1862,9 @@ function openFilmSolo(fid){
   window.__prevLim=__pl;
   var wasOpen=$('#player').classList.contains('on');
   P={serie:null,idx:-1,film:f};
-  window.__wantFS=1;
+  window.__wantFS=0;
   try{pv.play().catch(function(){})}catch(_){}
+  cwCinema(true);
   $('#pl-ep').textContent=f.title||'Film';
   var __pe=$('#ps-eps');if(__pe)__pe.style.display='none';
   $('#pl-title').textContent=f.title;
@@ -1935,6 +1946,7 @@ function teardownPlayer(){
   wlOff();
   window.__prevLim=0;
   window.__wantFS=0;
+  cwCinema(false);
   PLOCK=false;
   clearTimeout(__chT);
   $('#player').classList.remove('locked','chrome-off');
@@ -2161,12 +2173,17 @@ $('#pl-veil').addEventListener('touchend',function(e){
   if(__q&&!__q.hidden){__q.hidden=true;plChrome();return}
   if(Math.abs(dy)>60&&dt<700){if(dy<0)nextEp();else prevEp();plChrome();return}
   if(Math.abs(dy)>=12)return;
-  var x=e.changedTouches[0].clientX, now=Date.now();
+  var now=Date.now();
+  var frac;
+  if(document.getElementById('player').classList.contains('cwrot')){
+    frac=e.changedTouches[0].clientY/Math.max(1,window.innerHeight);
+  }else{
+    frac=e.changedTouches[0].clientX/Math.max(1,window.innerWidth);
+  }
   if(now-__tap.t<300){
     __tap.t=0;clearTimeout(__tap.tm);__tap.tm=null;
-    var w=window.innerWidth;
-    if(x<w*0.38){seekBy(-10);plRipple(-1);}
-    else if(x>w*0.62){seekBy(10);plRipple(1);}
+    if(frac<0.38){seekBy(-10);plRipple(-1);}
+    else if(frac>0.62){seekBy(10);plRipple(1);}
     else togglePlay();
     plChrome();
   }else{
@@ -2180,6 +2197,43 @@ $('#pl-veil').addEventListener('click',function(){
 });
 /* ═══ F2 · Forteresse ═══ */
 var PLOCK=false,__chT=null,__lkT=null,__lkHintT=0;
+function cwCinema(on){
+  var host=document.getElementById('player');
+  if(!host)return;
+  if(on){
+    try{
+      if(host.requestFullscreen){var pfs=host.requestFullscreen();if(pfs&&pfs.catch)pfs.catch(function(){});}
+      else if(host.webkitRequestFullscreen)host.webkitRequestFullscreen();
+    }catch(_){}
+    try{
+      if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(function(){});
+    }catch(_){}
+    try{
+      if(window.matchMedia&&matchMedia('(orientation: portrait)').matches)host.classList.add('cwrot');
+    }catch(_){}
+  }else{
+    host.classList.remove('cwrot');
+    try{
+      if(document.fullscreenElement||document.webkitFullscreenElement){
+        (document.exitFullscreen||document.webkitExitFullscreen).call(document);
+      }
+    }catch(_){}
+  }
+}
+window.addEventListener('orientationchange',function(){
+  setTimeout(function(){
+    var host=document.getElementById('player');
+    if(!host)return;
+    try{
+      if(matchMedia('(orientation: landscape)').matches)host.classList.remove('cwrot');
+      else if((document.fullscreenElement===host||document.webkitFullscreenElement===host)&&P.film)host.classList.add('cwrot');
+    }catch(_){}
+  },140);
+});
+document.addEventListener('fullscreenchange',function(){
+  var host=document.getElementById('player');
+  if(host&&!document.fullscreenElement)host.classList.remove('cwrot');
+});
 function plChrome(){
   var P=$('#player');
   P.classList.remove('chrome-off');
@@ -3364,6 +3418,17 @@ function renderFilms(){
   b.innerHTML=h;
 
   try{
+    var __hbtn=b.querySelector('.fbhero .chplay');
+    if(__hbtn&&!__hbtn.__wired){
+      __hbtn.__wired=1;
+      __hbtn.addEventListener('click',function(ev){
+        ev.stopPropagation();ev.preventDefault();
+        buzz(15);
+        openFilmSolo(this.getAttribute('data-playfilm'));
+      });
+    }
+  }catch(_){}
+  try{
     clearInterval(window.__fhT);
     if(__heroL.length>1){
       var __hi=0;
@@ -3790,16 +3855,7 @@ document.addEventListener('click',function(e){
     try{openPaywall(null)}catch(_){}
   },1100);
 })();
-/* ═══ Entr\u00e9e libre : pastille \u00e9pisodes gratuits (anonymes) ═══ */
-(function(){
-  if(SESSION)return;
-  var sf=document.getElementById('s-feed');
-  if(!sf||document.getElementById('freepill'))return;
-  var pl=document.createElement('div');
-  pl.id='freepill';
-  pl.textContent='\u00c9pisodes 1-2 gratuits';
-  sf.appendChild(pl);
-})();
+/* pastille feed retirée (directive 20/07) */
 /* ═══ Lot 8 : banni\u00e8re installer (web uniquement) ═══ */
 (function(){
   var hb=$('#homeinstall');if(!hb)return;
