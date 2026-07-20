@@ -98,6 +98,12 @@ small{color:var(--cendre)}
 @keyframes sp{to{transform:rotate(360deg)}}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
 @media(min-width:760px){.pane{max-width:720px;margin:0 auto}.stats{grid-template-columns:repeat(4,1fr)}}
+
+.retrow{display:flex;align-items:center;gap:10px;margin:7px 0;}
+.retrow .rl{width:52px;font-size:.78rem;color:var(--cendre);flex:none;}
+.retrow .rb{flex:1;height:12px;background:rgba(246,243,236,.07);border-radius:7px;overflow:hidden;}
+.retrow .rb i{display:block;height:100%;background:linear-gradient(90deg,var(--fleuve),var(--soleil));border-radius:7px;}
+.retrow .rn{width:120px;text-align:right;font-size:.72rem;color:var(--cendre);flex:none;}
 </style>
 </head>
 <body>
@@ -241,7 +247,7 @@ small{color:var(--cendre)}
 <script>
 var SUPA_URL='https://qckjbvivsyqbsujjbbcf.supabase.co';
 var SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFja2pidml2c3lxYnN1ampiYmNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NzUyMTAsImV4cCI6MjA5OTM1MTIxMH0.ZQNUWGBPvxp3IY26e23v9d0hhhaOKxqSUhOZ5ZeTCh0';
-var FILM_COLS='id,kind,preview_seconds,series_id,episode,title,genres,synopsis,poster_url,duration_min,price_usd,language,region_tag,hd,offline_ok,published,created_at,featured,year,director,cast_names,languages,rating';
+var FILM_COLS='id,kind,preview_seconds,series_id,episode,title,genres,synopsis,poster_url,duration_min,price_usd,language,region_tag,hd,offline_ok,published,created_at,featured,year,director,cast_names,languages,rating,poster_land';
 var GENRES=['Drame','Romance','Comédie','Action','Société','Famille','Thriller','Foi','Musique','Histoire','Biopic','Jeunesse'];
 
 function $(s){return document.querySelector(s)}
@@ -285,7 +291,7 @@ function count(path){
 }
 
 /* ── Connexion ── */
-function showApp(){$('#login').style.display='none';$('#app').style.display='block';loadFilms().then(function(){renderCat();loadDash()})}
+function showApp(){$('#login').style.display='none';$('#app').style.display='block';loadFilms().then(function(){renderCat();loadDash();loadRetention()})}
 $('#lg-go').addEventListener('click',doLogin);
 $('#lg-pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
 function doLogin(){
@@ -309,7 +315,7 @@ function doLogin(){
 $('#tb-out').addEventListener('click',function(){clearS();location.reload()});
 $('#tb-refresh').addEventListener('click',function(){
   toast('Actualisation…');
-  loadFilms().then(renderCat);loadDash();
+  loadFilms().then(function(){renderCat();loadRetention()});loadDash();
   if($('#p-sales').classList.contains('on'))loadSales();
   if($('#p-users').classList.contains('on'))loadUsers();
 });
@@ -389,6 +395,7 @@ function epRow(e,solo){
     +((!e.series_id&&e.kind==='film')?('<button class="act" data-star="'+esc(e.id)+'"'+(e.featured?' style="color:var(--soleil)"':'')+' aria-label="Mettre \u00e0 la une"><svg viewBox="0 0 24 24" fill="'+(e.featured?'currentColor':'none')+'" stroke="currentColor" stroke-width="2" stroke-linejoin="round" width="16" height="16"><path d="M12 3.6l2.5 5.1 5.6.8-4 3.9.9 5.6-5-2.6-5 2.6.9-5.6-4-3.9 5.6-.8z"/></svg></button>'):'')
      +'<button class="act" data-pub="'+esc(e.id)+'" aria-label="Basculer publication">'+(e.published?'Retirer':'Publier')+'</button>'
     +'<button class="act" data-poster="'+esc(e.id)+'" aria-label="Changer l\u2019affiche"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m5 18 5-5 3.2 3.2L17 12l3 3.5"/></svg></button>'
+     +(e.kind==='film'?'<button class="act" data-pland="'+esc(e.id)+'" aria-label="Image paysage 16:9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="2.5" y="6.5" width="19" height="11" rx="2"/><path d="m5 15 4-4 3 3 3.5-3.5L20 14"/></svg></button>':'')
      +'<button class="act" data-video="'+esc(e.id)+'" aria-label="Remplacer la vid\u00e9o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="3.5" y="5.5" width="12.5" height="13" rx="2.5"/><path d="m16 10.6 4.5-2.6v8l-4.5-2.6z"/></svg></button>'
      +'<button class="act" data-edit="'+esc(e.id)+'" aria-label="Modifier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 4.5l3 3L8 19l-4 1 1-4z"/></svg></button>'
     +'<button class="act red" data-del="'+esc(e.id)+'" aria-label="Supprimer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4.5 6.5h15M9 6V4.5h6V6M7 6.5l.8 13h8.4l.8-13M10 10v6M14 10v6"/></svg></button></div>';
@@ -510,6 +517,26 @@ function startEdit(id){
   window.scrollTo(0,0);
 }
 $('#f-cancel').addEventListener('click',prepAdd);
+function shrinkLand(file){
+  return new Promise(function(res){
+    try{
+      var url=URL.createObjectURL(file);
+      var img=new Image();
+      img.onload=function(){
+        var TW=1024,TH=576;
+        var c=document.createElement('canvas');c.width=TW;c.height=TH;
+        var iw=img.width||TW,ih=img.height||TH;
+        var sc=Math.max(TW/iw,TH/ih);
+        var dw=iw*sc,dh=ih*sc;
+        c.getContext('2d').drawImage(img,(TW-dw)/2,(TH-dh)*0.25,dw,dh);
+        URL.revokeObjectURL(url);
+        c.toBlob(function(b){res(b||file)},'image/jpeg',0.82);
+      };
+      img.onerror=function(){res(file)};
+      img.src=url;
+    }catch(_){res(file)}
+  });
+}
 function shrinkPoster(file){
   return new Promise(function(res){
     try{
@@ -540,9 +567,35 @@ var POSTER_ID=null;
     POSTER_ID=b.getAttribute('data-poster');
     qpi.click();
   });
+  var PLAND_ID=null;
+  document.addEventListener('click',function(ev){
+    var b=ev.target.closest('[data-pland]');
+    if(!b)return;
+    ev.stopPropagation();
+    PLAND_ID=b.getAttribute('data-pland');
+    qpi.click();
+  });
   qpi.addEventListener('change',function(){
     var file=qpi.files&&qpi.files[0];qpi.value='';
-    if(!file||!POSTER_ID)return;
+    if(!file||(!POSTER_ID&&!PLAND_ID))return;
+    if(PLAND_ID){
+      var lid=PLAND_ID;PLAND_ID=null;
+      toast('Compression paysage\u2026');
+      shrinkLand(file).then(function(bl){
+        return uploadFile('posters',lid+'-land.jpg',bl);
+      }).then(function(){
+        var url=SUPA_URL+'/storage/v1/object/public/posters/'+lid+'-land.jpg?v='+Date.now();
+        return api('/rest/v1/films?id=eq.'+encodeURIComponent(lid),{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({poster_land:url})})
+          .then(function(){
+            var f=FILMS.filter(function(x){return x.id===lid})[0];
+            if(f)f.poster_land=url;
+            renderCat();
+            toast('Image paysage en ligne');
+          });
+      }).catch(function(){toast('\u00c9chec image paysage')});
+      return;
+    }
+    if(!POSTER_ID)return;
     var id=POSTER_ID;POSTER_ID=null;
     toast('Compression de l\u2019affiche\u2026');
     shrinkPoster(file).then(function(bl){
@@ -709,6 +762,51 @@ function payBadge(s){
   return s==='success'?'<span class="badge green">RÉUSSI</span>'
     :s==='pending'?'<span class="badge gold">EN ATTENTE</span>'
     :'<span class="badge red">ÉCHOUÉ</span>';
+}
+function loadRetention(){
+  var host=document.getElementById('ret-host');
+  if(!host){
+    var pane=document.getElementById('p-dash');
+    if(!pane)return;
+    pane.insertAdjacentHTML('beforeend','<h2 style="margin-top:22px">R\u00c9TENTION PAR \u00c9PISODE</h2><div id="ret-host"><div class="hint">Chargement\u2026</div></div>');
+    host=document.getElementById('ret-host');
+  }
+  if(!FILMS.length){setTimeout(loadRetention,1500);return}
+  api('/rest/v1/watch_history?select=film_id,progress_seconds,duration_seconds&limit=5000').then(function(rows){
+    rows=rows||[];
+    var byEp={};
+    rows.forEach(function(r){
+      var a=byEp[r.film_id]=byEp[r.film_id]||{n:0,f:0};
+      a.n++;
+      if(r.duration_seconds&&r.progress_seconds>=0.9*r.duration_seconds)a.f++;
+    });
+    var SER={};
+    FILMS.forEach(function(x){
+      if(x.kind==='clip'&&x.series_id){
+        var g=SER[x.series_id]=SER[x.series_id]||{title:null,eps:[]};
+        g.eps.push(x);
+        if(!g.title||x.episode===1)g.title=(x.series_title||x.title||'').replace(/\s*[\u2014-]\s*\u00c9p.*$/i,'')||x.title;
+      }
+    });
+    var keys=Object.keys(SER);
+    if(!keys.length){host.innerHTML='<div class="hint">Pas encore de s\u00e9ries publi\u00e9es.</div>';return}
+    host.innerHTML='<select id="ret-sel" class="inp" style="margin-bottom:10px">'
+      +keys.map(function(k,i){return '<option value="'+k+'">'+esc(SER[k].title||('S\u00e9rie '+(i+1)))+'</option>'}).join('')
+      +'</select><div id="ret-rows"></div>';
+    function draw(sid){
+      var eps=SER[sid].eps.slice().sort(function(a,b){return (a.episode||0)-(b.episode||0)});
+      var max=1;eps.forEach(function(e){var a=byEp[e.id];if(a&&a.n>max)max=a.n});
+      document.getElementById('ret-rows').innerHTML=eps.map(function(e){
+        var a=byEp[e.id]||{n:0,f:0};
+        var pc=a.n?Math.round(a.f/a.n*100):0;
+        return '<div class="retrow"><span class="rl">\u00c9p. '+(e.episode||'?')+'</span>'
+          +'<span class="rb"><i style="width:'+Math.round(a.n/max*100)+'%"></i></span>'
+          +'<span class="rn">'+a.n+' vue'+(a.n>1?'s':'')+' \u00b7 '+pc+'% finis</span></div>';
+      }).join('')||'<div class="hint">Aucune lecture enregistr\u00e9e.</div>';
+    }
+    document.getElementById('ret-sel').addEventListener('change',function(){draw(this.value)});
+    draw(keys[0]);
+  }).catch(function(){host.innerHTML='<div class="hint">Lecture impossible (droits ?).</div>'});
 }
 function loadDash(){
   var done=function(){
