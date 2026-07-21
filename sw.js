@@ -2,7 +2,7 @@
    Lancement instantané : la page vient du cache immédiatement,
    la nouvelle version se télécharge en arrière-plan et s'active
    automatiquement (l'app se recharge une fois, toute seule). */
-var CACHE = 'collywood-v5';
+var CACHE = 'collywood-v6';
 var CORE = ['./', 'logo.png', 'manifest.webmanifest'];
 
 self.addEventListener('install', function (e) {
@@ -18,7 +18,7 @@ self.addEventListener('activate', function (e) {
     caches.keys()
       .then(function (ks) {
         return Promise.all(ks.map(function (k) {
-          if (k !== CACHE) return caches.delete(k);
+          if (k !== CACHE && k !== 'cw-dl') return caches.delete(k);
         }));
       })
       .then(function () { return self.clients.claim(); })
@@ -31,7 +31,6 @@ self.addEventListener('fetch', function (e) {
   var url;
   try { url = new URL(req.url); } catch (_) { return; }
   if (url.origin !== location.origin) {
-    /* Bibliothèques CDN : cache d'abord (lancement instantané) */
     if (url.hostname === 'cdn.jsdelivr.net') {
       e.respondWith(
         caches.match(req).then(function (hit) {
@@ -43,12 +42,10 @@ self.addEventListener('fetch', function (e) {
         })
       );
     }
-    return; /* Supabase (API), CinetPay, HLS : jamais touchés */
+    return;
   }
 
   if (req.mode === 'navigate') {
-    /* Seule la page d'accueil est servie en cache instantané.
-       admin.html (et toute autre page) = réseau d'abord. */
     if (url.pathname === '/' || url.pathname === '/index.html') {
       e.respondWith(
         caches.match('./').then(function (hit) {
