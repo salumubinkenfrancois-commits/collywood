@@ -940,6 +940,18 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
 .simposter .mk{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:2rem;font-weight:900;font-style:italic;color:rgba(245,185,33,.22);}
 .simposter .sn{position:absolute;top:7px;left:7px;background:rgba(11,20,32,.8);color:var(--soleil);font-size:.62rem;font-weight:800;padding:2px 6px;border-radius:8px;}
 .simcard .snt{color:var(--ivoire);font-size:.76rem;font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* Bouton son animé (v6.4) */
+.fsnd .ic{font-size:0 !important;}
+.sound-ic svg{width:26px;height:26px;display:block;}
+.sound-ic .spk-body{stroke:#fff;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;fill:#fff;}
+.sound-ic .wave{stroke:#fff;stroke-width:2;stroke-linecap:round;fill:none;opacity:1;transition:opacity .25s,transform .25s;transform-origin:9px 12px;}
+.sound-ic .wave.w2{transition-delay:.04s;}
+.sound-ic.muted .wave{opacity:0;transform:scale(.4);}
+.sound-ic .slash{stroke:var(--braise);stroke-width:2.4;stroke-linecap:round;opacity:0;stroke-dasharray:26;stroke-dashoffset:26;transition:opacity .2s,stroke-dashoffset .28s;}
+.sound-ic.muted .slash{opacity:1;stroke-dashoffset:0;}
+@keyframes sndpulse{0%{transform:scale(.7);opacity:0;}60%{opacity:1;}100%{transform:scale(1);opacity:1;}}
+.sound-ic.juston .wave{animation:sndpulse .34s ease-out;}
 </style>
 </head>
 <body>
@@ -2654,6 +2666,27 @@ pv.addEventListener('ended',function(){
 
 /* ═══════════ POUR TOI (feed découverte) ═══════════ */
 var feedBuilt=false;
+// ═══ Bouton son du feed (v6.4) ═══
+window.__feedMuted=(window.__feedMuted!==undefined)?window.__feedMuted:true;
+function applyFeedSound(){
+  document.querySelectorAll('#feed video').forEach(function(v){v.muted=window.__feedMuted;});
+  document.querySelectorAll('.fsnd .sound-ic').forEach(function(ic){ic.classList.toggle('muted',window.__feedMuted);});
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-fsound]');
+  if(!b)return;
+  e.stopPropagation();
+  window.__feedMuted=!window.__feedMuted;
+  applyFeedSound();
+  if(!window.__feedMuted){
+    var ic=b.querySelector('.sound-ic');
+    if(ic){ic.classList.remove('juston');void ic.offsetWidth;ic.classList.add('juston');}
+    toast(t('sound_on'));
+  }else{
+    toast(t('sound_off')||'Son coupé');
+  }
+});
+
 // ═══ Feuille d'épisodes enrichie (v6.4) ═══
 function styleTagsHtml(arr){return (arr||[]).slice(0,5).map(function(x){return '<span class="st">'+esc(x)+'</span>';}).join('');}
 function serieStyles(sr){
@@ -2777,7 +2810,7 @@ function buildFeed(){
       +'<div class="fsh"></div>'
       +'<div class="fmeta"><div class="fk">'+esc(s.genre).toUpperCase()+' · '+t('ep1_free')+'</div><h3>'+esc(s.title)+'</h3>'
       +'<button class="fbtn" data-serie="'+esc(s.id)+'">'+t('see_story')+' ('+s.eps.length+' ép.)'+'</button></div>'
-      +'<div class="fside"><button data-fav="'+esc(s.id)+'"><span class="ic">'+bmIcon(!!MYLIST[s.id])+'</span>Enregistrer</button>'
+      +'<div class="fside"><button class="fsnd" data-fsound aria-label="Son"><span class="ic sound-ic muted"><svg viewBox="0 0 24 24"><path class="spk-body" d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z"/><path class="wave w1" d="M15.5 9.2a4 4 0 0 1 0 5.6"/><path class="wave w2" d="M17.8 7a7 7 0 0 1 0 10"/><line class="slash" x1="3" y1="3" x2="21" y2="21"/></svg></span></button>'+'<button data-fav="'+esc(s.id)+'"><span class="ic">'+bmIcon(!!MYLIST[s.id])+'</span>Enregistrer</button>'
       +'<button data-epsheet="'+esc(s.id)+'"><span class="ic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="7.4" height="7.4" rx="1.5"/><rect x="13.1" y="3.5" width="7.4" height="7.4" rx="1.5"/><rect x="3.5" y="13.1" width="7.4" height="7.4" rx="1.5"/><rect x="13.1" y="13.1" width="7.4" height="7.4" rx="1.5"/></svg></span>Épisodes</button></div>'
       +'</div>';
   }).join('');
@@ -2789,7 +2822,7 @@ function buildFeed(){
       +'<div class="fplay"><i><svg viewBox="0 0 24 24" width="30" height="30" fill="rgba(255,255,255,.95)"><path d="M8.5 5.5l11 6.5-11 6.5z"/></svg></i></div>'
       +'<div class="fmeta"><div class="fk">'+esc(s.genre).toUpperCase()+' · PROCHAINEMENT</div><h3>'+esc(s.title)+'</h3>'
       +'<button class="fbtn" data-serie="'+esc(s.id)+'">Découvrir l\u2019histoire ('+s.eps.length+' ép.)</button></div>'
-      +'<div class="fside"><button data-fav="'+esc(s.id)+'"><span class="ic">'+bmIcon(!!MYLIST[s.id])+'</span>Enregistrer</button>'
+      +'<div class="fside"><button class="fsnd" data-fsound aria-label="Son"><span class="ic sound-ic muted"><svg viewBox="0 0 24 24"><path class="spk-body" d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z"/><path class="wave w1" d="M15.5 9.2a4 4 0 0 1 0 5.6"/><path class="wave w2" d="M17.8 7a7 7 0 0 1 0 10"/><line class="slash" x1="3" y1="3" x2="21" y2="21"/></svg></span></button>'+'<button data-fav="'+esc(s.id)+'"><span class="ic">'+bmIcon(!!MYLIST[s.id])+'</span>Enregistrer</button>'
       +'<button data-epsheet="'+esc(s.id)+'"><span class="ic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="7.4" height="7.4" rx="1.5"/><rect x="13.1" y="3.5" width="7.4" height="7.4" rx="1.5"/><rect x="3.5" y="13.1" width="7.4" height="7.4" rx="1.5"/><rect x="13.1" y="13.1" width="7.4" height="7.4" rx="1.5"/></svg></span>Épisodes</button></div>'
       +'</div>';
   }).join('');
@@ -2802,11 +2835,7 @@ function buildFeed(){
       vid.muted=true;vid.loop=true;vid.playsInline=true;vid.setAttribute('playsinline','');vid.preload='metadata';
       host.insertBefore(vid,host.firstChild);
       attachStream(vid,u);
-      var hint=document.createElement('div');
-      hint.className='sndhint';
-      hint.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M4 9v6h3.5L12 19V5L7.5 9z"/><path d="M15.5 9.5a3.5 3.5 0 0 1 0 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Touchez pour le son';
-      host.appendChild(hint);
-      var taps=0,tt=null,lp=null,held=false;
+      var lp=null,held=false;
       host.addEventListener('touchstart',function(e){
         if(e.target.closest('button'))return;
         lp=setTimeout(function(){held=true;vid.pause()},260);
@@ -2818,44 +2847,19 @@ function buildFeed(){
       host.addEventListener('click',function(e){
         if(host.__skip)return;
         if(e.target.closest('button'))return;
-        taps++;clearTimeout(tt);
-        if(taps>=2){
-          taps=0;
-          buzz(35);
-          if(SESSION&&!MYLIST[s.id]){MYLIST[s.id]=true;syncList(s.id,true);
-            var ic=host.querySelector('[data-fav] .ic');if(ic)ic.innerHTML=bmIcon(true);renderList();}
-          var h2=document.createElement('div');h2.className='fheart';
-          h2.innerHTML='<svg viewBox="0 0 24 24" width="74" height="74" fill="currentColor"><path d="M12 21s-7.5-4.9-9.7-9.2C.7 8.4 2.6 5 6 5c2.2 0 3.6 1.2 4.5 2.6l1.5 2.3 1.5-2.3C14.4 6.2 15.8 5 18 5c3.4 0 5.3 3.4 3.7 6.8C19.5 16.1 12 21 12 21z"/></svg>';
-          host.appendChild(h2);
-          h2.style.animation='cwPop .9s ease forwards';
-          for(var k=0;k<9;k++){var sp=document.createElement('i');
-            sp.style.cssText='position:absolute;left:'+(38+Math.random()*24)+'%;top:42%;width:7px;height:7px;border-radius:50%;background:'+(Math.random()>.5?'#F5B921':'#fff')+';pointer-events:none;z-index:12;animation:cwFall '+(0.7+Math.random()*0.5)+'s ease-in forwards;';
-            host.appendChild(sp);(function(el){setTimeout(function(){el.remove()},1300)})(sp);}
-          setTimeout(function(){h2.remove()},950);
-          return;
+        var pp=host.querySelector('.fpp');
+        if(!pp){
+          pp=document.createElement('div');pp.className='fpp';
+          pp.innerHTML='<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>';
+          host.appendChild(pp);
         }
-        tt=setTimeout(function(){
-          taps=0;
-          if(vid.muted){
-            vid.muted=false;
-            if(hint){hint.remove();hint=null}
-            toast(t('sound_on'));
-            return;
-          }
-          var pp=host.querySelector('.fpp');
-          if(!pp){
-            pp=document.createElement('div');pp.className='fpp';
-            pp.innerHTML='<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>';
-            host.appendChild(pp);
-          }
-          if(vid.paused){var pr=vid.play();if(pr&&pr.catch)pr.catch(function(){});pp.classList.remove('on');}
-          else{vid.pause();pp.classList.add('on');buzz(10);}
-        },300);
+        if(vid.paused){var pr=vid.play();if(pr&&pr.catch)pr.catch(function(){});pp.classList.remove('on');}
+        else{vid.pause();pp.classList.add('on');buzz(10);}
       });
       new IntersectionObserver(function(es){
         es.forEach(function(en){
           if(en.isIntersecting){
-            var p=vid.play();if(p&&p.catch)p.catch(function(){});
+            vid.muted=window.__feedMuted;var p=vid.play();if(p&&p.catch)p.catch(function(){});
             var nx=host.nextElementSibling;var nv=nx&&nx.querySelector('video');
             if(!window.__eco&&nv&&nv.preload!=='auto')nv.preload='auto';
             var po=host.querySelector('.fpp.on');if(po)po.classList.remove('on');
