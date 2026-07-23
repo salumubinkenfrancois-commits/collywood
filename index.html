@@ -1410,7 +1410,8 @@ function bmIcon(on){return on
 var SESSION=null, sb=null, __uid=null;
 try{ if(window.supabase) sb=window.supabase.createClient(SUPA_URL,SUPA_ANON); }catch(_){}
 function saveSession(s){SESSION=s;try{localStorage.setItem('cw2_session',JSON.stringify(s))}catch(_){}}
-function loadSession(){try{var s=JSON.parse(localStorage.getItem('cw2_session')||'null');if(s&&s.expires_at*1000>Date.now()+60000){SESSION=s;return s}}catch(_){}return null}
+function validToken(t){return typeof t==='string'&&/^[\x21-\x7E]+$/.test(t)}
+function loadSession(){try{var s=JSON.parse(localStorage.getItem('cw2_session')||'null');if(s&&!validToken(s.access_token)){try{localStorage.removeItem('cw2_session')}catch(_){}return null}if(s&&s.expires_at*1000>Date.now()+60000){SESSION=s;return s}}catch(_){}return null}
 function clearSession(){SESSION=null;__uid=null;try{localStorage.removeItem('cw2_session')}catch(_){};if(sb)try{sb.auth.signOut()}catch(_){}}
 function api(path,opt){
   opt=opt||{};opt.headers=opt.headers||{};opt.headers['apikey']=SUPA_ANON;
@@ -3377,22 +3378,54 @@ function __pwClose(){$('#paywall').classList.remove('on')}
 function showPay(){$('#paywall').classList.add('on');window.__pwP=(window.__pwP||0)+1;try{history.pushState({cw:'sheet'},'')}catch(_){}}
 function closePaywall(){if(window.__pwP){window.__pwP--;try{history.back();return}catch(_){}}__pwClose()}
 function doPay(){
-  if(!SESSION){closePaywall();window.__afterAuth=function(){openPaywall(payAfter)};openAuthSheet('signup');return}
+  if(!SESSION||!validToken(SESSION.access_token)){if(SESSION)clearSession();closePaywall();toast('Session expirée — reconnecte-toi');window.__afterAuth=function(){openPaywall(payAfter)};openAuthSheet('signup');return}
   if(PLAN==='etu'&&!ETU_FILE){toast('Ajoutez une photo de votre carte d\u2019étudiant');var d=$('#etu-drop');if(d){d.classList.add('shake');setTimeout(function(){d.classList.remove('shake')},500)}return}
   if(!PMETHOD){toast('Sélectionnez un moyen de paiement');return}
   if(PMETHOD!=='carte'&&PMPHONE.replace(/\D/g,'').length<8){PMPHONE=cleanPhone(PMPHONE);var __pi=$('#pm-phone');if(__pi)__pi.value=PMPHONE;}
   if(PMPHONE.replace(/\D/g,'').length<8){toast('Entrez votre numéro Mobile Money');var p=$('#pm-phone');if(p)p.focus();return}
   if(PMETHOD==='carte'&&(CARD.num.length<12||CARD.exp.length<5||CARD.cvv.length<3)){toast('Complétez les informations de votre carte');return}
   var pl=planBy(PLAN);
-  if(PMETHOD==='carte'){startDemoPay(pl);return}
-  $('#pay-card').innerHTML=beatWait('Pr\u00e9paration du paiement s\u00e9curis\u00e9','Connexion \u00e0 CinetPay');
-  fetch(SUPA_URL+'/functions/v1/cinetpay/init',{method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SESSION.access_token,'Content-Type':'application/json'},body:JSON.stringify({plan:PLAN,method:PMETHOD,phone:PM_CC+PMPHONE.replace(/\D/g,'')})})
+  var __isCard=(PMETHOD==='carte');
+  $('#pay-card').innerHTML=beatWait('Pr\u00e9paration du paiement s\u00e9curis\u00e9','Connexion \u00e0 FlexPay');
+  fetch(SUPA_URL+'/functions/v1/flexpay/init',{method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SESSION.access_token,'Content-Type':'application/json'},body:JSON.stringify({plan:PLAN,method:__isCard?'carte':'mobile_money',phone:PM_CC+PMPHONE.replace(/\D/g,'')})})
   .then(function(r){return r.json()})
   .then(function(j){
-    if(j&&j.payment_url){location.href=j.payment_url;return}
+    if(j&&j.url){location.href=j.url;return}
+    if(j&&j.mobile&&j.orderNumber){startFlexPush(j.orderNumber,j.message);return}
     throw new Error((j&&j.error)||'service indisponible');
   })
-  .catch(function(){startDemoPay(pl)});
+  .catch(function(e){
+    $('#pay-card').innerHTML='<div class="pay-wait"><p><b>Paiement impossible</b><br/><small style="color:var(--cendre)">'+esc((e&&e.message)||'R\u00e9essayez plus tard.')+'</small></p><button id="pay-go">R\u00e9essayer</button><button id="pay-cancel">Fermer</button></div>';
+    var g=$('#pay-go');if(g)g.addEventListener('click',renderPaywall);
+    var c=$('#pay-cancel');if(c)c.addEventListener('click',closePaywall);
+  });
+}
+function startFlexPush(orderNumber,message){
+  $('#pay-card').innerHTML=beatWait('Confirme sur ton téléphone',(message||'Validez le push Mobile Money')+'…','<button id="pay-cancel">Fermer</button>');
+  var pc=$('#pay-cancel');if(pc)pc.addEventListener('click',closePaywall);
+  var tries=0;
+  var iv=setInterval(function(){
+    tries++;
+    fetch(SUPA_URL+'/functions/v1/flexpay/status',{method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SESSION.access_token,'Content-Type':'application/json'},body:JSON.stringify({orderNumber:orderNumber})})
+    .then(function(r){return r.json()})
+    .then(function(j){
+      if(j&&j.active){
+        clearInterval(iv);SUBSCRIBED=true;renderProfile();
+        $('#pay-card').innerHTML='<div class="pay-wait">'+CHECKOK+'<p><b>Paiement réussi</b><br/>Toutes les histoires sont débloquées.</p><button id="pay-ok">Continuer</button></div>';
+        confettiIn($('#pay-card'));buzz(60);
+        var ok=$('#pay-ok');if(ok)ok.addEventListener('click',function(){closePaywall();if(payAfter){var f=payAfter;payAfter=null;f()}});
+      }else if(j&&j.failed){
+        clearInterval(iv);
+        $('#pay-card').innerHTML='<div class="pay-wait"><p><b>Paiement refusé</b><br/><small style="color:var(--cendre)">La transaction n’a pas abouti.</small></p><button id="pay-go">Réessayer</button><button id="pay-cancel">Fermer</button></div>';
+        var g=$('#pay-go');if(g)g.addEventListener('click',renderPaywall);
+        var c=$('#pay-cancel');if(c)c.addEventListener('click',closePaywall);
+      }else if(tries>40){
+        clearInterval(iv);
+        $('#pay-card').innerHTML='<div class="pay-wait"><p>Paiement en attente de confirmation.<br/>Tout se débloquera automatiquement dès validation.</p><button id="pay-cancel">Fermer</button></div>';
+        var c2=$('#pay-cancel');if(c2)c2.addEventListener('click',closePaywall);
+      }
+    }).catch(function(){});
+  },3000);
 }
 function startPayCheck(){
   showPay();
