@@ -3149,7 +3149,7 @@ function pullSync(){
 }
 
 /* ═══════════ PAYWALL (FlexPay) ═══════════ */
-var payAfter=null, PLAN='mois', PMETHOD=null, PAYSTEP=1;
+var payAfter=null, PLAN='mois', PMETHOD=null, PAYSTEP=1, PCUR='USD';
 var PMPREFIX={orange:'08',airtel:'09',mpesa:'08'};
 function beatWait(title,sub,extra){
   var im=document.querySelector('#splash img');
@@ -3174,7 +3174,9 @@ var PMETHODS=[
 ];
 function planBy(id){for(var i=0;i<PLANS.length;i++)if(PLANS[i][0]===id)return PLANS[i];return PLANS[0]}
 function fmtPrice(p){
-  return '$'+((+p||0)%1?(+p).toFixed(2):String(+p||0));
+  p=+p||0;
+  if(PCUR==='CDF'){return fmtFC(({3:8500,0.5:1500,1:3000,2:5500,5:14000})[p]||Math.round(p*2833/100)*100);}
+  return '$'+(p%1?p.toFixed(2):String(p));
 }
 function cleanPhone(v){
   v=String(v||'').replace(/[^\d+]/g,'');
@@ -3251,7 +3253,7 @@ function renderPaywall(){
   var fc=FCP[pl[0]]||Math.round(pl[4]*2833);
   var html='<div class="paysteps"><span class="st on">\u2460 Choisir</span><i></i><span class="st'+(PAYSTEP>=2?' on':'')+'">\u2461 Payer</span><i></i><span class="st">\u2462 Regarder</span></div>';
   if(PAYSTEP===1){
-    html+='<div class="payhead"><div><h3>Collywood+</h3><small>Tout le cin\u00e9ma congolais \u00b7 sans engagement</small></div></div>'
+    html+='<div class="payhead"><div><h3>Collywood+</h3><small>Tout le cin\u00e9ma congolais \u00b7 sans engagement</small></div>'+'<div style="display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:10px;padding:3px;height:fit-content">'+'<button type="button" data-cur="USD" style="border:none;border-radius:8px;padding:5px 11px;font-weight:700;font-size:.82rem;cursor:pointer;'+(PCUR==='USD'?'background:var(--soleil);color:#1a1509':'background:none;color:var(--cendre)')+'">USD</button>'+'<button type="button" data-cur="CDF" style="border:none;border-radius:8px;padding:5px 11px;font-weight:700;font-size:.82rem;cursor:pointer;'+(PCUR==='CDF'?'background:var(--soleil);color:#1a1509':'background:none;color:var(--cendre)')+'">FC</button>'+'</div></div>'
       +PLANS.map(function(p){
         var sel=p[0]===PLAN;
         var feats=sel?(FEATS[p[0]]||[]).map(function(f,i){
@@ -3294,6 +3296,9 @@ function renderPaywall(){
   $('#pay-card').innerHTML=html;
   $$('#pay-card .plq .hd').forEach(function(h){
     h.addEventListener('click',function(){PLAN=h.parentNode.getAttribute('data-plan');buzz(20);renderPaywall()});
+  });
+  $$('#pay-card [data-cur]').forEach(function(b){
+    b.addEventListener('click',function(){PCUR=b.getAttribute('data-cur');buzz(15);renderPaywall()});
   });
   $$('#pay-card .opq .hd').forEach(function(h){
     h.addEventListener('click',function(){
@@ -3361,7 +3366,7 @@ function doPay(){
   var pl=planBy(PLAN);
   var __isCard=(PMETHOD==='carte');
   $('#pay-card').innerHTML=beatWait('Pr\u00e9paration du paiement s\u00e9curis\u00e9','Connexion \u00e0 FlexPay');
-  fetch(SUPA_URL+'/functions/v1/flexpay/init',{method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SESSION.access_token,'Content-Type':'application/json'},body:JSON.stringify({plan:PLAN,method:__isCard?'carte':'mobile_money',phone:PM_CC+PMPHONE.replace(/\D/g,'')})})
+  fetch(SUPA_URL+'/functions/v1/flexpay/init',{method:'POST',headers:{'apikey':SUPA_ANON,'Authorization':'Bearer '+SESSION.access_token,'Content-Type':'application/json'},body:JSON.stringify({plan:PLAN,method:__isCard?'carte':'mobile_money',currency:PCUR,phone:PM_CC+PMPHONE.replace(/\D/g,'')})})
   .then(function(r){return r.json()})
   .then(function(j){
     if(j&&j.url){location.href=j.url;return}
