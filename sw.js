@@ -1,8 +1,8 @@
-/* COLLYWOOD — service worker v7
+/* COLLYWOOD — service worker v8
    Lancement instantané : la page vient du cache immédiatement,
    la nouvelle version se télécharge en arrière-plan et s'active
    automatiquement (l'app se recharge une fois, toute seule). */
-var CACHE = 'collywood-v7';
+var CACHE = 'collywood-v8';
 var CORE = ['./', 'logo.png', 'manifest.webmanifest'];
 
 self.addEventListener('install', function (e) {
