@@ -727,7 +727,7 @@ html{background:#060D16;}
 .lockveil .lockalt{background:none;border:none;color:var(--cendre);font-size:.82rem;margin-top:10px;text-decoration:underline;text-underline-offset:3px;font-family:inherit;}
 
 /* ═══ Build Store : éléments masqués (conformité) ═══ */
-html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth="goog"]{display:none !important;}
+html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth="goog"],html.storemode .subpill,html.storemode #pf-pill,html.storemode #auth-sub,html.storemode .storehide,html.storemode .lockprice,html.storemode .locksub{display:none !important;}
 
 
 /* ═══ Sentinelle d'erreurs ═══ */
@@ -1170,12 +1170,12 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
     </div>
     <div class="psec">HISTORIQUE</div>
     <div class="pwrap" id="pf-hist"><div class="pbtn" style="justify-content:center;color:var(--cendre)">Aucun film regardé pour l'instant</div></div>
-    <div class="psec">ABONNEMENT &amp; PAIEMENTS</div>
-    <div class="pwrap">
+    <div class="psec storehide">ABONNEMENT &amp; PAIEMENTS</div>
+    <div class="pwrap storehide">
       <button class="pbtn" id="pf-sub"><span class="lft"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" viewBox="0 0 24 24"><path d="M12 4v16"/><path d="M15.5 7.5c-.8-1-2-1.5-3.5-1.5-2 0-3.5 1-3.5 2.6 0 3.6 7 2 7 5.8 0 1.6-1.5 2.6-3.5 2.6-1.5 0-2.8-.5-3.6-1.5"/></svg>S'abonner à Collywood+</span><span>$3/mois</span></button>
     </div>
-    <div class="psec">PAIEMENTS</div>
-    <div class="pwrap" id="pf-payhist"><div class="payrow"><span>Aucun paiement pour l'instant</span></div></div>
+    <div class="psec storehide">PAIEMENTS</div>
+    <div class="pwrap storehide" id="pf-payhist"><div class="payrow"><span>Aucun paiement pour l'instant</span></div></div>
     <div class="psec">RACCOURCIS</div>
     <div class="pwrap">
       <button class="pbtn" id="pf-install"><span class="lft"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M12 8v6"/><path d="M9.5 11.5 12 14l2.5-2.5"/></svg>Installer l'application</span><span>Gratuit</span></button>
@@ -2094,8 +2094,8 @@ function showLock(){
     v.querySelector('.lockalt').addEventListener('click',function(){buzz(10);openAuthSheet('login')});
   }else{
     v.innerHTML='<svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#F5B921" stroke-width="2" stroke-linecap="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>'
-      +'<p>'+t('lock_l1')+'<br/><b>'+t('lock_l2')+'</b></p>'
-      +'<button class="sub">'+t('lock_btn')+'</button>';
+      +'<p>'+t('lock_l1')+'<br/><b class="lockprice">'+t('lock_l2')+'</b></p>'
+      +'<button class="sub locksub">'+t('lock_btn')+'</button>';
     v.querySelector('.sub').addEventListener('click',function(){
       openPaywall(function(){var lv=$('#player .lockveil');if(lv)lv.remove();if(P.serie)openEpisode(P.serie,P.idx);else if(P.film)openFilmSolo(P.film.id)});
     });
@@ -3191,9 +3191,8 @@ var PLAN_DAYS={mois:30,jour:1,sem:7,etu:30,fam:30,cadeau:30};
 function openPaywall(after){
   if((function(){try{return localStorage.getItem('cw2_store')==='1'}catch(_){return false}})()){
     showPay();
-    $('#pay-card').innerHTML='<h3 style="margin:0 0 6px">Abonnement</h3>'
-      +'<p style="color:var(--cendre);font-size:.9rem;line-height:1.6;margin:0 0 14px">Les abonnements Collywood+ se g\u00e8rent sur notre site\u00a0:<br/><b style="color:var(--ivoire)">collywood-plus.com</b></p>'
-      +'<button class="pgo" id="st-copy">Copier le lien</button>'
+    $('#pay-card').innerHTML='<h3 style="margin:0 0 6px">Contenu réservé</h3>'
+      +'<p style="color:var(--cendre);font-size:.9rem;line-height:1.6;margin:0 0 14px">Cet épisode est réservé aux membres. Connectez-vous avec un compte ayant accès pour le regarder.</p>'
       +'<button id="pay-cancel">'+t('close')+'</button>';
     var cp=$('#st-copy');
     if(cp)cp.addEventListener('click',function(){
@@ -3676,7 +3675,7 @@ function openNotifs(){
   $('#pay-card').innerHTML='<h3>Notifications</h3>'
     +'<div style="display:flex;flex-direction:column;gap:.7rem;margin:1.1rem 0;">'
     +'<div style="background:var(--carte);border:1px solid rgba(246,243,236,.08);border-radius:13px;padding:.9rem;"><b style="font-size:.92rem;">Bienvenue sur COLLYWOOD</b><p style="color:var(--cendre);font-size:.84rem;margin-top:.3rem;line-height:1.5;">2 épisodes offerts sur chaque histoire. Bon visionnage !</p></div>'
-    +(SUBSCRIBED?'':'<div style="background:var(--carte);border:1px solid rgba(245,185,33,.35);border-radius:13px;padding:.9rem;"><b style="font-size:.92rem;color:var(--soleil);">Offre de lancement</b><p style="color:var(--cendre);font-size:.84rem;margin-top:.3rem;line-height:1.5;">Tout COLLYWOOD en illimité pour $3/mois, sans engagement.</p></div>')
+    +(SUBSCRIBED?'':'<div class="storehide" style="background:var(--carte);border:1px solid rgba(245,185,33,.35);border-radius:13px;padding:.9rem;"><b style="font-size:.92rem;color:var(--soleil);">Offre de lancement</b><p style="color:var(--cendre);font-size:.84rem;margin-top:.3rem;line-height:1.5;">Tout COLLYWOOD en illimité pour $3/mois, sans engagement.</p></div>')
     +'</div><button id="pay-cancel">Fermer</button>';
   $('#pay-cancel').addEventListener('click',closePaywall);
   showPay();
