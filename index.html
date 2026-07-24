@@ -727,7 +727,7 @@ html{background:#060D16;}
 .lockveil .lockalt{background:none;border:none;color:var(--cendre);font-size:.82rem;margin-top:10px;text-decoration:underline;text-underline-offset:3px;font-family:inherit;}
 
 /* ═══ Build Store : éléments masqués (conformité) ═══ */
-html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth="goog"],html.storemode .subpill,html.storemode #pf-pill,html.storemode #auth-sub,html.storemode .storehide,html.storemode .lockprice,html.storemode .locksub{display:none !important;}
+html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth="google"],html.storemode .auth-or,html.storemode #af-new,html.storemode .subpill,html.storemode #pf-pill,html.storemode #auth-sub,html.storemode .storehide,html.storemode .lockprice,html.storemode .locksub,html.storemode .auth-help{display:none !important;}.storeonly{display:none!important}html.storemode .storeonly{display:block!important}.abo-link{display:block;text-align:center;margin:16px auto 4px;color:var(--soleil);font-size:.92rem;font-weight:600;text-decoration:none;padding:12px;border:1px solid rgba(245,185,33,.5);border-radius:13px;max-width:340px}
 
 
 /* ═══ Sentinelle d'erreurs ═══ */
@@ -1060,6 +1060,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
       <button type="button" id="af-forgot">Mot de passe oublié ?</button>
     </form>
   </div>
+  <a class="storeonly abo-link" href="collywoodapp://open-account">S'inscrire ou gérer mon abonnement</a>
   <p class="legal">En continuant, vous acceptez les <u data-legal="terms">Conditions d'utilisation</u> et la <u data-legal="privacy">Politique de confidentialité</u> de COLLYWOOD Production.</p>
   <div class="auth-help">
     <span>Impossible de vous connecter ?</span>
@@ -1457,6 +1458,7 @@ function mergeLocalToCloud(){
 }
 function openAuthSheet(mode){
   var a=$('#auth');if(!a)return;
+  if(document.documentElement.classList.contains('storemode'))mode='login';
   if(mode&&typeof AUTH_MODE!=='undefined'&&AUTH_MODE!==mode){
     var tg=$('#af-new');if(tg)tg.click();
   }
@@ -1598,7 +1600,7 @@ $('#auth-form').addEventListener('submit',function(ev){
   if(pw.length<6){afErr('Mot de passe : 6 caractères minimum.');return}
   $('#af-err').style.display='none';
   var go=$('#af-go');go.disabled=true;go.textContent='Un instant…';
-  var url=AUTH_MODE==='signup'?SUPA_URL+'/auth/v1/signup':SUPA_URL+'/auth/v1/token?grant_type=password';
+  var url=(AUTH_MODE==='signup'&&!document.documentElement.classList.contains('storemode'))?SUPA_URL+'/auth/v1/signup':SUPA_URL+'/auth/v1/token?grant_type=password';
   fetch(url,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_ANON},body:JSON.stringify({email:id,password:pw})})
   .then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})})
   .then(function(res){
