@@ -1165,9 +1165,9 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
     </div>
     <div class="psec">CARTE FIDÉLITÉ</div>
     <div class="fidcard">
-      <div class="fidtop"><b id="fid-pts">0 points</b><span>500 pts = 1 mois offert</span></div>
+      <div class="fidtop"><b id="fid-pts">0 points</b><span>1 500 pts = 1 mois offert</span></div>
       <div class="fidbar"><div id="fid-fill"></div></div>
-      <p>Chaque film regardé rapporte 40 points. Parrainez un ami : +100.</p>
+      <p>Chaque épisode regardé rapporte 10 points. Parrainez un ami : +100.</p>
     </div>
     <div class="psec">HISTORIQUE</div>
     <div class="pwrap" id="pf-hist"><div class="pbtn" style="justify-content:center;color:var(--cendre)">Aucun film regardé pour l'instant</div></div>
@@ -1337,15 +1337,14 @@ function confettiIn(box){
     box.appendChild(c);(function(el){setTimeout(function(){el.remove()},2900)})(c);}
 }
 function fmtFC(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'\u202F')+' FC'}
-var FCP={mois:8500,jour:1500,sem:3000,etu:5500,fam:14000,cadeau:8500};
-var PLAN_DAYS={mois:30,jour:1,sem:7,etu:30,fam:30,cadeau:30};
+var FCP={mois:8500,jour:1500,sem:3000,etu:5500,fam:14000};
+var PLAN_DAYS={mois:30,jour:1,sem:7,etu:30,fam:30};
 var FEATS={
  mois:['Tout le catalogue','Qualit\u00e9 HD','Sans publicit\u00e9','Mode hors ligne'],
  jour:['Tout le catalogue','24 h d\u2019acc\u00e8s illimit\u00e9','Qualit\u00e9 HD'],
  sem:['Tout le catalogue','7 jours d\u2019acc\u00e8s','Qualit\u00e9 HD'],
  etu:['Tout inclus','Sur justificatif \u00e9tudiant','Qualit\u00e9 HD'],
- fam:['Tout le catalogue','5 profils \u00b7 5 \u00e9crans','Contr\u00f4le parental','Qualit\u00e9 HD'],
- cadeau:['Offrez 1 mois complet','Code cadeau par SMS','Tout inclus']
+ fam:['Tout le catalogue','Acc\u00e8s sur plus de 5 appareils','Contr\u00f4le parental','Qualit\u00e9 HD']
 };
 function featsHtml(k){
   return (FEATS[k]||FEATS.mois).map(function(f,i){
@@ -3165,8 +3164,7 @@ var PLANS=[
  ['jour','Pass journée','$0.50','24 h d\'accès illimité',0.5,'',false],
  ['sem','Pass semaine','$1','7 jours, HD incluse',1,'',false],
  ['etu','Étudiant','$2/mois','Sur justificatif, tout inclus',2,'/mois',false],
- ['fam','Famille','$5/mois','5 profils, 5 écrans',5,'/mois',false],
- ['cadeau','Carte cadeau','$3','Offrez Collywood+ à un proche',3,'',false]
+ ['fam','Famille','$5/mois','Accès possible sur plus de 5 appareils différents',5,'/mois',false]
 ];
 var PMETHODS=[
  ['orange','Orange Money','Compte Orange RDC','#FF7900','O'],
@@ -3189,12 +3187,13 @@ function cleanPhone(v){
   if(v.charAt(0)==='0'&&v.length===10)v='+243'+v.slice(1);
   return v;
 }
-var PLAN_DAYS={mois:30,jour:1,sem:7,etu:30,fam:30,cadeau:30};
+var PLAN_DAYS={mois:30,jour:1,sem:7,etu:30,fam:30};
 function openPaywall(after){
   if((function(){try{return localStorage.getItem('cw2_store')==='1'}catch(_){return false}})()){
     showPay();
     $('#pay-card').innerHTML='<h3 style="margin:0 0 6px">Contenu réservé</h3>'
-      +'<p style="color:var(--cendre);font-size:.9rem;line-height:1.6;margin:0 0 14px">Cet épisode est réservé aux membres. Connectez-vous avec un compte ayant accès pour le regarder.</p>'
+      +'<p style="color:var(--cendre);font-size:.9rem;line-height:1.6;margin:0 0 14px">Cet épisode fait partie du catalogue payant. Abonnez-vous sur notre site pour le regarder.</p>'
+      +'<a class="pgo" href="collywoodapp://open-account" style="display:block;text-align:center;text-decoration:none;margin-bottom:8px">Aller sur notre site</a>'
       +'<button id="pay-cancel">'+t('close')+'</button>';
     var cp=$('#st-copy');
     if(cp)cp.addEventListener('click',function(){
@@ -3391,7 +3390,7 @@ function startFlexPush(orderNumber,message){
     .then(function(j){
       if(j&&j.active){
         clearInterval(iv);SUBSCRIBED=true;renderProfile();
-        $('#pay-card').innerHTML='<div class="pay-wait">'+CHECKOK+'<p><b>Paiement réussi</b><br/>Toutes les histoires sont débloquées.</p><button id="pay-ok">Continuer</button></div>';
+        $('#pay-card').innerHTML='<div class="pay-wait">'+CHECKOK+'<p><b>Paiement réussi</b><br/>Toutes les histoires sont débloquées.</p><button id="pay-ok">Continuer</button></div>'+(/Android|iPhone|iPad/i.test(navigator.userAgent)?'<a href="collywoodapp://home" style="display:block;margin-top:10px;text-align:center;color:var(--fleuve);font-size:.9rem;text-decoration:none">Retourner dans l\u2019application</a>':'');
         confettiIn($('#pay-card'));buzz(60);
         var ok=$('#pay-ok');if(ok)ok.addEventListener('click',function(){closePaywall();if(payAfter){var f=payAfter;payAfter=null;f()}});
       }else if(j&&j.failed){
@@ -3417,7 +3416,7 @@ function startPayCheck(){
     refreshSub().then(function(a){
       if(a){
         clearInterval(iv);
-        $('#pay-card').innerHTML='<div class="pay-wait">'+CHECKOK+'<p><b>Bienvenue dans COLLYWOOD !</b><br/>Toutes les histoires sont débloquées.</p><button id="pay-go2">Continuer</button></div>';
+        $('#pay-card').innerHTML='<div class="pay-wait">'+CHECKOK+'<p><b>Bienvenue dans COLLYWOOD !</b><br/>Toutes les histoires sont débloquées.</p><button id="pay-go2">Continuer</button></div>'+(/Android|iPhone|iPad/i.test(navigator.userAgent)?'<a href="collywoodapp://home" style="display:block;margin-top:10px;text-align:center;color:var(--fleuve);font-size:.9rem;text-decoration:none">Retourner dans l\u2019application</a>':'');
         confettiIn($('#pay-card'));buzz(60);
         $('#pay-go2').addEventListener('click',closePaywall);
       } else if(tries>40){
@@ -3460,9 +3459,9 @@ function renderProfile(){
   updDlCount();
   var qv=$('#pf-qualv');if(qv)qv.textContent=qualLabel(getQual());
   var sv=$('#pf-subsv');if(sv)sv.textContent=getSubs()==='off'?t('subs_off'):'Français';
-  var pts=fv*40;
+  var pts=fv*10;
   $('#fid-pts').innerHTML=pts+' points '+STAR;
-  $('#fid-fill').style.width=Math.min(100,pts/5)+'%';
+  $('#fid-fill').style.width=Math.min(100,pts/15)+'%';
   var hist=[];
   SERIES.forEach(function(s){
     if(s.demo)return;
@@ -3604,7 +3603,7 @@ function openHelp(){
   sheet('<h3>Centre d\u2019aide</h3><div class="legaltxt">'
     +'<p style="color:#d8c48a;font-weight:700">Abonnement &amp; paiement</p>'
     +qa('Comment m\u2019abonner ?','Touchez « S\u2019abonner », choisissez votre formule et votre moyen de paiement (Orange Money, Airtel Money, M-Pesa ou carte bancaire), saisissez votre numéro puis confirmez sur votre téléphone. L\u2019accès s\u2019active en moins d\u2019une minute.')
-    +qa('Quelles sont les formules ?','Découverte 1 jour ($0.50), Semaine ($1), Mois ($3), Étudiant ($2/mois avec carte d\u2019étudiant), Famille ($5/mois jusqu\u2019à 4 profils) et Carte cadeau ($3, 30 jours à offrir). Sans engagement : vous arrêtez quand vous voulez.')
+    +qa('Quelles sont les formules ?','Découverte 1 jour ($0.50), Semaine ($1), Mois ($3), Étudiant ($2/mois avec carte d\u2019étudiant), Famille ($5/mois accès sur plus de 5 appareils). Sans engagement : vous arrêtez quand vous voulez.')
     +qa('Le paiement a échoué, que faire ?','Vérifiez le solde de votre compte Mobile Money et que le numéro saisi est bien celui rattaché au compte. Attendez la fenêtre de confirmation de votre opérateur avant de valider. Si le problème persiste, écrivez-nous sur WhatsApp — nous vérifions la transaction avec vous.')
     +qa('Comment annuler mon abonnement ?','Profil, puis Gérer mon abonnement. L\u2019accès reste actif jusqu\u2019à la date de fin déjà payée ; aucun prélèvement automatique n\u2019est effectué sans votre confirmation.')
     +qa('Puis-je être remboursé ?','Les paiements validés ne sont pas remboursables, sauf erreur technique avérée de notre part (double débit, accès jamais activé). Dans ce cas, contactez-nous sous 7 jours avec la référence du paiement : nous corrigeons ou recréditons.')
