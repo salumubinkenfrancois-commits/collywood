@@ -104,6 +104,26 @@ small{color:var(--cendre)}
 .retrow .rb{flex:1;height:12px;background:rgba(246,243,236,.07);border-radius:7px;overflow:hidden;}
 .retrow .rb i{display:block;height:100%;background:linear-gradient(90deg,var(--fleuve),var(--soleil));border-radius:7px;}
 .retrow .rn{width:120px;text-align:right;font-size:.72rem;color:var(--cendre);flex:none;}
+
+/* ── Desktop : back-office plein écran (rail gauche, contenu large) ── */
+@media(min-width:1024px){
+  body{background:radial-gradient(80% 100% at 50% 0%,#101f31 0%,#070d16 62%) fixed;}
+  .topbar{padding:14px 22px;}
+  .topbar h1{font-size:1.05rem;}
+  .tabbar{top:60px;bottom:0;left:0;right:auto;width:204px;flex-direction:column;justify-content:flex-start;gap:4px;padding:16px 12px;border-top:none;border-right:1px solid rgba(246,243,236,.08);background:rgba(11,20,32,.55);backdrop-filter:blur(10px);}
+  .tabbar button{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:12px;font-size:.92rem;padding:11px 14px;cursor:pointer;transition:background .15s,color .15s;}
+  .tabbar button:hover{background:rgba(246,243,236,.06);color:var(--ivoire);}
+  .tabbar button.on{background:rgba(245,185,33,.12);}
+  .tabbar button svg{width:20px;height:20px;flex:none;}
+  #app{padding:calc(var(--safe-t) + 72px) 28px 48px 232px;}
+  .pane{max-width:1160px;margin:0;padding:0;}
+  .stats{grid-template-columns:repeat(4,1fr);gap:1rem;}
+  .stat{padding:1.05rem 1.2rem;border-radius:16px;}
+  .stat b{font-size:1.7rem;}
+  .stat span{font-size:.78rem;}
+  .grid2{gap:1.2rem;}
+  button,select,.seg *{cursor:pointer;}
+}
 </style>
 </head>
 <body>
