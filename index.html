@@ -712,8 +712,8 @@ html{background:#060D16;}
   .fcover.fchaute{height:290px;}
 }
 
-/* ═══ Lecteur : mode paysage ═══ */
-@media (orientation:landscape){
+/* ═══ Lecteur : mode paysage (téléphone tourné uniquement) ═══ */
+@media (orientation:landscape) and (max-height:560px){
   #player .top{padding-left:calc(14px + env(safe-area-inset-left,0px));padding-right:calc(14px + env(safe-area-inset-right,0px));}
   #player .bottom{padding-left:calc(14px + env(safe-area-inset-left,0px));padding-right:calc(14px + env(safe-area-inset-right,0px));}
   #player .binfo,#pl-subpill{display:none !important;}
@@ -784,7 +784,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
 #plqmenu button{display:flex;align-items:center;justify-content:space-between;gap:14px;background:none;border:none;color:var(--ivoire);font-family:inherit;font-size:.86rem;font-weight:600;padding:.66rem .8rem;border-radius:9px;text-align:left;}
 #plqmenu button:active{background:rgba(246,243,236,.08);}
 #plqmenu [data-pq-more]{color:var(--cendre);font-size:.78rem;border-top:1px solid rgba(246,243,236,.1);border-radius:0;margin-top:2px;}
-@media (orientation:landscape){
+@media (orientation:landscape) and (max-height:560px){
   #pbar{bottom:calc(1.5rem + env(safe-area-inset-bottom,0px));}
   #pbar .ptrk{height:6px;}
 }
@@ -810,7 +810,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
 .cw-utils button:active{background:rgba(246,243,236,.1);}
 .cw-utils svg{opacity:.9;flex:none;}
 #pl-speed-v{color:var(--soleil);font-weight:800;}
-@media (orientation:landscape){
+@media (orientation:landscape) and (max-height:560px){
   .cwc{gap:3.4rem;}
   .cw-utils{justify-content:center;}
 }
@@ -972,7 +972,7 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
 
 
 /* App en colonne mobile centrée sur grand écran (v6.6) */
-@media (min-width:560px){
+@media (min-width:560px) and (max-width:1023px){
   body{background:#04070c;}
   /* le conteneur visuel : on centre via une largeur max sur les écrans racine */
   #app,#auth{max-width:430px;margin:0 auto;position:relative;min-height:100dvh;box-shadow:0 0 0 1px rgba(246,243,236,.05),0 20px 80px rgba(0,0,0,.7);}
@@ -1022,6 +1022,17 @@ html.storemode #homeinstall,html.storemode #pf-install,html.storemode [data-auth
 .cwempty p{color:var(--cendre);font-size:.88rem;line-height:1.5;margin:0;max-width:280px;}
 /* Spinner de chargement Collywood+ */
 .cwspin{width:34px;height:34px;border:3px solid rgba(245,185,33,.2);border-top-color:var(--soleil);border-radius:50%;animation:cwSpin .8s linear infinite;}
+
+/* ── Desktop : finitions (bannière PWA masquée, barres qui ne se chevauchent plus) ── */
+@media(min-width:1024px){
+  .hinst{display:none !important;}
+  .topbar{position:static;background:transparent;backdrop-filter:none;}
+  .hchips.top{position:sticky;top:0;z-index:24;background:linear-gradient(180deg,rgba(7,13,22,.97) 62%,rgba(7,13,22,0));backdrop-filter:blur(8px);padding-top:.7rem;padding-bottom:.7rem;}
+  body::-webkit-scrollbar{width:10px;}
+  body::-webkit-scrollbar-thumb{background:#22354a;border-radius:6px;}
+  body::-webkit-scrollbar-track{background:transparent;}
+  .searchbar,.tabbar button,.gchip,.av,.tico{cursor:pointer;}
+}
 </style>
 </head>
 <body>
