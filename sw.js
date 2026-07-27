@@ -1,8 +1,8 @@
-/* COLLYWOOD — service worker v22
+/* COLLYWOOD — service worker v24
    Lancement instantané : la page vient du cache immédiatement,
    la nouvelle version se télécharge en arrière-plan et s'active
    automatiquement (l'app se recharge une fois, toute seule). */
-var CACHE = 'collywood-v22';
+var CACHE = 'collywood-v24';
 var CORE = ['./', 'logo.png', 'manifest.webmanifest'];
 
 self.addEventListener('install', function (e) {
