@@ -4391,9 +4391,10 @@ setTimeout(function(){
 
 <!-- ── Bulle d'assistance (bot Claude, fonction Edge « chat ») ─────────── -->
 <style>
-#cwb-fab{position:fixed;right:16px;bottom:calc(88px + env(safe-area-inset-bottom,0px));width:54px;height:54px;border-radius:50%;background:var(--fleuve);border:none;box-shadow:0 6px 18px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:500;transition:transform .15s}
+#cwb-fab{position:fixed;right:14px;bottom:calc(84px + env(safe-area-inset-bottom,0px));width:44px;height:44px;border-radius:50%;background:var(--fleuve);border:none;box-shadow:0 5px 14px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:500;transition:transform .15s,opacity .2s;opacity:.85}
 #cwb-fab:active{transform:scale(.92)}
-#cwb-fab svg{width:26px;height:26px;fill:#fff}
+#cwb-fab:hover{opacity:1}
+#cwb-fab svg{width:21px;height:21px;fill:#fff}
 #cwb-panel{position:fixed;right:12px;bottom:calc(152px + env(safe-area-inset-bottom,0px));width:min(94vw,372px);height:min(64vh,540px);display:none;flex-direction:column;background:var(--carte);border:1px solid rgba(255,255,255,.09);border-radius:18px;overflow:hidden;z-index:501;box-shadow:0 14px 40px rgba(0,0,0,.55)}
 #cwb-panel.open{display:flex}
 #cwb-head{display:flex;align-items:center;gap:10px;padding:13px 16px;background:rgba(27,152,196,.12);border-bottom:1px solid rgba(255,255,255,.07)}
@@ -4415,6 +4416,7 @@ setTimeout(function(){
 #cwb-send:disabled{opacity:.45}
 #cwb-send svg{width:20px;height:20px;fill:#fff}
 @media(min-width:1024px){#cwb-fab{right:26px;bottom:26px}#cwb-panel{right:26px;bottom:94px}}
+@media(max-width:1023px){#cwb-panel{top:0;left:0;right:0;bottom:0;width:100%;height:100%;border-radius:0;border:none}#cwb-head{padding-top:calc(13px + env(safe-area-inset-top,0px))}html.cwb-lock,html.cwb-lock body{overflow:hidden}}
 </style>
 <script>
 (function(){
@@ -4438,8 +4440,26 @@ var HIST=[];try{HIST=JSON.parse(sessionStorage.getItem("cwb_hist")||"[]")}catch(
 function saveH(){try{sessionStorage.setItem("cwb_hist",JSON.stringify(HIST.slice(-30)))}catch(_){}}
 function bulle(role,txt){var d=document.createElement("div");d.className="cwb-m "+(role==="u"?"cwb-u":"cwb-b");d.textContent=txt;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d}
 function rendre(){var L=TT();panel.querySelector("#cwb-ti").textContent=L.ti;panel.querySelector("#cwb-st").textContent=L.st;inp.placeholder=L.ph;msgs.innerHTML="";if(!HIST.length)bulle("b",L.hi);for(var i=0;i<HIST.length;i++)bulle(HIST[i].r,HIST[i].t)}
-fab.addEventListener("click",function(){panel.classList.toggle("open");if(panel.classList.contains("open")){rendre();inp.focus()}});
-panel.querySelector("#cwb-close").addEventListener("click",function(){panel.classList.remove("open")});
+// Discrétion : la bulle disparaît pendant la lecture d'un épisode et quand le panneau est ouvert
+var lecteur=document.getElementById("player");
+function majFab(){var lit=lecteur&&lecteur.classList.contains("on");fab.style.display=(lit||panel.classList.contains("open"))?"none":"flex"}
+if(lecteur&&window.MutationObserver){new MutationObserver(majFab).observe(lecteur,{attributes:true,attributeFilter:["class"]})}
+// Mobile : panneau plein écran, ajusté à la hauteur visible (clavier ouvert compris)
+function ajuster(){
+ if(!panel.classList.contains("open"))return;
+ if(window.innerWidth>=1024){panel.style.height="";panel.style.top="";return}
+ var vv=window.visualViewport;
+ panel.style.height=(vv?vv.height:window.innerHeight)+"px";
+ panel.style.top=(vv&&vv.offsetTop?vv.offsetTop:0)+"px";
+ window.scrollTo(0,0);
+ msgs.scrollTop=msgs.scrollHeight;
+}
+if(window.visualViewport){window.visualViewport.addEventListener("resize",ajuster);window.visualViewport.addEventListener("scroll",ajuster)}
+window.addEventListener("resize",ajuster);
+function ouvrir(){panel.classList.add("open");if(window.innerWidth<1024)document.documentElement.classList.add("cwb-lock");rendre();ajuster();inp.focus();majFab()}
+function fermer(){panel.classList.remove("open");document.documentElement.classList.remove("cwb-lock");panel.style.height="";panel.style.top="";majFab()}
+fab.addEventListener("click",function(){if(panel.classList.contains("open"))fermer();else ouvrir()});
+panel.querySelector("#cwb-close").addEventListener("click",fermer);
 var enCours=false;
 function fini(){enCours=false;btn.disabled=false;inp.focus()}
 function envoyer(){
@@ -4465,6 +4485,8 @@ function envoyer(){
 }
 btn.addEventListener("click",envoyer);
 inp.addEventListener("keydown",function(e){if(e.key==="Enter"||e.keyCode===13)envoyer()});
+inp.addEventListener("focus",function(){setTimeout(ajuster,250)});
+majFab();
 })();
 </script>
 </body>
