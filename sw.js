@@ -2,7 +2,7 @@
    Lancement instantané : la page vient du cache immédiatement,
    la nouvelle version se télécharge en arrière-plan et s'active
    automatiquement (l'app se recharge une fois, toute seule). */
-var CACHE = 'collywood-v29';
+var CACHE = 'collywood-v30';
 var CORE = ['./', 'logo.png', 'manifest.webmanifest'];
 
 self.addEventListener('install', function (e) {

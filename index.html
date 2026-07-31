@@ -4466,9 +4466,13 @@ if(lecteur&&window.MutationObserver){new MutationObserver(majFab).observe(lecteu
 // AUCUN repositionnement JS (le recalage visualViewport faisait clignoter le panneau).
 function majAgr(){var g=panel.classList.contains("grand");agr.innerHTML=g?ICO_RED:ICO_AGR;agr.setAttribute("aria-label",g?"Réduire":"Agrandir")}
 function verrou(){document.documentElement.classList.toggle("cwb-lock",window.innerWidth<1024&&panel.classList.contains("open")&&panel.classList.contains("grand"))}
-agr.addEventListener("click",function(){panel.classList.toggle("grand");try{localStorage.setItem("cwb_grand",panel.classList.contains("grand")?"1":"")}catch(_){}majAgr();verrou();msgs.scrollTop=msgs.scrollHeight});
+// Pendant la frappe sur mobile, le coin passe en plein écran (comme WhatsApp) :
+// sinon iOS remonte toute l'interface pour dégager le champ. Retour au coin à
+// la fermeture du clavier — sauf si l'utilisateur a choisi lui-même le grand format.
+var autoGrand=false;
+agr.addEventListener("click",function(){autoGrand=false;panel.classList.toggle("grand");try{localStorage.setItem("cwb_grand",panel.classList.contains("grand")?"1":"")}catch(_){}majAgr();verrou();msgs.scrollTop=msgs.scrollHeight});
 function ouvrir(){try{if(localStorage.getItem("cwb_grand")==="1")panel.classList.add("grand")}catch(_){}panel.classList.add("open");rendre();majAgr();verrou();majFab()}
-function fermer(){panel.classList.remove("open");document.documentElement.classList.remove("cwb-lock");majFab()}
+function fermer(){panel.classList.remove("open");if(autoGrand){panel.classList.remove("grand");autoGrand=false}document.documentElement.classList.remove("cwb-lock");majFab()}
 fab.addEventListener("click",function(){if(panel.classList.contains("open"))fermer();else ouvrir()});
 panel.querySelector("#cwb-close").addEventListener("click",fermer);
 var enCours=false;
@@ -4496,7 +4500,17 @@ function envoyer(){
 }
 btn.addEventListener("click",envoyer);
 inp.addEventListener("keydown",function(e){if(e.key==="Enter"||e.keyCode===13)envoyer()});
-inp.addEventListener("focus",function(){setTimeout(function(){msgs.scrollTop=msgs.scrollHeight},300)});
+inp.addEventListener("focus",function(){
+ if(window.innerWidth<1024&&!panel.classList.contains("grand")){autoGrand=true;panel.classList.add("grand");majAgr();verrou()}
+ setTimeout(function(){msgs.scrollTop=msgs.scrollHeight},300);
+});
+inp.addEventListener("blur",function(){
+ setTimeout(function(){
+  if(!autoGrand)return;
+  if(document.activeElement===inp)return; // le focus est revenu (envoi en cours)
+  autoGrand=false;panel.classList.remove("grand");majAgr();verrou();msgs.scrollTop=msgs.scrollHeight;
+ },250);
+});
 majFab();
 })();
 </script>
