@@ -4391,51 +4391,69 @@ setTimeout(function(){
 
 <!-- ── Bulle d'assistance (bot Claude, fonction Edge « chat ») ─────────── -->
 <style>
-#cwb-fab{position:fixed;right:14px;bottom:calc(84px + env(safe-area-inset-bottom,0px));width:44px;height:44px;border-radius:50%;background:var(--fleuve);border:none;box-shadow:0 5px 14px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:500;transition:transform .15s,opacity .2s;opacity:.85}
-#cwb-fab:active{transform:scale(.92)}
-#cwb-fab:hover{opacity:1}
-#cwb-fab svg{width:21px;height:21px;fill:#fff}
-#cwb-panel{position:fixed;right:12px;bottom:calc(152px + env(safe-area-inset-bottom,0px));width:min(94vw,372px);height:min(64vh,540px);display:none;flex-direction:column;background:var(--carte);border:1px solid rgba(255,255,255,.09);border-radius:18px;overflow:hidden;z-index:501;box-shadow:0 14px 40px rgba(0,0,0,.55)}
-#cwb-panel.open{display:flex}
-#cwb-head{display:flex;align-items:center;gap:10px;padding:13px 16px;background:rgba(27,152,196,.12);border-bottom:1px solid rgba(255,255,255,.07)}
-#cwb-head b{color:var(--ivoire);font-size:.98rem}
-#cwb-head span{color:var(--cendre);font-size:.78rem;display:block}
-#cwb-close{margin-left:auto;background:none;border:none;color:var(--cendre);font-size:1.5rem;line-height:1;cursor:pointer;padding:4px}
-#cwb-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px}
-.cwb-m{max-width:84%;padding:9px 13px;border-radius:15px;font-size:.92rem;line-height:1.45;color:var(--ivoire);white-space:pre-wrap;word-wrap:break-word}
-.cwb-u{align-self:flex-end;background:var(--fleuve);border-bottom-right-radius:5px}
-.cwb-b{align-self:flex-start;background:rgba(255,255,255,.065);border-bottom-left-radius:5px}
+#cwb-fab{position:fixed;right:14px;bottom:calc(84px + env(safe-area-inset-bottom,0px));width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--fleuve),#0e6e93);border:none;box-shadow:0 5px 16px rgba(27,152,196,.45);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:500;opacity:.92;transition:transform .2s,opacity .2s;animation:cwbin .45s cubic-bezier(.2,.9,.3,1.3)}
+#cwb-fab:hover{opacity:1;transform:translateY(-2px)}
+#cwb-fab:active{transform:scale(.9)}
+#cwb-fab::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid rgba(27,152,196,.55);animation:cwbping 7s ease-out infinite}
+#cwb-fab svg{width:22px;height:22px;fill:#fff}
+@keyframes cwbin{from{opacity:0;transform:scale(.4)}to{opacity:.92;transform:scale(1)}}
+@keyframes cwbping{0%,88%{transform:scale(1);opacity:0}90%{transform:scale(1);opacity:.7}100%{transform:scale(1.75);opacity:0}}
+#cwb-panel{position:fixed;right:12px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:min(92vw,362px);height:min(64vh,540px);display:none;flex-direction:column;background:rgba(14,24,38,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:20px;overflow:hidden;z-index:501;box-shadow:0 18px 50px rgba(0,0,0,.6);transform-origin:bottom right}
+#cwb-panel.open{display:flex;animation:cwbpop .3s cubic-bezier(.2,.9,.3,1.15)}
+@keyframes cwbpop{from{opacity:0;transform:translateY(18px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+#cwb-head{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(135deg,rgba(27,152,196,.3),rgba(27,152,196,.06));border-bottom:1px solid rgba(255,255,255,.08)}
+#cwb-ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--fleuve),var(--soleil));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.95rem;flex:none;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+#cwb-tit b{color:var(--ivoire);font-size:.93rem;display:block;line-height:1.25}
+#cwb-st{color:#7ed3a8;font-size:.73rem;display:flex;align-items:center;gap:5px}
+#cwb-st::before{content:"";width:7px;height:7px;border-radius:50%;background:#3ecf7a;box-shadow:0 0 6px #3ecf7a}
+#cwb-agr,#cwb-close{background:none;border:none;color:var(--cendre);cursor:pointer;padding:6px;line-height:1;border-radius:9px;transition:background .15s,color .15s}
+#cwb-agr:hover,#cwb-close:hover{background:rgba(255,255,255,.09);color:var(--ivoire)}
+#cwb-agr{margin-left:auto}
+#cwb-agr svg{width:16px;height:16px;fill:currentColor;display:block}
+#cwb-close{font-size:1.35rem}
+#cwb-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent}
+#cwb-msgs::-webkit-scrollbar{width:5px}
+#cwb-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:4px}
+.cwb-m{max-width:84%;padding:10px 13px;border-radius:16px;font-size:.92rem;line-height:1.45;color:var(--ivoire);white-space:pre-wrap;word-wrap:break-word;animation:cwbmsg .24s cubic-bezier(.2,.8,.3,1.1)}
+@keyframes cwbmsg{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.cwb-u{align-self:flex-end;background:linear-gradient(135deg,var(--fleuve),#137aa1);border-bottom-right-radius:6px;box-shadow:0 3px 10px rgba(27,152,196,.25)}
+.cwb-b{align-self:flex-start;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.06);border-bottom-left-radius:6px}
 .cwb-dots{display:flex;gap:5px;padding:12px 14px}
 .cwb-dots i{width:7px;height:7px;border-radius:50%;background:var(--cendre);animation:cwbp 1.1s infinite}
 .cwb-dots i:nth-child(2){animation-delay:.18s}.cwb-dots i:nth-child(3){animation-delay:.36s}
 @keyframes cwbp{0%,60%,100%{opacity:.25}30%{opacity:1}}
-#cwb-row{display:flex;gap:8px;padding:11px;border-top:1px solid rgba(255,255,255,.07)}
-#cwb-in{flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px 13px;color:var(--ivoire);font-size:16px;outline:none}
-#cwb-in:focus{border-color:var(--fleuve)}
-#cwb-send{background:var(--fleuve);border:none;border-radius:12px;width:46px;display:flex;align-items:center;justify-content:center;cursor:pointer}
-#cwb-send:disabled{opacity:.45}
-#cwb-send svg{width:20px;height:20px;fill:#fff}
-@media(min-width:1024px){#cwb-fab{right:26px;bottom:26px}#cwb-panel{right:26px;bottom:94px}}
-@media(max-width:1023px){#cwb-panel{top:0;left:0;right:0;bottom:0;width:100%;height:100%;border-radius:0;border:none}#cwb-head{padding-top:calc(13px + env(safe-area-inset-top,0px))}html.cwb-lock,html.cwb-lock body{overflow:hidden}}
+#cwb-row{display:flex;gap:8px;padding:11px;border-top:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.16)}
+#cwb-in{flex:1;min-width:0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:11px 16px;color:var(--ivoire);font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s}
+#cwb-in:focus{border-color:var(--fleuve);box-shadow:0 0 0 3px rgba(27,152,196,.18)}
+#cwb-send{background:linear-gradient(135deg,var(--fleuve),#0e6e93);border:none;border-radius:50%;width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s;box-shadow:0 3px 10px rgba(27,152,196,.35)}
+#cwb-send:hover{transform:scale(1.06)}
+#cwb-send:active{transform:scale(.92)}
+#cwb-send:disabled{opacity:.45;transform:none}
+#cwb-send svg{width:19px;height:19px;fill:#fff}
+#cwb-panel.grand{width:min(96vw,720px);height:min(88vh,780px)}
+@media(min-width:1024px){#cwb-fab{right:26px;bottom:26px}#cwb-panel{right:26px;bottom:26px}}
+@media(max-width:1023px){#cwb-panel.grand{top:0;left:0;right:0;bottom:0;width:100%;height:100%;border-radius:0;border:none}#cwb-panel.grand #cwb-head{padding-top:calc(12px + env(safe-area-inset-top,0px))}html.cwb-lock,html.cwb-lock body{overflow:hidden}}
 </style>
 <script>
 (function(){
 "use strict";
 var CWB_T={
- fr:{ti:"Assistance COLLYWOOD",st:"Réponse en quelques secondes",hi:"Bonjour 👋 Une question sur COLLYWOOD ? Je suis là pour t’aider.",ph:"Écris ta question…",er:"Petit souci technique, réessaie dans un instant."},
- en:{ti:"COLLYWOOD Support",st:"Replies in seconds",hi:"Hi 👋 Any question about COLLYWOOD? I’m here to help.",ph:"Type your question…",er:"Something went wrong, please try again."},
- ln:{ti:"Lisungi COLLYWOOD",st:"Eyano na mwa basegonde",hi:"Mbote 👋 Ozali na motuna na COLLYWOOD ? Nazali awa mpo na kosunga yo.",ph:"Koma motuna na yo…",er:"Mwa likambo ya tekiniki, meka lisusu."},
- sw:{ti:"Msaada wa COLLYWOOD",st:"Jibu ndani ya sekunde",hi:"Habari 👋 Una swali kuhusu COLLYWOOD? Niko hapa kukusaidia.",ph:"Andika swali lako…",er:"Hitilafu ndogo, jaribu tena baadaye."}
+ fr:{ti:"Assistance COLLYWOOD",st:"En ligne — réponse en secondes",hi:"Bonjour 👋 Une question sur COLLYWOOD ? Je suis là pour t’aider.",ph:"Écris ta question…",er:"Petit souci technique, réessaie dans un instant."},
+ en:{ti:"COLLYWOOD Support",st:"Online — replies in seconds",hi:"Hi 👋 Any question about COLLYWOOD? I’m here to help.",ph:"Type your question…",er:"Something went wrong, please try again."},
+ ln:{ti:"Lisungi COLLYWOOD",st:"Na ligne — eyano noki",hi:"Mbote 👋 Ozali na motuna na COLLYWOOD ? Nazali awa mpo na kosunga yo.",ph:"Koma motuna na yo…",er:"Mwa likambo ya tekiniki, meka lisusu."},
+ sw:{ti:"Msaada wa COLLYWOOD",st:"Mtandaoni — jibu haraka",hi:"Habari 👋 Una swali kuhusu COLLYWOOD? Niko hapa kukusaidia.",ph:"Andika swali lako…",er:"Hitilafu ndogo, jaribu tena baadaye."}
 };
 function TT(){var l=(typeof LOCALE==="string"&&CWB_T[LOCALE])?LOCALE:"fr";return CWB_T[l]}
+var ICO_AGR='<svg viewBox="0 0 24 24"><path d="M21 3h-6v2h2.59L13 9.59 14.41 11 19 6.41V9h2V3zM3 21h6v-2H6.41L11 14.41 9.59 13 5 17.59V15H3v6z"/></svg>';
+var ICO_RED='<svg viewBox="0 0 24 24"><path d="M22 3.41 20.59 2 16 6.59V4h-2v6h6V8h-2.59L22 3.41zM2 20.59 3.41 22 8 17.41V20h2v-6H4v2h2.59L2 20.59z"/></svg>';
 var fab=document.createElement("button");
 fab.id="cwb-fab";fab.type="button";fab.setAttribute("aria-label","Assistance");
 fab.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 3C6.9 3 3 6.5 3 10.8c0 2.3 1.1 4.3 2.9 5.7-.1.9-.5 2.2-1.6 3.4-.2.2 0 .6.3.6 2.1-.2 3.6-1 4.6-1.7.9.2 1.8.4 2.8.4 5.1 0 9-3.5 9-7.9S17.1 3 12 3z"/></svg>';
 var panel=document.createElement("div");
 panel.id="cwb-panel";
-panel.innerHTML='<div id="cwb-head"><div><b id="cwb-ti"></b><span id="cwb-st"></span></div><button id="cwb-close" type="button" aria-label="Fermer">×</button></div><div id="cwb-msgs"></div><div id="cwb-row"><input id="cwb-in" type="text" maxlength="1000" autocomplete="off"/><button id="cwb-send" type="button"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg></button></div>';
+panel.innerHTML='<div id="cwb-head"><div id="cwb-ava">C+</div><div id="cwb-tit"><b id="cwb-ti"></b><span id="cwb-st"></span></div><button id="cwb-agr" type="button" aria-label="Agrandir"></button><button id="cwb-close" type="button" aria-label="Fermer">×</button></div><div id="cwb-msgs"></div><div id="cwb-row"><input id="cwb-in" type="text" maxlength="1000" autocomplete="off"/><button id="cwb-send" type="button"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg></button></div>';
 document.body.appendChild(fab);document.body.appendChild(panel);
-var msgs=panel.querySelector("#cwb-msgs"),inp=panel.querySelector("#cwb-in"),btn=panel.querySelector("#cwb-send");
+var msgs=panel.querySelector("#cwb-msgs"),inp=panel.querySelector("#cwb-in"),btn=panel.querySelector("#cwb-send"),agr=panel.querySelector("#cwb-agr");
 var HIST=[];try{HIST=JSON.parse(sessionStorage.getItem("cwb_hist")||"[]")}catch(_){}
 function saveH(){try{sessionStorage.setItem("cwb_hist",JSON.stringify(HIST.slice(-30)))}catch(_){}}
 function bulle(role,txt){var d=document.createElement("div");d.className="cwb-m "+(role==="u"?"cwb-u":"cwb-b");d.textContent=txt;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d}
@@ -4444,11 +4462,12 @@ function rendre(){var L=TT();panel.querySelector("#cwb-ti").textContent=L.ti;pan
 var lecteur=document.getElementById("player");
 function majFab(){var lit=lecteur&&lecteur.classList.contains("on");fab.style.display=(lit||panel.classList.contains("open"))?"none":"flex"}
 if(lecteur&&window.MutationObserver){new MutationObserver(majFab).observe(lecteur,{attributes:true,attributeFilter:["class"]})}
-// Mobile : plein écran en CSS pur — AUCUN repositionnement JS.
-// (Un ajustement via visualViewport se bat avec le défilement natif d'iOS
-// quand le clavier s'ouvre : le panneau clignotait. iOS remonte de lui-même
-// le champ au-dessus du clavier ; Android redimensionne tout seul.)
-function ouvrir(){panel.classList.add("open");if(window.innerWidth<1024)document.documentElement.classList.add("cwb-lock");rendre();majFab()}
+// Coin par défaut ; « grand » = plein écran (mobile) / grande carte (ordinateur).
+// AUCUN repositionnement JS (le recalage visualViewport faisait clignoter le panneau).
+function majAgr(){var g=panel.classList.contains("grand");agr.innerHTML=g?ICO_RED:ICO_AGR;agr.setAttribute("aria-label",g?"Réduire":"Agrandir")}
+function verrou(){document.documentElement.classList.toggle("cwb-lock",window.innerWidth<1024&&panel.classList.contains("open")&&panel.classList.contains("grand"))}
+agr.addEventListener("click",function(){panel.classList.toggle("grand");try{localStorage.setItem("cwb_grand",panel.classList.contains("grand")?"1":"")}catch(_){}majAgr();verrou();msgs.scrollTop=msgs.scrollHeight});
+function ouvrir(){try{if(localStorage.getItem("cwb_grand")==="1")panel.classList.add("grand")}catch(_){}panel.classList.add("open");rendre();majAgr();verrou();majFab()}
 function fermer(){panel.classList.remove("open");document.documentElement.classList.remove("cwb-lock");majFab()}
 fab.addEventListener("click",function(){if(panel.classList.contains("open"))fermer();else ouvrir()});
 panel.querySelector("#cwb-close").addEventListener("click",fermer);
@@ -4481,5 +4500,6 @@ inp.addEventListener("focus",function(){setTimeout(function(){msgs.scrollTop=msg
 majFab();
 })();
 </script>
+
 </body>
 </html>
