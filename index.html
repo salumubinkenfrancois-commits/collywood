@@ -529,11 +529,11 @@ main>section.on{animation:secIn .28s ease;}
 #pay-card .opq .inner{padding:2px 14px 14px;}
 #pay-card .opq label{display:block;font-size:.75rem;color:var(--cendre);margin:0 0 6px;}
 #pay-card .telq{display:flex;align-items:center;gap:8px;background:#0B1420;border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:11px 12px;}
-#pay-card .telq select{background:none;border:none;color:var(--cendre);font-size:.95rem;outline:none;}
+#pay-card .telq select{background:none;border:none;color:var(--cendre);font-size:16px;outline:none;}
 #pay-card .telq input{flex:1;background:none;border:none;outline:none;color:#fff;font-size:16px;letter-spacing:.5px;min-width:0;width:100%;}
 #pay-card .cardrow2{display:flex;gap:8px;margin-top:8px;}
 #pay-card .cardrow2 .telq{flex:1 1 0;min-width:0;overflow:hidden;padding:11px 10px;}
-#pay-card .cardrow2 input{font-size:15px;}
+#pay-card .cardrow2 input{font-size:16px;}
 #pay-card .cardrow2 input::placeholder{font-size:13.5px;}
 #pay-card .payfoot{margin-top:.5rem;padding-top:.4rem;}
 #pay-card .beatzone{position:relative;width:130px;height:130px;margin:.4rem auto 16px;display:flex;align-items:center;justify-content:center;}
@@ -4410,7 +4410,7 @@ setTimeout(function(){
 .cwb-dots i:nth-child(2){animation-delay:.18s}.cwb-dots i:nth-child(3){animation-delay:.36s}
 @keyframes cwbp{0%,60%,100%{opacity:.25}30%{opacity:1}}
 #cwb-row{display:flex;gap:8px;padding:11px;border-top:1px solid rgba(255,255,255,.07)}
-#cwb-in{flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px 13px;color:var(--ivoire);font-size:.95rem;outline:none}
+#cwb-in{flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px 13px;color:var(--ivoire);font-size:16px;outline:none}
 #cwb-in:focus{border-color:var(--fleuve)}
 #cwb-send{background:var(--fleuve);border:none;border-radius:12px;width:46px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 #cwb-send:disabled{opacity:.45}
@@ -4444,20 +4444,12 @@ function rendre(){var L=TT();panel.querySelector("#cwb-ti").textContent=L.ti;pan
 var lecteur=document.getElementById("player");
 function majFab(){var lit=lecteur&&lecteur.classList.contains("on");fab.style.display=(lit||panel.classList.contains("open"))?"none":"flex"}
 if(lecteur&&window.MutationObserver){new MutationObserver(majFab).observe(lecteur,{attributes:true,attributeFilter:["class"]})}
-// Mobile : panneau plein écran, ajusté à la hauteur visible (clavier ouvert compris)
-function ajuster(){
- if(!panel.classList.contains("open"))return;
- if(window.innerWidth>=1024){panel.style.height="";panel.style.top="";return}
- var vv=window.visualViewport;
- panel.style.height=(vv?vv.height:window.innerHeight)+"px";
- panel.style.top=(vv&&vv.offsetTop?vv.offsetTop:0)+"px";
- window.scrollTo(0,0);
- msgs.scrollTop=msgs.scrollHeight;
-}
-if(window.visualViewport){window.visualViewport.addEventListener("resize",ajuster);window.visualViewport.addEventListener("scroll",ajuster)}
-window.addEventListener("resize",ajuster);
-function ouvrir(){panel.classList.add("open");if(window.innerWidth<1024)document.documentElement.classList.add("cwb-lock");rendre();ajuster();inp.focus();majFab()}
-function fermer(){panel.classList.remove("open");document.documentElement.classList.remove("cwb-lock");panel.style.height="";panel.style.top="";majFab()}
+// Mobile : plein écran en CSS pur — AUCUN repositionnement JS.
+// (Un ajustement via visualViewport se bat avec le défilement natif d'iOS
+// quand le clavier s'ouvre : le panneau clignotait. iOS remonte de lui-même
+// le champ au-dessus du clavier ; Android redimensionne tout seul.)
+function ouvrir(){panel.classList.add("open");if(window.innerWidth<1024)document.documentElement.classList.add("cwb-lock");rendre();majFab()}
+function fermer(){panel.classList.remove("open");document.documentElement.classList.remove("cwb-lock");majFab()}
 fab.addEventListener("click",function(){if(panel.classList.contains("open"))fermer();else ouvrir()});
 panel.querySelector("#cwb-close").addEventListener("click",fermer);
 var enCours=false;
@@ -4485,7 +4477,7 @@ function envoyer(){
 }
 btn.addEventListener("click",envoyer);
 inp.addEventListener("keydown",function(e){if(e.key==="Enter"||e.keyCode===13)envoyer()});
-inp.addEventListener("focus",function(){setTimeout(ajuster,250)});
+inp.addEventListener("focus",function(){setTimeout(function(){msgs.scrollTop=msgs.scrollHeight},300)});
 majFab();
 })();
 </script>
